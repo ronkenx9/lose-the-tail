@@ -15,6 +15,7 @@ import { Story } from './game/story';
 import { Sfx } from './game/sfx';
 import { fmtClock } from './game/state';
 import { portrait } from './ui/portrait';
+import { makeMap } from './ui/map';
 import heads from './data/heads.json';
 
 async function boot() {
@@ -52,6 +53,7 @@ async function boot() {
     story.onPhone(a);
   });
   phone.el.style.display = 'none';
+  phone.map = makeMap(city, () => ({ x: player.x, z: player.z, yaw: player.yaw, goal: story?.marker ?? null }));
 
   // ping ring around an exposed player
   const ring = new THREE.Mesh(

@@ -52,6 +52,9 @@ export class Phone {
   private banner: HTMLElement;
   private body: HTMLElement;
   private quiz: { idx: number[]; step: number; picked: string[] } | null = null;
+  /** set by main: draws the city map */
+  map: { draw(c: HTMLCanvasElement): void } | null = null;
+  private mapRaf = 0;
   /** gate which home actions are allowed */
   allow = { shield: true, send: true, swap: true, receive: true };
 
@@ -209,6 +212,16 @@ export class Phone {
       if (list) list.scrollTop = list.scrollHeight;
     }
     this.bindHolds();
+    cancelAnimationFrame(this.mapRaf);
+    const mc = this.body.querySelector('.mapc') as HTMLCanvasElement | null;
+    if (mc && this.map) {
+      const loop = () => {
+        if (!this.up || this.screen !== 'map') return;
+        this.map!.draw(mc);
+        this.mapRaf = requestAnimationFrame(loop);
+      };
+      loop();
+    }
   }
 
   private s_lock(s: GameState) {
@@ -220,6 +233,7 @@ export class Phone {
         <div class="apps">
           ${s.wallet.created ? `<button data-go="home" class="app"><span class="app-ic wal">Ƶ</span>Wallet</button>` : `<button data-go="create" class="app"><span class="app-ic wal">Ƶ</span>Wallet</button>`}
           <button data-go="threads" class="app"><span class="app-ic msg">✉</span>Messages</button>
+          <button data-go="map" class="app"><span class="app-ic map">⌖</span>Map</button>
         </div>
       </div>`;
   }
@@ -231,6 +245,12 @@ export class Phone {
       <div class="grow"><b>${t.name}</b><span class="muted ell">${last ? esc(last.text) : ''}</span></div>
       ${t.unread ? `<i class="dot">${t.unread}</i>` : ''}
     </button>`;
+  }
+
+  private s_map() {
+    return `<div class="top"><button data-go="${this.getState().wallet.created ? 'home' : 'lock'}" class="back">‹</button><h3>Ledger City</h3></div>
+      <canvas class="mapc" width="288" height="288"></canvas>
+      <div class="legend"><span><i class="lg you"></i>you</span><span><i class="lg goal"></i>next stop</span><span><i class="lg place"></i>places</span><span><i class="lg danger"></i>Tailor & Co.</span></div>`;
   }
 
   private s_threads() {
@@ -282,7 +302,7 @@ export class Phone {
         <div class="acts">${s.txs.map((x) => `<div class="act"><b>${actLabel(x.kind)}</b><span>${x.kind === 'send' ? '−' : '+'}${fmtZec(x.amount)}</span><em>${fmtClock(x.at)} · ${x.who ?? ''}</em></div>`).join('')}</div>`;
     const total = s.wallet.shielded + s.wallet.transparent;
     const t = s.wallet.transparent > 0.0001;
-    return `<div class="top"><button data-go="threads" class="back ic">✉${this.threads.some((x) => x.unread) ? '<i class="pip"></i>' : ''}</button><h3>Wallet</h3><span class="pill">practice</span></div>
+    return `<div class="top"><button data-go="threads" class="back ic">✉${this.threads.some((x) => x.unread) ? '<i class="pip"></i>' : ''}</button><button data-go="map" class="back ic">⌖</button><h3>Wallet</h3><span class="pill">practice</span></div>
       <div class="bal"><span class="muted tiny">total balance</span><div class="big">${fmtZec(total)} <small>ZEC</small></div></div>
       <div class="pockets">
         <div class="pocket sh"><span>🛡 Shielded</span><b>${fmtZec(s.wallet.shielded)}</b><em>private · only you can see it</em></div>

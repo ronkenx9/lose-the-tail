@@ -137,3 +137,10 @@ input[type=range] { width: 100%; accent-color: #ff2b3b; }
   .phone.up { transform: translate(0, calc(-50vh + 50%)) scale(var(--phs, 1)); }
 }
 .actions.two { grid-template-columns: 1fr 1fr; }
+
+.app-ic.map { background: #1d3a5f; color: #9fd0ff; }
+.mapc { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 14px; border: 1px solid var(--line); background: #050807; image-rendering: pixelated; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 10.5px; color: var(--ink-dim); }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.lg { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.lg.you { background: #c8ffdc; } .lg.goal { background: #ffb547; } .lg.place { background: #6fb0ff; } .lg.danger { background: #ff2b3b; }
