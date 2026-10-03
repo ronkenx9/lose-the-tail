@@ -73,7 +73,7 @@ def(B.LAMP, { glow: 2.4, color: [1, 0.92, 0.75], emit: [1, 0.82, 0.55] });
 def(B.SCREEN_OFF, { color: [0.03, 0.03, 0.04] });
 def(B.PUDDLE, { color: [0.14, 0.16, 0.22], jitter: 0.05 });
 def(B.TILE, { color: [0.22, 0.2, 0.24], jitter: 0.1 });
-def(B.NEON_ZEC, { glow: 2.6, color: [0.96, 0.72, 0.16], emit: [1, 0.7, 0.12] });
+def(B.NEON_ZEC, { glow: 1.7, color: [0.96, 0.72, 0.16], emit: [1, 0.7, 0.12] });
 
 const LIGHT_MAX = 15;
 

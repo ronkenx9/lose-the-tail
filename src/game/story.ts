@@ -680,12 +680,11 @@ export class Story {
     await hud.card({
       kicker: 'TAILOR & CO. · CASE FILE',
       title: 'SUBJECT: UNKNOWN',
-      body: `<p>You made <b>${this.s.txs.length}</b> transactions tonight. <b>${priv}</b> of them showed nothing on the public chain.</p>
+      body: `<img class="card-art" src="/art/case_file.jpg" alt=""><p>You made <b>${this.s.txs.length}</b> transactions tonight. <b>${priv}</b> of them showed nothing on the public chain.</p>
              <p>${this.s.caughtCount ? `You got caught <b>${this.s.caughtCount}</b> time${this.s.caughtCount === 1 ? '' : 's'}. Every catch was a mistake real people make.` : 'You never got caught. Clean night.'}</p>
              <p>Zero tags found: <b>${this.s.tags.length}/${this.c.city.tags.length}</b></p>
              <ul class="learned">${hud.lessons.map((l) => `<li>✓ <b>${l.title}</b></li>`).join('')}</ul>`,
       button: 'Continue',
-      role: 'you_hood',
     });
     await hud.say([
       T('Zero', 'narrator', 'You were never hiding. You were just private. Like cash, like a closed door.'),

@@ -59,6 +59,26 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
     if (s.flicker) flickers.push({ mat: m.material as THREE.MeshBasicMaterial, base: 1, seed: Math.random() * 100 });
   }
 
+  // decals: shop interiors, posters, hanging banners (Codex concept art)
+  const loader = new THREE.TextureLoader();
+  for (const d of city.decals) {
+    const tex = loader.load(`/art/${d.img}.jpg`);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    if (d.band) {
+      tex.repeat.set(1, d.band[0]);
+      tex.offset.set(0, d.band[1]);
+    }
+    const g = d.glow ?? 1;
+    const m = new THREE.Mesh(
+      new THREE.PlaneGeometry(d.w, d.h),
+      new THREE.MeshBasicMaterial({ map: tex, color: new THREE.Color(g, g, g), side: d.facing === 'X' || d.facing === 'Z' ? THREE.DoubleSide : THREE.FrontSide }),
+    );
+    m.position.set(d.x, d.y, d.z);
+    m.rotation.y = d.facing === 'X' ? Math.PI / 2 : d.facing === 'Z' ? 0 : FACING_ROT[d.facing];
+    scene.add(m);
+  }
+
   // screens
   const screens = {} as Stage['screens'];
   for (const sp of city.screens) {

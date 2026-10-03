@@ -41,6 +41,20 @@ export interface ScreenSpec {
   h: number;
 }
 
+export interface Decal {
+  img: string;
+  x: number;
+  y: number;
+  z: number;
+  /** plane normal direction; 'X' / 'Z' = double-sided hanging banner along that axis */
+  facing: Facing | 'X' | 'Z';
+  w: number;
+  h: number;
+  glow?: number;
+  /** show only a horizontal band of the image: [repeatY, offsetY] */
+  band?: [number, number];
+}
+
 export interface Tag {
   id: number;
   x: number;
@@ -86,6 +100,7 @@ export interface City {
   lamps: { x: number; y: number; z: number }[];
   spawn: { x: number; z: number; yaw: number };
   tags: Tag[];
+  decals: Decal[];
 }
 
 const AVE = { a: 42, b: 53 }; // z range of the avenue (incl. sidewalks)
@@ -97,6 +112,7 @@ export function buildCity(): City {
   const w = new VoxelWorld(SX, SY, SZ);
   const r = rng(1337);
   const signs: SignSpec[] = [];
+  const decals: Decal[] = [];
   const screens: ScreenSpec[] = [];
   const lamps: City['lamps'] = [];
 
@@ -259,7 +275,7 @@ export function buildCity(): City {
     const out: [number, number] = { N: [0, -1], S: [0, 1], E: [1, 0], W: [-1, 0] }[facing] as [number, number];
     for (let k = 0; k < 2; k++)
       for (let y = 1; y <= 3; y++) w.set(x + along[0] * k, y, z + along[1] * k, y === 3 ? B.TRIM : mat);
-    for (let k = -1; k < 3; k++) w.set(x + along[0] * k + out[0], 4, z + along[1] * k + out[1], awn);
+    for (let k = -1; k < 3; k++) w.set(x + along[0] * k + out[0], 4, z + along[1] * k + out[1], k === 0 || k === 1 ? awn : B.TRIM);
   };
 
   // HOME (NW lot 0..19 x, 22..41 z), door on south face z=41
@@ -275,19 +291,44 @@ export function buildCity(): City {
 
   // NULLSTATE CAFE (SE lot 76..95, 54..73), north face z=54
   door(84, 54, 'N', B.GLASS_DARK, B.NEON_MINT);
-  for (let x = 78; x <= 93; x++) if (x < 84 || x > 85) for (let y = 1; y <= 2; y++) w.set(x, y, 54, B.WIN_WARM);
+  for (let x = 77; x <= 94; x++) {
+    if (x >= 84 && x <= 85) continue;
+    for (let y = 1; y <= 3; y++) {
+      w.set(x, y, 54, B.AIR);
+      w.set(x, y, 55, B.WIN_WARM); // hidden light source behind the interior picture
+    }
+    w.set(x, 4, 54, B.TRIM);
+  }
+  decals.push({ img: 'int_cafe', x: 86, y: 2.5, z: 54.97, facing: 'N', w: 18, h: 3, glow: 1.15, band: [0.56, 0.12] });
   signs.push({ text: 'NULLSTATE', sub: 'café · shielded only', color: '#9dffc4', x: 85, y: 6.2, z: 53.98, facing: 'N', w: 7, h: 1.8 });
   stations.cafe = { id: 'cafe', x: 85, z: 50.4, npc: { x: 85, z: 52.6, yaw: Math.PI / 2 }, label: 'Nullstate Café' };
 
   // 0dB ARCADE (SW lot 22..41, 76..95), east face x=41
   door(41, 84, 'E', B.GLASS_DARK, B.NEON_VIOLET);
-  for (let z = 78; z <= 93; z++) if (z < 84 || z > 85) w.set(41, 2, z, z % 2 ? B.NEON_PINK : B.NEON_VIOLET);
+  for (let z = 77; z <= 94; z++) {
+    if (z >= 84 && z <= 85) continue;
+    for (let y = 1; y <= 3; y++) {
+      w.set(41, y, z, B.AIR);
+      w.set(40, y, z, z % 2 ? B.NEON_PINK : B.NEON_VIOLET);
+    }
+    w.set(41, 4, z, B.TRIM);
+  }
+  decals.push({ img: 'int_arcade', x: 41.03, y: 2.5, z: 86, facing: 'E', w: 18, h: 3, glow: 1.2, band: [0.56, 0.18] });
   signs.push({ text: '0dB ARCADE', sub: 'insert coin', color: '#ff4fd8', x: 42.02, y: 6.4, z: 85, facing: 'E', w: 8, h: 2 });
   stations.arcade = { id: 'arcade', x: 44.5, z: 85, npc: { x: 43.4, z: 86.2, yaw: 0 }, label: '0dB Arcade' };
 
   // COBALT EXCHANGE (NE lot 76..95, 22..41), south face z=41
   door(87, 41, 'S', B.GLASS_DARK, B.NEON_CYAN);
   for (let x = 77; x <= 94; x++) w.set(x, 6, 41, B.NEON_CYAN);
+  for (let x = 77; x <= 94; x++) {
+    if (x >= 87 && x <= 88) continue;
+    for (let y = 1; y <= 3; y++) {
+      w.set(x, y, 41, B.AIR);
+      w.set(x, y, 40, B.WIN_COOL);
+    }
+    w.set(x, 4, 41, B.TRIM);
+  }
+  decals.push({ img: 'int_exchange', x: 86, y: 2.5, z: 41.03, facing: 'S', w: 18, h: 3, glow: 1.1, band: [0.56, 0.16] });
   signs.push({ text: 'COBALT EXCHANGE', sub: 'cash out · public ledger', color: '#3fe6ff', x: 88, y: 8, z: 42.02, facing: 'S', w: 10, h: 2 });
   stations.exchange = { id: 'exchange', x: 88, z: 44.5, npc: { x: 89.6, z: 43.3, yaw: -Math.PI / 2 }, label: 'Cobalt Exchange' };
 
@@ -302,7 +343,7 @@ export function buildCity(): City {
   // COURIER SWAP KIOSK (plaza NW corner)
   w.fill(40, 1, 40, 41, 2, 41, B.METAL);
   w.fill(40, 3, 40, 41, 3, 41, B.NEON_AMBER);
-  signs.push({ text: 'SWAP', sub: 'any coin → ZEC', color: '#ffb547', x: 41, y: 4.4, z: 42.02, facing: 'S', w: 2.4, h: 1 });
+  signs.push({ text: 'KIOSK', sub: 'noodles · coin swaps', color: '#ffb547', x: 41, y: 4.4, z: 42.02, facing: 'S', w: 2.6, h: 1 });
   stations.kiosk = { id: 'kiosk', x: 41, z: 43.6, npc: { x: 42.6, z: 42.6, yaw: -Math.PI * 0.75 }, label: 'Courier Kiosk' };
 
   // ZEC monument (plaza center): voxel Ƶ, 5 wide x 7 high, double-sided
@@ -362,6 +403,23 @@ export function buildCity(): City {
     [SZ - 1, SZ - 1],
   ]) w.fill(ST.a, 1, z0, ST.b, 22, z1, B.DARKBRICK);
 
+  // street posters (Codex concept art) on tall facades
+  decals.push({ img: 'ad_nullstate', x: 42.03, y: 7.5, z: 10, facing: 'E', w: 3.2, h: 6.2, glow: 1.3 });
+  decals.push({ img: 'ad_shield', x: 31, y: 7.5, z: 53.97, facing: 'N', w: 3.2, h: 6.2, glow: 1.3 });
+  decals.push({ img: 'ad_cobalt', x: 53.97, y: 7.5, z: 64, facing: 'W', w: 3.2, h: 6.2, glow: 1.3 });
+  decals.push({ img: 'ad_arcade', x: 53.97, y: 7.5, z: 86, facing: 'W', w: 3.2, h: 6.2, glow: 1.3 });
+  decals.push({ img: 'ad_shield', x: 42.03, y: 7.5, z: 64, facing: 'E', w: 3.2, h: 6.2, glow: 1.3 });
+  // hanging neon banners sticking out over the avenue sidewalks
+  const banX = [6, 15, 27, 61, 70, 83, 91];
+  banX.forEach((x, k) => {
+    const north = k % 2 === 0;
+    const z = north ? 42.7 : 53.3;
+    const wz = north ? 41 : 54;
+    if (w.get(x, 8, wz) === B.AIR) return;
+    for (let y = 9; y <= 9; y++) w.set(x, y, north ? 42 : 53, B.METAL);
+    decals.push({ img: `banner_${k % 4}`, x: x + 0.5, y: 7.4, z, facing: 'X', w: 1.3, h: 4.6, glow: 1.4 });
+  });
+
   const tags: Tag[] = [
     { x: 75.98, y: 2.2, z: 8, facing: 'W', px: 75, pz: 8, fact: 'Shielded (private) addresses usually start with *u1*. Transparent (public) ones start with *t1* or *t3*.' },
     { x: 39.98, y: 2.0, z: 40.5, facing: 'W', px: 39, pz: 40.5, fact: 'A memo is a private note of up to 512 bytes. It travels encrypted with the payment, so only the receiver can read it.' },
@@ -381,5 +439,5 @@ export function buildCity(): City {
   for (let x = 0; x < SX; x++)
     for (let z = 0; z < SZ; z++) walk[x + z * SX] = w.solid(x, 0, z) && !w.solid(x, 1, z) && !w.solid(x, 2, z) ? 1 : 0;
 
-  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 10.5, z: 44.5, yaw: Math.PI }, tags };
+  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 10.5, z: 44.5, yaw: Math.PI }, tags, decals };
 }
