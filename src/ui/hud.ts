@@ -11,7 +11,20 @@ export interface Line {
   radio?: boolean;
 }
 
+const vclean = (t: string) => t.replace(/\*([^*]+)\*/g, '$1').replace(/_([^_]+)_/g, '$1');
+function vhash(t: string) {
+  let h = 2166136261;
+  for (const c of vclean(t)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(36);
+}
+
 export class Hud {
+  /** voice-over manifest (public/vo/manifest.json) */
+  vo: Record<string, { who: string; dur: number }> = {};
+  voiceOn = true;
+  onVoice?: (playing: boolean) => void;
+  private audio: HTMLAudioElement | null = null;
+  private autoT = 0;
   root: HTMLElement;
   private obj: HTMLElement;
   private clock: HTMLElement;
@@ -31,7 +44,7 @@ export class Hud {
       'beforeend',
       `<div class="hud-top">
          <div class="obj hidden"><span class="obj-k">objective</span><b></b><em></em></div>
-         <div class="mid"><div class="clock">18:00</div><div class="trace hidden"><span>TRACE</span><b>00</b><i></i></div></div>
+         <div class="mid"><div class="clockrow"><div class="clock">18:00</div><button class="mute" aria-label="toggle sound">♪</button></div><div class="trace hidden"><span>TRACE</span><b>00</b><i></i></div></div>
          <div class="file hidden"><span class="file-k">TAILOR & CO. · file on you <b class="file-n"></b></span><div class="slots"></div></div>
        </div>
        <div class="marker hidden"><i></i><span></span></div>
@@ -71,6 +84,7 @@ export class Hud {
       this.cur = this.queue.shift() ?? null;
       if (!this.cur) {
         this.talking = false;
+        this.stopVoice();
         this.dlg.classList.add('hidden');
         return;
       }
@@ -85,11 +99,31 @@ export class Hud {
     this.full = l.text;
     let i = 0;
     clearInterval(this.typing);
+    clearTimeout(this.autoT);
+    this.stopVoice();
     p.innerHTML = '';
     this.typed = false;
     this.lineAt = performance.now();
+    const id = vhash(l.text);
+    const vo = this.voiceOn ? this.vo[id] : undefined;
+    let step = 2;
+    if (vo) {
+      const a = new Audio(`/vo/${id}.mp3`);
+      this.audio = a;
+      a.play().catch(() => {});
+      this.onVoice?.(true);
+      // finish typing at ~85% of the spoken line
+      step = Math.max(1, Math.ceil(this.full.length / ((vo.dur * 0.85 * 1000) / 16)));
+      const me = this.cur;
+      a.onended = () => {
+        this.onVoice?.(false);
+        this.autoT = window.setTimeout(() => {
+          if (this.cur === me && this.audio === a) this.next();
+        }, 900);
+      };
+    }
     this.typing = window.setInterval(() => {
-      i += 2;
+      i += step;
       p.innerHTML = fmt(this.full.slice(0, i));
       if (i >= this.full.length) {
         clearInterval(this.typing);
@@ -99,6 +133,14 @@ export class Hud {
   }
   private typed = true;
   private lineAt = 0;
+  private stopVoice() {
+    if (this.audio) {
+      this.audio.onended = null;
+      this.audio.pause();
+      this.audio = null;
+      this.onVoice?.(false);
+    }
+  }
   private advance() {
     if (performance.now() - this.lineAt < 180) return; // ignore double taps
     const p = this.dlg.querySelector('p') as HTMLElement;

@@ -38,6 +38,18 @@ async function boot() {
   const sfx = new Sfx();
   ui.innerHTML = '';
   const hud = new Hud(ui);
+  fetch('/vo/manifest.json')
+    .then((r) => r.json())
+    .then((m) => (hud.vo = m))
+    .catch(() => {});
+  hud.onVoice = (on) => sfx.duck(on);
+  const muteBtn = ui.querySelector('.mute') as HTMLButtonElement;
+  muteBtn.addEventListener('click', () => {
+    sfx.start();
+    const m = sfx.toggle();
+    hud.voiceOn = !m;
+    muteBtn.classList.toggle('off', m);
+  });
   ui.classList.add('pre');
   let story!: Story;
   const phone = new Phone(ui, () => story.s, (a) => {
@@ -327,6 +339,7 @@ async function boot() {
   let last = performance.now();
   let pingT = 0;
   const perf = { acc: 0, n: 0, level: 0 };
+  const ended = () => !!(story as any).ended;
   let titleT = 0;
   const loop = (now: number) => {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -358,6 +371,8 @@ async function boot() {
     hand.setLight(tmp);
     hand.update(dt, Math.min(1, player.speed / 4), player.bobT);
     hand.group.visible = started && !cut;
+    // adaptive score
+    sfx.setMood(inVoid ? 'void' : thugs.length || story.s.trace ? 'tension' : story.s.beat === 'dawn' || ended() ? 'dawn' : 'calm');
     // exposure ring + ping
     ring.visible = exposed;
     if (exposed) {

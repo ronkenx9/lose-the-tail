@@ -352,7 +352,7 @@ export class Story {
     hud.lesson('Shielded = private', 'Shielding moves ZEC into the shielded pool. The chain shows money went in, and nothing about where it goes next.');
     await sleep(1600);
     await hud.say([
-      T('The Tailor', 'tailor', `...gone. ${fmtZec(amt)} slipped into the shielded pool at ${fmtClock(this.s.clock)}, and the pool doesn't gossip. Pity.`, true),
+      T('The Tailor', 'tailor', "...Gone. Five ZEC slipped into the shielded pool, and the pool doesn't gossip. Pity.", true),
       T('The Tailor', 'tailor', "Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.", true),
     ]);
     this.errands();
@@ -545,7 +545,7 @@ export class Story {
       boards.face = { role: 'you_hood', mode: 'exposed' };
       this.c.drones.hunt();
       await hud.say([
-        T('The Tailor', 'tailor', `Pool exit: *${m.why}*. Only ${m.others} other exits in that window.`, true),
+        T('The Tailor', 'tailor', 'Pool exit. Almost exactly what went in, and barely any time later. Hardly anyone else left the pool in that window.', true),
         T('The Tailor', 'tailor', "Same money, barely rinsed. Our ghost is standing at Cobalt, admiring the view. Go.", true),
       ]);
       this.s.trace = { left: 8, total: 8, reason: 'amount + timing match' };

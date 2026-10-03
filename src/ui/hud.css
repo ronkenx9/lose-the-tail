@@ -91,3 +91,7 @@
 @media (max-width: 760px) { .lesson { top: 16%; } .lesson b { font-size: 13px; } .lesson span { font-size: 13px; } }
 .card-art { width: calc(100% + 52px); margin: 6px -26px 8px; max-width: none; display: block; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .zero-says { color: #e9f2ec; border-left: 2px solid #fff; padding-left: 10px; text-align: left; }
+
+.clockrow { display: flex; gap: 6px; align-items: stretch; }
+.mute { padding: 0 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; color: var(--ink); font: 700 14px var(--mono); cursor: pointer; }
+.mute.off { color: var(--ink-dim); text-decoration: line-through; }
