@@ -233,6 +233,10 @@ export class Story {
     this.s.loop = 2;
     this.s.beat = 'setup';
     const { hud, phone } = this.c;
+    phone.show('lock');
+    phone.lower();
+    this.setContacts([]);
+    this.c.setHood(false);
     this.c.player.frozen = false;
     phone.allow = { shield: false, send: false, swap: false, receive: false };
     hud.objective('Check your phone', 'Tap the phone, or press E');

@@ -203,6 +203,13 @@ export function lookOf(h: HeadMeta): Look {
     pants: shade(body, 0.55),
     boots: shade(body, 0.3),
   };
+  if (h.role === 'tailor') {
+    // art bible: face lost in shadow, two small yellow eyes
+    look.face = [20, 20, 24];
+    look.hood = [30, 30, 34];
+    look.eye = [255, 196, 60];
+    look.visor = false;
+  }
   lookCache.set(i, look);
   return look;
 }
@@ -428,6 +435,44 @@ export class Character {
     this.headM = new THREE.Mesh(p.head, this.mat);
     this.headM.position.y = legY + 12 * VOX;
     this.group.add(this.headM);
+    if (head.role === 'tailor') this.dressTailor();
+  }
+
+  /** the boss gets his coat: long charcoal trench, red armband, glowing ledger tablet */
+  private dressTailor() {
+    const C: RGB = [34, 34, 38],
+      C2: RGB = [24, 24, 28],
+      R: RGB = [214, 30, 40];
+    const coat = part({
+      w: 12,
+      h: 20,
+      d: 8,
+      pivot: [6, 8, 4],
+      color: (x, y, z) => {
+        if (y < 8 && (x === 5 || x === 6) && z >= 6) return null; // coat split at the front
+        if (y >= 18 && (x <= 1 || x >= 10) && z >= 5) return C2; // lapels
+        if (y === 11 && z >= 6) return [60, 60, 66]; // belt
+        return (x + y + z) % 7 === 0 ? C2 : C;
+      },
+    });
+    this.torso.geometry = coat;
+    const sleeve = (band: boolean) =>
+      part({
+        w: 5,
+        h: 12,
+        d: 5,
+        pivot: [2.5, 11, 2.5],
+        color: (x, y) => (y <= 2 ? [20, 20, 22] : band && y >= 7 && y <= 8 ? R : C),
+      });
+    this.arms[0].geometry = sleeve(true);
+    this.arms[1].geometry = sleeve(false);
+    const tablet = new THREE.Mesh(
+      new THREE.BoxGeometry(VOX * 5, VOX * 7, VOX * 0.6),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(0.55, 1.6, 1.0) }),
+    );
+    tablet.position.set(0, -11 * VOX, 3 * VOX);
+    tablet.rotation.x = -0.5;
+    this.arms[1].add(tablet);
   }
 
   setLight(c: THREE.Color) {
