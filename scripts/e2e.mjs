@@ -150,6 +150,23 @@ try {
   await until((s) => s.talking, 'clerk');
   await talk();
   await until((s) => s.screen === 'send2', 'exchange pay screen');
+  if (process.argv.includes('--trap')) {
+    // the mistake: cash out (almost) everything straight after shielding
+    await hold('[data-hold=send]');
+    for (let i = 0; i < 80 && !(await page.$('.card.red .cta')); i++) {
+      await page.evaluate(() => document.querySelector('.dlg')?.click());
+      await sleep(250);
+    }
+    await page.waitForSelector('.card.red .cta', { timeout: 5000 });
+    log('PASS trap: unshielding everything got matched and caught');
+    await click('.card.red .cta');
+    await until((s) => s.talking || s.screen === 'send2', 'clerk again after rewind', 15000);
+    const w = await state();
+    if (Math.abs(w.w.shielded - 5.4799) > 0.01) throw new Error('rewind did not restore wallet: ' + w.w.shielded);
+    await talk();
+    await until((s) => s.screen === 'send2', 'exchange pay screen after rewind');
+    log('PASS rewind restored wallet and re-opened the clerk');
+  }
   await page.evaluate(() => {
     const sl = document.querySelector('#slider');
     sl.value = '1.2';

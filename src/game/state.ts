@@ -97,7 +97,7 @@ export function tailorMatch(shield: { at: number; amount: number } | null, exitA
   const minutes = exitAt - shield.at;
   // other exits in the window: the busier the pool, the more cover
   const others = Math.max(3, Math.round(minutes / 6));
-  const amountClose = amountRatio > 0.8 && amountRatio <= 1.0;
+  const amountClose = Math.abs(amountRatio - 1) <= 0.15;
   const fast = minutes < 180;
   const score = (amountClose ? 0.6 : amountRatio > 0.5 ? 0.25 : 0.05) + (fast ? 0.3 : 0.05) + (others < 10 ? 0.1 : 0);
   return {
