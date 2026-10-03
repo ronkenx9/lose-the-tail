@@ -1,0 +1,762 @@
+{
+ "cols": 8,
+ "size": 26,
+ "count": 58,
+ "credit": "zkSNARKs \u2014 zksnarks.net / zilkroad.com",
+ "heads": [
+  {
+   "i": 0,
+   "id": 9701,
+   "role": "you_bare",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Brown",
+    "Eyes": "Charcoal",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 1,
+   "id": 8412,
+   "role": "you_hood",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Brown",
+    "Eyes": "Focus",
+    "Head": "Hoodie",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 2,
+   "id": 6220,
+   "role": "you_zk",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Zero-Knowledge",
+    "Skin": "SMPTE",
+    "Eyes": "Shielded",
+    "Head": "Halo",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 3,
+   "id": 3905,
+   "role": "saint_zero",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Ethereal",
+    "Eyes": "Volt",
+    "Head": "Saint Zero",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 4,
+   "id": 3583,
+   "role": "tailor",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Obsidian",
+    "Skin": "Black",
+    "Eyes": "Blackout",
+    "Head": "Recon",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 5,
+   "id": 4562,
+   "role": "courier",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "404",
+    "Head": "Courier",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 6,
+   "id": 6306,
+   "role": "cafe",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Blush",
+    "Eyes": "Jester",
+    "Head": "Node Captain",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 7,
+   "id": 2304,
+   "role": "friend",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Gemini",
+    "Skin": "Ember",
+    "Eyes": "Charcoal Purple",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 8,
+   "id": 5771,
+   "role": "landlord",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Ethereal",
+    "Eyes": "Volt",
+    "Head": "Maxi",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 9,
+   "id": 5703,
+   "role": "miner",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Flare",
+    "Skin": "Blaze",
+    "Eyes": "Vanta Rei",
+    "Head": "Miner",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 10,
+   "id": 320,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Flare",
+    "Skin": "Blaze",
+    "Eyes": "Overlord",
+    "Head": "Recon",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 11,
+   "id": 1200,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Jester",
+    "Head": "Recon",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 12,
+   "id": 8883,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Halogen",
+    "Head": "Recon",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 13,
+   "id": 1470,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Beacon",
+    "Head": "Recon",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 14,
+   "id": 2859,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Ping",
+    "Head": "Recon",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 15,
+   "id": 5715,
+   "role": "lookout",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Dune",
+    "Skin": "Mocha",
+    "Eyes": "Focus",
+    "Head": "Recon",
+    "Accessory": "Diamond Stud"
+   }
+  },
+  {
+   "i": 16,
+   "id": 7548,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Brown",
+    "Eyes": "Halogen",
+    "Head": "Miner Graphite",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 17,
+   "id": 9108,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Obsidian",
+    "Skin": "Black",
+    "Eyes": "Rim Verdigris",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 18,
+   "id": 5533,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Scanline Amber",
+    "Head": "Luma",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 19,
+   "id": 9762,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Rim Cobalt",
+    "Head": "Wrap Blue",
+    "Accessory": "Diamond Stud"
+   }
+  },
+  {
+   "i": 20,
+   "id": 7800,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Infrared",
+    "Eyes": "Blackout",
+    "Head": "Miner",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 21,
+   "id": 3337,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Vibrant",
+    "Skin": "Cyan",
+    "Eyes": "Rim Cobalt",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 22,
+   "id": 9121,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noir",
+    "Skin": "Dusty Rose",
+    "Eyes": "Cobalt Gaze",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 23,
+   "id": 6582,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Violet",
+    "Eyes": "Blackout",
+    "Head": "Maxi",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 24,
+   "id": 172,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Moss",
+    "Eyes": "404",
+    "Head": "Node Bone",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 25,
+   "id": 7350,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Vibrant",
+    "Skin": "Magenta",
+    "Eyes": "Jester",
+    "Head": "Maxi Charcoal",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 26,
+   "id": 7499,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Infrared",
+    "Eyes": "404",
+    "Head": "Courier Red",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 27,
+   "id": 5357,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Rim Ruby",
+    "Head": "Wrap Blue",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 28,
+   "id": 2108,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Jester",
+    "Head": "Node Bone",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 29,
+   "id": 7696,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Skele",
+    "Skin": "Violet",
+    "Eyes": "Z-frame",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 30,
+   "id": 2666,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Zero-Knowledge",
+    "Skin": "SMPTE",
+    "Eyes": "Gilt",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 31,
+   "id": 1850,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Infrared",
+    "Eyes": "Phosphor",
+    "Head": "Courier",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 32,
+   "id": 444,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "404",
+    "Head": "Nyx",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 33,
+   "id": 8004,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Moss",
+    "Eyes": "Focus",
+    "Head": "Maxi Charcoal",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 34,
+   "id": 4098,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Pulse",
+    "Head": "Drift",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 35,
+   "id": 6263,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Infrared",
+    "Eyes": "Beacon",
+    "Head": "Hoodie",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 36,
+   "id": 6394,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Gemini",
+    "Skin": "Acid",
+    "Eyes": "Z-frame",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 37,
+   "id": 6083,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Gemini",
+    "Skin": "Mocha",
+    "Eyes": "Focus",
+    "Head": "Nyx",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 38,
+   "id": 8867,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Dune",
+    "Skin": "Mocha",
+    "Eyes": "Ping",
+    "Head": "Node White",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 39,
+   "id": 9505,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Gemini",
+    "Skin": "Acid",
+    "Eyes": "Ruby",
+    "Head": "Nyx",
+    "Accessory": "Diamond Stud"
+   }
+  },
+  {
+   "i": 40,
+   "id": 5250,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Thermal",
+    "Skin": "Molten",
+    "Eyes": "Frieza",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 41,
+   "id": 1462,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Infrared",
+    "Eyes": "Halogen",
+    "Head": "Hoodie",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 42,
+   "id": 4131,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Rim Bone",
+    "Head": "Drift",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 43,
+   "id": 186,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Corrosive",
+    "Skin": "Corrosive",
+    "Eyes": "Signal Error",
+    "Head": "Ascension",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 44,
+   "id": 6105,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Redacted",
+    "Eyes": "Ping",
+    "Head": "Maxi",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 45,
+   "id": 9842,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Earthtone",
+    "Eyes": "Charcoal Red",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 46,
+   "id": 4320,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Violet",
+    "Eyes": "Vanta Rei",
+    "Head": "Node Captain",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 47,
+   "id": 3003,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "Cobalt Gaze",
+    "Head": "Wrap Blue",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 48,
+   "id": 906,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Moss",
+    "Eyes": "Mono RGB",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 49,
+   "id": 9924,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Ethereal",
+    "Eyes": "Nouns",
+    "Head": "Zhalo",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 50,
+   "id": 5699,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Infrared",
+    "Eyes": "Halogen",
+    "Head": "Node White",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 51,
+   "id": 4581,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "0dB",
+    "Skin": "Infrared",
+    "Eyes": "Halogen",
+    "Head": "Wrap Blue",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 52,
+   "id": 3593,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Vibrant",
+    "Skin": "Cobalt",
+    "Eyes": "Scanline Green",
+    "Head": "Nyx",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 53,
+   "id": 9403,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Vibrant",
+    "Skin": "Cobalt",
+    "Eyes": "Rim Cobalt",
+    "Head": "Luma",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 54,
+   "id": 1883,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Gemini",
+    "Skin": "Mocha",
+    "Eyes": "Focus",
+    "Head": "Courier Red",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 55,
+   "id": 3653,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Moss",
+    "Eyes": "404",
+    "Head": "Maxi",
+    "Accessory": "None"
+   }
+  },
+  {
+   "i": 56,
+   "id": 3309,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Bare",
+    "Skin": "Grey",
+    "Eyes": "404",
+    "Head": "Courier Red",
+    "Accessory": "Stud"
+   }
+  },
+  {
+   "i": 57,
+   "id": 7236,
+   "role": "crowd",
+   "traits": {
+    "Background": "Black",
+    "Lineage": "Noise",
+    "Skin": "Rose",
+    "Eyes": "Crimson",
+    "Head": "None",
+    "Accessory": "None"
+   }
+  }
+ ]
+}
