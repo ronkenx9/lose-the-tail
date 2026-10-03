@@ -27,6 +27,7 @@ export interface Stage {
   screens: Record<ScreenSpec['id'], { canvas: HTMLCanvasElement; tex: THREE.CanvasTexture; spec: ScreenSpec }>;
   flickers: { mat: THREE.MeshBasicMaterial; base: number; seed: number }[];
   rain: THREE.LineSegments;
+  wet: { mesh: THREE.Object3D };
   resize(): void;
   render(dt: number): void;
 }
@@ -168,7 +169,7 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
     composer.render(dt);
   };
 
-  return { renderer, scene, camera, composer, renderPass, chroma, bloom, screens, flickers, rain, resize, render };
+  return { renderer, scene, camera, composer, renderPass, chroma, bloom, screens, flickers, rain, wet, resize, render };
 }
 
 function signMesh(s: SignSpec) {

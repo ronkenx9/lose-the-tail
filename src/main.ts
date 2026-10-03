@@ -326,6 +326,7 @@ async function boot() {
   const v3 = new THREE.Vector3();
   let last = performance.now();
   let pingT = 0;
+  const perf = { acc: 0, n: 0, level: 0 };
   let titleT = 0;
   const loop = (now: number) => {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -395,6 +396,24 @@ async function boot() {
     const ca = 0.0006 + glitchK * 0.012 + danger * 0.004 * (0.5 + Math.random() * 0.5);
     stage.chroma.offset.set(ca, ca * 0.6);
     stage.render(dt);
+    // quality governor: step down resolution, then reflections, if frames are slow
+    if (started && !inVoid) {
+      perf.acc += dt;
+      perf.n++;
+      if (perf.acc > 3) {
+        const avg = perf.acc / perf.n;
+        perf.acc = 0;
+        perf.n = 0;
+        if (avg > 0.024 && perf.level < 2) {
+          perf.level++;
+          if (perf.level === 1) {
+            stage.renderer.setPixelRatio(1);
+            stage.resize();
+          } else stage.wet.mesh.visible = false;
+          console.info('[quality] lowered to level', perf.level, (avg * 1000).toFixed(1) + 'ms');
+        }
+      }
+    }
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
