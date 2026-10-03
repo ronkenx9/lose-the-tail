@@ -13,7 +13,7 @@ export type PhoneAction =
   | { type: 'lowered' };
 
 export interface Contact {
-  id: 'cafe' | 'friend' | 'exchange';
+  id: 'cafe' | 'friend' | 'exchange' | 'kiosk';
   name: string;
   addr: string;
   pocket: 'shielded' | 'transparent';
@@ -274,6 +274,12 @@ export class Phone {
   }
 
   private s_home(s: GameState) {
+    if (s.naive)
+      return `<div class="top"><h3>Wallet</h3></div>
+        <div class="bal"><span class="muted tiny">balance</span><div class="big">${fmtZec(s.wallet.transparent)} <small>ZEC</small></div></div>
+        <div class="actions two"><button data-go="send"><i>↑</i>Pay</button><button data-go="receive" class="off"><i>↓</i>Receive</button></div>
+        <h4>Activity</h4>
+        <div class="acts">${s.txs.map((x) => `<div class="act"><b>${actLabel(x.kind)}</b><span>${x.kind === 'send' ? '−' : '+'}${fmtZec(x.amount)}</span><em>${fmtClock(x.at)} · ${x.who ?? ''}</em></div>`).join('')}</div>`;
     const total = s.wallet.shielded + s.wallet.transparent;
     const t = s.wallet.transparent > 0.0001;
     return `<div class="top"><button data-go="threads" class="back ic">✉${this.threads.some((x) => x.unread) ? '<i class="pip"></i>' : ''}</button><h3>Wallet</h3><span class="pill">practice</span></div>
@@ -332,6 +338,11 @@ export class Phone {
   private s_send2(s: GameState) {
     const c = this.contacts.find((x) => x.id === this.params.id);
     if (!c) return this.s_send(s);
+    if (s.naive)
+      return `<div class="top"><button data-go="send" class="back">‹</button><h3>${c.name}</h3></div>
+        <code class="addr sm">${c.addr}</code>
+        <div class="amt"><b id="amt">${fmtZec(c.presetAmount ?? 0.3)}</b> ZEC</div>
+        <button class="hold" data-hold="send" data-id="${c.id}"><span class="fill"></span><span class="lbl">Hold to pay</span></button>`;
     const pub = c.pocket === 'transparent';
     const amount = this.params.amount ?? c.presetAmount ?? c.slider?.def ?? 0.1;
     const max = s.wallet.shielded;

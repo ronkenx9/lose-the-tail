@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { buildCity } from './engine/city';
 import { createStage } from './engine/scene';
 import { Player } from './engine/player';
-import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
+import { Character, HEADS, Trails, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
 import { Drones } from './engine/drones';
@@ -65,6 +65,31 @@ async function boot() {
   const dawnCol = new THREE.Color(0x6a4a6e);
   let glitchK = 0;
   let cut: { t: number } | null = null;
+  let thugs: ReturnType<typeof npcs.spawn>[] = [];
+  let inVoid = false;
+  // the void between loops: Zero, alone in the dark
+  const voidScene = new THREE.Scene();
+  voidScene.background = new THREE.Color(0x000000);
+  const voidCam = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.05, 100);
+  voidCam.position.set(0.2, 1.6, 4.6);
+  voidCam.lookAt(0, 1.35, 0);
+  addEventListener('resize', () => {
+    voidCam.aspect = innerWidth / innerHeight;
+    voidCam.updateProjectionMatrix();
+  });
+  const zero = new Character(headByRole('narrator'));
+  zero.minLight = 0.55;
+  zero.setLight(new THREE.Color(0.28, 0.28, 0.3));
+  zero.faceDir(0, 1);
+  voidScene.add(zero.group);
+  const voidTrails = new Trails(voidScene, 400);
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(1.6, 48), new THREE.MeshBasicMaterial({ color: 0x0c0f0d }));
+  floor.rotation.x = -Math.PI / 2;
+  voidScene.add(floor);
+  const blackEl = document.createElement('div');
+  blackEl.className = 'blackout';
+  document.body.appendChild(blackEl);
+  const blackout = (on: boolean) => blackEl.classList.toggle('on', on);
   story = new Story({
     city,
     phone,
@@ -143,6 +168,68 @@ async function boot() {
       player.frozen = false;
       phone.el.style.opacity = '';
     },
+    ambush: async () => {
+      player.frozen = true;
+      player.stop();
+      phone.lower();
+      const looks = HEADS.filter((h) => h.role === 'lookout');
+      const spots: [number, number][] = [];
+      for (let k = 0; k < 40 && spots.length < 3; k++) {
+        const a = (k / 40) * Math.PI * 2 + Math.random() * 0.3;
+        const x = player.x + Math.cos(a) * 9,
+          z = player.z + Math.sin(a) * 9;
+        if (player.walkable(Math.floor(x), Math.floor(z)) && !spots.some(([sx, sz]) => Math.hypot(sx - x, sz - z) < 5)) spots.push([x, z]);
+      }
+      thugs = spots.map(([x, z], k) => {
+        const n = npcs.spawn(looks[k % looks.length], x, z, { speedMul: 2.4, name: 'Tailor crew' });
+        const a = (k / spots.length) * Math.PI * 2;
+        npcs.send(n, player.x + Math.cos(a) * 1.1, player.z + Math.sin(a) * 1.1);
+        n.ch.lookAt = new THREE.Vector3(player.x, 2, player.z);
+        return n;
+      });
+      sfx.alarm();
+      // look at the first one coming
+      if (thugs[0]) {
+        const t = thugs[0];
+        const want = Math.atan2(-(t.x - player.x), -(t.z - player.z));
+        const from = player.yaw;
+        let d = Math.atan2(Math.sin(want - from), Math.cos(want - from));
+        for (let i = 1; i <= 20; i++) {
+          player.yaw = from + d * (i / 20);
+          await new Promise((r) => setTimeout(r, 25));
+        }
+      }
+      const t0 = performance.now();
+      while (performance.now() - t0 < 4500 && thugs.some((n) => Math.hypot(n.x - player.x, n.z - player.z) > 1.8))
+        await new Promise((r) => setTimeout(r, 100));
+      // the hit
+      hud.flashRed();
+      sfx.caught();
+      glitchK = 2.5;
+      for (let i = 0; i < 14; i++) {
+        player.pitch = -0.04 - i * 0.05;
+        player.yaw += (Math.random() - 0.5) * 0.12;
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      blackout(true);
+      await new Promise((r) => setTimeout(r, 1300));
+    },
+    setVoid: (on) => {
+      inVoid = on;
+      stage.renderPass.mainScene = on ? voidScene : stage.scene;
+      stage.renderPass.mainCamera = on ? voidCam : stage.camera;
+      blackout(false);
+      hand.group.visible = !on;
+      phone.el.style.display = on ? 'none' : '';
+      ui.classList.toggle('void', on);
+    },
+    resetWorld: () => {
+      for (const n of thugs) npcs.remove(n);
+      thugs = [];
+      drones.patrol();
+      boards.face = null;
+      hud.setMarker(null);
+    },
     burst: () => {
       const L = lookOf(headByRole('you_bare'));
       const at = new THREE.Vector3(player.x, 2.2, player.z);
@@ -164,13 +251,14 @@ async function boot() {
   });
 
   // ---------- title ----------
-  const cast = ['you_zk', 'saint_zero', 'tailor', 'friend', 'courier', 'cafe', 'landlord', 'you_hood'];
+  const cast = ['narrator', 'you_zk', 'tailor', 'friend', 'courier', 'cafe', 'landlord', 'you_hood'];
   hud.show(
     `<div class="title">
        <div class="title-cast">${cast.map((r) => portrait(r, 54)).join('')}</div>
        <h1>LOSE THE<br/>TAIL</h1>
-       <p class="title-sub">You just got paid. A crew that watches the public ledger saw it.<br/>Survive one night in Ledger City. Learn to go private with <b>Zcash</b>.</p>
+       <p class="title-sub"><b class="hook">You got paid publicly. Now everyone can see you.</b><br/>Survive one night in Ledger City and learn to go private with <b>Zcash</b>.</p>
        <button class="cta big" id="start">▶ Start the night</button>
+       <button class="link-btn" id="skip">already played? skip to the second night ▸</button>
        <div class="title-meta">5–8 minutes · no wallet, no money, no sign-up · sound on</div>
        <div class="title-help"><span>drag</span> look <span>tap</span> walk / talk <span>E</span> phone <span>WASD</span> move</div>
        <div class="credit">characters: <a href="https://zilkroad.com" target="_blank" rel="noopener">zkSNARKs</a> · a ZECATHON wildcard entry</div>
@@ -178,20 +266,24 @@ async function boot() {
     'title-ov',
   );
   let started = false;
-  document.getElementById('start')!.addEventListener('click', async () => {
+  const go = async (skip: boolean) => {
     sfx.start();
     started = true;
     ui.classList.remove('pre');
     hud.hide();
-    await hud.card({
-      kicker: 'LEDGER CITY · 18:00',
-      title: 'Every payment here is public.',
-      body: `<p>Most people don't know that. Some people make a living from it.</p><p>Tonight, one of them is going to notice <b>you</b>.</p>`,
-      button: 'Go outside',
-    });
+    if (!skip)
+      await hud.card({
+        kicker: 'LEDGER CITY · 18:00',
+        title: 'Payday.',
+        body: `<img class="card-art" src="/art/intro_phone.jpg" alt=""><p>You finished a freelance job today. Your client is paying you tonight.</p>`,
+        button: 'Go outside',
+      });
     phone.el.style.display = '';
-    story.begin();
-  });
+    skip ? story.skipToPayday() : story.beginLoop1();
+  };
+  document.getElementById('skip')!.addEventListener('click', () => go(true));
+  if (new URLSearchParams(location.search).get('start') === 'payday') setTimeout(() => go(true), 400);
+  document.getElementById('start')!.addEventListener('click', () => go(false));
 
   const dbg = new URLSearchParams(location.search).get('debug');
   if (dbg) {
@@ -242,6 +334,11 @@ async function boot() {
       titleT += dt;
       player.yaw = city.spawn.yaw + Math.sin(titleT * 0.15) * 0.6 - 0.4;
       player.pitch = 0.08;
+    }
+    if (inVoid) {
+      zero.update(dt);
+      zero.group.rotation.y = Math.sin(performance.now() / 2600) * 0.25;
+      voidTrails.update(dt, [zero], voidCam.position);
     }
     player.update(dt);
     if (!cut) player.applyCamera(stage.camera);

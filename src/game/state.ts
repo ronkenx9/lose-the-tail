@@ -34,6 +34,9 @@ export interface GameState {
   caughtCount: number;
   /** the shield event the Tailor will try to match an exit against */
   lastShield: { at: number; amount: number } | null;
+  /** loop 1: the naive night, plain public wallet */
+  naive: boolean;
+  loop: number;
 }
 
 export const ADDR = {
@@ -57,6 +60,8 @@ export function fresh(): GameState {
     tags: [],
     caughtCount: 0,
     lastShield: null,
+    naive: false,
+    loop: 1,
   };
 }
 

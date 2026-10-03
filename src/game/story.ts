@@ -10,7 +10,7 @@ import type { City, Station } from '../engine/city';
 import { headByRole, headsByRole } from '../engine/characters';
 import type { Sfx } from './sfx';
 
-const SAINT = { id: 'saint', name: 'Saint Zero', role: 'saint_zero' };
+const SAINT = { id: 'zero', name: 'Zero', role: 'narrator' };
 const CLIENT = { id: 'client', name: 'Rook (client)', role: 'miner' };
 const MIKA = { id: 'mika', name: 'Mika', role: 'friend' };
 
@@ -28,6 +28,11 @@ export interface Ctx {
   setDawn(k: number): void;
   glitch(k: number): void;
   burst(): void;
+  /** thugs close in; resolves once the screen is black */
+  ambush(): Promise<void>;
+  /** the black void where Zero talks to you between loops */
+  setVoid(on: boolean): void;
+  resetWorld(): void;
   shieldCut(): Promise<void>;
 }
 
@@ -59,7 +64,107 @@ export class Story {
     return this.markerTarget;
   }
   get exposed() {
-    return this.s.wallet.transparent > 0.0001 && this.s.beat !== 'setup';
+    return this.s.wallet.transparent > 0.0001 && this.s.beat !== 'setup' && !this.s.naive;
+  }
+
+  // -------------------------------------------------------------- loop 1: the naive night
+  private loop1Left = 0;
+  private loop1Done = false;
+  async beginLoop1() {
+    const { phone, hud } = this.c;
+    this.s = fresh();
+    this.s.beat = 'loop1';
+    this.s.naive = true;
+    this.s.loop = 1;
+    this.s.wallet.created = true;
+    this.loop1Done = false;
+    phone.allow = { shield: false, send: true, swap: false, receive: false };
+    hud.objective('Check your phone', 'Tap the phone, or press E');
+    await sleep(1400);
+    this.s.wallet.transparent = 5;
+    addTx(this.s, { kind: 'receive', amount: 5, pocket: 'transparent', who: 'Rook', publicView: 'visible' });
+    phone.message(CLIENT.id, CLIENT.name, CLIENT.role, 'Paid! 5 ZEC sent to your wallet. Great work. Go treat yourself tonight 🎉');
+    this.c.sfx.coin();
+    phone.el.classList.add('nudge');
+    this.c.boards.push({ time: fmtClock(this.s.clock), from: 't1Rook…9x', to: 't1YouR…Zf3', amount: '5.000', place: 'Ave & 4th' });
+    this.setContacts([{ id: 'kiosk', name: 'Noodle stand', addr: 't1Noodle5tandPlaza', pocket: 'transparent', role: 'courier', hint: 'noodles 0.3', presetAmount: 0.3 }]);
+    await sleep(1500);
+    this.markerTarget = { x: this.c.city.stations.kiosk.x, z: this.c.city.stations.kiosk.z, label: 'Noodle stand' };
+    hud.objective('Treat yourself', 'You just got paid. Grab noodles at the plaza stand.');
+    this.loop1Left = 70;
+  }
+
+  private async loop1Paid(amount: number) {
+    const { phone, hud, boards } = this.c;
+    if (this.loop1Done) return;
+    this.loop1Done = true;
+    this.s.wallet.transparent -= amount;
+    addTx(this.s, { kind: 'send', amount, pocket: 'transparent', who: 'Noodle stand', publicView: 'visible' });
+    phone.show('done', { title: 'Paid', body: `${fmtZec(amount)} ZEC to Noodle stand. Enjoy!`, icon: '🍜' });
+    this.c.sfx.coin();
+    await sleep(1100);
+    phone.lower();
+    boards.push({ time: fmtClock(this.s.clock), from: 't1YouR…Zf3', to: 't1Noodle…', amount: fmtZec(amount), place: 'Plaza kiosk', you: true });
+    boards.face = { role: 'you_bare', mode: 'exposed' };
+    await this.loop1Ambush('paid');
+  }
+
+  private async loop1Ambush(why: 'paid' | 'waited') {
+    const { hud } = this.c;
+    this.loop1Done = true;
+    this.markerTarget = null;
+    hud.objective(null);
+    addClue(this.s, { key: 'address', text: 't1YouR…Zf3' });
+    addClue(this.s, { key: 'amount', text: '5.000 ZEC, just landed' });
+    if (why === 'paid') addClue(this.s, { key: 'face', text: 'Plaza kiosk camera, ' + fmtClock(this.s.clock) });
+    addClue(this.s, { key: 'link', text: why === 'paid' ? 'same address paid the noodle stand' : 'still sitting on Ave & 4th' });
+    hud.setFile(this.s.clues, true);
+    this.c.sfx.alarm();
+    this.c.drones.hunt();
+    await hud.say([
+      why === 'paid'
+        ? T('The Tailor', 'tailor', 'The five-ZEC wallet just bought noodles. Plaza kiosk, right now. Same address, same person.', true)
+        : T('The Tailor', 'tailor', 'Five ZEC sitting on a public address near Ave & 4th, and nobody moved it. Go collect.', true),
+      T('The Tailor', 'tailor', 'Take them.', true),
+    ]);
+    await this.c.ambush();
+    await this.voidTalk();
+  }
+
+  private async voidTalk() {
+    const { hud, player } = this.c;
+    this.c.setVoid(true);
+    await sleep(900);
+    await hud.say([
+      T('Zero', 'narrator', '...'),
+      T('Zero', 'narrator', "Well. That wasn't fun to watch."),
+      T('Zero', 'narrator', 'You got paid to a *public* address. Then you spent from it, in public. Every step left a trail, and they followed it straight to you.'),
+      T('Zero', 'narrator', "In Ledger City that happens to people every night. It doesn't have to happen to you."),
+      T('Zero', 'narrator', "I'm Zero. Let me help. We're going back to the start of the night."),
+    ]);
+    this.c.sfx.rewind();
+    this.c.glitch(2);
+    this.c.resetWorld();
+    player.x = this.c.city.spawn.x;
+    player.z = this.c.city.spawn.z;
+    player.yaw = this.c.city.spawn.yaw;
+    player.pitch = -0.04;
+    this.visited.clear();
+    this.c.setVoid(false);
+    hud.setFile([], false);
+    hud.toast('<b>18:00</b> · second try');
+    this.begin();
+  }
+
+  /** title 'skip setup': instant wallet, straight into the payday crisis */
+  async skipToPayday() {
+    this.s = fresh();
+    this.s.beat = 'setup';
+    this.s.wallet.created = true;
+    this.c.phone.show('home');
+    this.c.hud.lesson('Wallet set up (skipped)', 'In a real wallet you would write down 24 secret words. Never type them into a website.');
+    await sleep(1500);
+    this.payday();
   }
 
   /** dev: jump straight to a beat */
@@ -111,7 +216,7 @@ export class Story {
     if (a.type === 'wallet-created') return this.walletCreated();
     if (a.type === 'shield') return this.shielded();
     if (a.type === 'swap') return this.swapped(a.zec);
-    if (a.type === 'send') return this.sent(a.to, a.amount, a.memo);
+    if (a.type === 'send') return this.s.beat === 'loop1' ? this.loop1Paid(a.amount) : this.sent(a.to, a.amount, a.memo);
     if (a.type === 'receive-shown') return this.receiveShown(a.pocket);
     if (a.type === 'open' && a.screen === 'home' && this.s.beat === 'payday' && this.s.wallet.transparent > 0) phone.el.classList.remove('nudge');
   };
@@ -119,6 +224,7 @@ export class Story {
   // -------------------------------------------------------------- flow
   async begin() {
     this.s = fresh();
+    this.s.loop = 2;
     this.s.beat = 'setup';
     const { hud, phone } = this.c;
     this.c.player.frozen = false;
@@ -129,7 +235,7 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "You're getting paid tonight. Before it lands, set up a wallet. I'll explain the rest. — SZ",
+      "Same night, second try. The payment lands soon. This time, set up a proper wallet first. Open it.",
     );
     this.c.sfx.buzz();
     phone.el.classList.add('nudge');
@@ -141,6 +247,7 @@ export class Story {
     phone.show('done', { title: 'Wallet ready', body: 'Practice wallet created. Two pockets: shielded (private) and transparent (public).', icon: 'Ƶ' });
     phone.el.classList.remove('nudge');
     this.c.sfx.good();
+    hud.lesson('Wallet set up', 'Your 24 words are your wallet. Write them on paper. Anyone who asks for them is trying to rob you.');
     await sleep(900);
     phone.message(
       SAINT.id,
@@ -176,6 +283,7 @@ export class Story {
     addClue(this.s, { key: 'amount', text: '5.000 ZEC @ ' + fmtClock(this.s.clock) });
     hud.setFile(this.s.clues, true);
     this.c.sfx.alarm();
+    hud.lesson('Transparent = public', 'Money sent to a transparent (t1…) address shows its amount, time and address to anyone watching the blockchain.');
     await hud.say([
       T('The Tailor', 'tailor', 'Fresh money on the public ledger. *Five ZEC*, just landed on Ave & 4th.', true),
       T('The Tailor', 'tailor', "Public address, public amount, public time. Somebody's carrying it. Wake the drones.", true),
@@ -190,7 +298,7 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "They saw it. Money in your transparent pocket is public, like a glass wallet, and they're tracing it to you. Open your wallet and hold SHIELD. Now.",
+      "Here they come again. Money in your transparent pocket is public, like a glass wallet. That's how they found you last time. Open your wallet and hold SHIELD. Now.",
     );
     phone.el.classList.add('nudge');
     this.spawnLookouts();
@@ -230,6 +338,7 @@ export class Story {
     phone.lower();
     await this.c.shieldCut();
     hud.toast('<b>You disappeared.</b> Hood up. The drones lost your signal.');
+    hud.lesson('Shielded = private', 'Shielding moves ZEC into the shielded pool. The chain shows money went in, and nothing about where it goes next.');
     await sleep(1600);
     await hud.say([
       T('The Tailor', 'tailor', `...lost it. ${fmtZec(amt)} went into the shielded pool at ${fmtClock(this.s.clock)}. After that: nothing.`, true),
@@ -288,6 +397,17 @@ export class Story {
     if (this.busy) return;
     const { phone, hud } = this.c;
     const e = this.s.errands;
+    if (this.s.beat === 'loop1') {
+      if (id === 'kiosk' && !this.loop1Done) {
+        this.busy = true;
+        this.face('courier');
+        await hud.say([T('Courier', 'courier', 'Noodles? *0.3 ZEC*. Just send it to my address.')]);
+        this.busy = false;
+        phone.raise();
+        phone.show('send2', { id: 'kiosk' });
+      }
+      return;
+    }
     if (this.s.beat !== 'errands' && this.s.beat !== 'dawn') {
       if (id === 'kiosk' && this.s.beat === 'payday') {
         this.busy = true;
@@ -383,7 +503,7 @@ export class Story {
       addTx(this.s, { kind: 'send', amount, pocket: 'shielded', who: to.name, memo, publicView: 'nothing' });
       phone.show('done', { title: 'Sent privately', body: `${fmtZec(amount)} ZEC to ${to.name}. On the public chain this shows up as a transaction with no visible amount, sender or receiver.`, icon: '🛡' });
       this.c.sfx.good();
-      hud.toast('Public ledger: <b>nothing new</b>. Not even the amount.');
+      hud.lesson('Private send', 'A shielded payment hides the sender, the receiver, the amount and the memo. Only the receiver can read the note.');
       if (to.id === 'cafe') {
         this.s.errands.cafe = true;
         await sleep(1300);
@@ -421,6 +541,7 @@ export class Story {
     } else {
       this.s.errands.exchange = true;
       this.c.sfx.good();
+      hud.lesson('Unshield carefully', 'Leaving the pool is public. Take out only what you need, not right after shielding, and not the same amount.');
       await hud.say([
         T('The Tailor', 'tailor', `Pool exit: ${fmtZec(amount)} to Cobalt. ${m.others} exits tonight, none of them look like our five. Could be anyone.`, true),
         T('Cobalt clerk', 'landlord', 'Rent received. Have a good night.'),
@@ -455,6 +576,7 @@ export class Story {
     phone.message(MIKA.id, MIKA.name, MIKA.role, 'sent! check your memo 🍕');
     phone.notify('Received privately', '+0.500 ZEC · “pizza money 🍕 — M”');
     this.c.sfx.coin();
+    hud.lesson('Receive privately', 'To get paid privately, share your shielded address (starts with u1). Your transparent one exposes you.');
     this.s.errands.friend = true;
     await sleep(800);
     await hud.say([T('Mika', 'friend', 'Only you can read the note. To everyone else it\'s just... nothing happened. Love that.')]);
@@ -468,6 +590,7 @@ export class Story {
     addTx(this.s, { kind: 'swap', amount: zec, pocket: 'shielded', who: '20 USDC → ZEC', publicView: 'nothing on Zcash' });
     this.c.phone.show('done', { title: 'Swapped', body: `+${fmtZec(zec)} ZEC, straight into your shielded pocket.`, icon: '⇄' });
     this.c.sfx.coin();
+    this.c.hud.lesson('Swap in', 'You can turn another coin into shielded ZEC directly. In Zodl that is the Swap button.');
     await sleep(1200);
     this.c.phone.lower();
     await this.c.hud.say([T('Courier', 'courier', 'Pleasure. The coins you swapped FROM are still public on their own chain, remember that.')]);
@@ -559,13 +682,14 @@ export class Story {
       title: 'SUBJECT: UNKNOWN',
       body: `<p>You made <b>${this.s.txs.length}</b> transactions tonight. <b>${priv}</b> of them showed nothing on the public chain.</p>
              <p>${this.s.caughtCount ? `You got caught <b>${this.s.caughtCount}</b> time${this.s.caughtCount === 1 ? '' : 's'}. Every catch was a mistake real people make.` : 'You never got caught. Clean night.'}</p>
-             <p>Saint Zero tags found: <b>${this.s.tags.length}/${this.c.city.tags.length}</b></p>`,
+             <p>Zero tags found: <b>${this.s.tags.length}/${this.c.city.tags.length}</b></p>
+             <ul class="learned">${hud.lessons.map((l) => `<li>✓ <b>${l.title}</b></li>`).join('')}</ul>`,
       button: 'Continue',
       role: 'you_hood',
     });
     await hud.say([
-      T('Saint Zero', 'saint_zero', 'You were never hiding. You were just private. Like cash, like a closed door.'),
-      T('Saint Zero', 'saint_zero', 'Everything you did tonight works the same way in a real wallet. Same buttons.'),
+      T('Zero', 'narrator', 'You were never hiding. You were just private. Like cash, like a closed door.'),
+      T('Zero', 'narrator', 'Everything you did tonight works the same way in a real wallet. Same buttons.'),
     ]);
     (window as any).__showReal?.();
   }
@@ -575,6 +699,10 @@ export class Story {
     const s = this.s;
     if (s.beat === 'intro') return;
     if (!this.c.hud.talking && !this.ended) s.clock += dt * this.clockRate;
+    if (s.beat === 'loop1' && !this.loop1Done && this.loop1Left > 0 && !this.c.hud.talking) {
+      this.loop1Left -= dt;
+      if (this.loop1Left <= 0) this.loop1Ambush('waited');
+    }
     if (s.trace && !this.c.hud.talking) {
       s.trace.left -= dt;
       if (s.trace.left <= 0) {
@@ -611,7 +739,7 @@ export class Story {
       if (Math.hypot(t.px + 0.5 - p.x, t.pz - p.z) < 2.2) {
         s.tags.push(String(t.id));
         this.c.sfx.good();
-        this.c.hud.toast(`<b>Saint Zero tag ${s.tags.length}/${this.c.city.tags.length}</b><br>${t.fact.replace(/\*([^*]+)\*/g, '<b>$1</b>')}`, 7500);
+        this.c.hud.toast(`<b>Zero tag ${s.tags.length}/${this.c.city.tags.length}</b><br>${t.fact.replace(/\*([^*]+)\*/g, '<b>$1</b>')}`, 7500);
       }
     }
     const home = this.c.city.stations.home;

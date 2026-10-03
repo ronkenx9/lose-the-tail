@@ -22,7 +22,11 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 .boot-bar i { display: block; height: 100%; width: 40%; background: var(--ink); animation: bootbar 1s ease-in-out infinite alternate; }
 @keyframes bootbar { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
 
-.title-ov { background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.75) 70%); }
+.title-ov { background: #000; overflow: hidden; }
+.title-ov::before { content: ''; position: absolute; inset: -4%; background: url('/art/keyart.jpg') center 30% / cover no-repeat; animation: kenburns 24s ease-in-out infinite alternate; filter: saturate(1.1); }
+.title-ov::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.5), rgba(0,0,0,.25) 60%, rgba(0,0,0,.7) 100%), linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55)); }
+.title-ov > .title { position: relative; z-index: 1; }
+@keyframes kenburns { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.1) translate(-1.5%, 1%); } }
 .title { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; max-width: 640px; animation: fade 1.2s; }
 .title-cast { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .title-cast .pt { border-radius: 4px; box-shadow: 0 0 0 1px var(--line); animation: castin .6s backwards; }
@@ -46,3 +50,13 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 .row-btns .cta { text-decoration: none; }
 
 #ui.pre .hud-top { display: none; }
+
+.link-btn { background: none; border: 0; color: var(--ink-dim); font: 13px var(--mono); text-decoration: underline; cursor: pointer; padding: 4px; }
+.link-btn:hover { color: var(--ink); }
+.learned { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; text-align: left; font-size: 13px; }
+.learned b { color: var(--ink); }
+.title-sub .hook { color: #fff; font-size: 1.12em; }
+
+.blackout { position: fixed; inset: 0; background: #000; z-index: 28; opacity: 0; pointer-events: none; transition: opacity .9s ease; }
+.blackout.on { opacity: 1; }
+#ui.void .hud-top, #ui.void .marker { display: none; }

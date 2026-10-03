@@ -155,14 +155,25 @@ export function lookOf(h: HeadMeta): Look {
   const faceCand = faceCols.filter((c) => lum(c) > 0.12 && sat(c) < 0.95);
   let face = mode(faceCand.length ? faceCand : faceCols, back);
   const eyeCand = faceCols.filter((c) => dist(c, face) > 90 && dist(c, back) > 60);
+  // visor = a long horizontal run of dark pixels across the face; short runs are just dark eyes
+  let longestDark = 0;
+  for (let y = 8; y <= 17; y++) {
+    let run = 0;
+    for (let x = Math.max(0, R[y] - 8); x <= R[y]; x++) {
+      if (R[y] >= 0 && solid(x, y) && comp[x + y * N] === best && lum(col(x, y)) < 0.1) longestDark = Math.max(longestDark, ++run);
+      else run = 0;
+    }
+  }
   const darks = faceCols.filter((c) => lum(c) < 0.1).length;
-  const visor = darks >= 6;
+  const visor = longestDark >= 5;
   let eye: RGB = [255, 240, 120];
   let eb = -1;
   for (const c of eyeCand) {
     const s = sat(c) * 0.6 + lum(c);
     if (lum(c) > 0.18 && s > eb) ((eb = s), (eye = c));
   }
+  // dark eyes on a light face (e.g. the white ghost): black squares, no glow
+  if (!visor && darks >= 2 && (eb < 0 || lum(face) > 0.6)) eye = [10, 10, 12];
   // Hoodie / hooded heads: back of head differs from face
   const hooded = h.traits.Head === 'Hoodie' || dist(back, face) > 70;
   const headTrait = h.traits.Head;
@@ -284,7 +295,7 @@ export function buildParts(h: HeadMeta): CharParts {
   const hit = partCache.get(h.i);
   if (hit) return hit;
   const L = lookOf(h);
-  const isGlow = (c: RGB) => c === L.eye;
+  const isGlow = (c: RGB) => c === L.eye && lum(L.eye) > 0.2;
   const head = part({
     w: 12,
     h: 14,

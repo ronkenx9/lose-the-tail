@@ -26,6 +26,7 @@ roles = {
     "friend":     pick(T("Lineage", "Gemini")),
     "landlord":   pick(lambda tr: tr["Head"] == "Maxi" and tr["Lineage"] in ("Dune", "Bare")),
     "miner":      pick(T("Head", "Miner")),
+    "narrator":   [t for t in tokens if t["id"] == 5838],  # the white ghost: game master / narrator
 }
 lookouts = pick(T("Head", "Recon"), 6)
 used = {t["id"] for v in roles.values() for t in v} | {t["id"] for t in lookouts}
@@ -50,8 +51,20 @@ for i, (role, t) in enumerate(entries):
     for y in range(26):
         for x in range(26):
             r, g, b, a = px[x * 20 + 10, y * 20 + 10]
-            # background is pure black -> transparent
-            sp[x, y] = (r, g, b, 0) if (r, g, b) == (0, 0, 0) else (r, g, b, 255)
+            sp[x, y] = (r, g, b, 255)
+    # background = pure black connected to the border; black inside the figure (eyes) stays
+    stack = [(x, y) for x in range(26) for y in (0, 25)] + [(x, y) for y in range(26) for x in (0, 25)]
+    seen = set()
+    while stack:
+        x, y = stack.pop()
+        if (x, y) in seen or not (0 <= x < 26 and 0 <= y < 26):
+            continue
+        seen.add((x, y))
+        r, g, b, a = sp[x, y]
+        if (r, g, b) != (0, 0, 0):
+            continue
+        sp[x, y] = (0, 0, 0, 0)
+        stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
     atlas.paste(small, ((i % COLS) * 26, (i // COLS) * 26))
     meta.append({"i": i, "id": t["id"], "role": role, "traits": t["traits"]})
     time.sleep(0.15)

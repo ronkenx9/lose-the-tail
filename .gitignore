@@ -2,3 +2,8 @@ node_modules
 dist
 .DS_Store
 .vercel
+
+# internal planning
+PLAN*.md
+GATES.md
+.claude/

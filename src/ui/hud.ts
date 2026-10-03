@@ -37,6 +37,7 @@ export class Hud {
        <div class="marker hidden"><i></i><span></span></div>
        <div class="dlg hidden"><div class="dlg-pt"></div><div class="dlg-tx"><b></b><p></p><span class="dlg-next">tap ▸</span></div></div>
        <div class="toast"></div>
+       <div class="lesson hidden"><i>✓</i><div><b></b><span></span></div></div>
        <div class="overlay hidden"></div>
        <div class="vignette-red"></div>`,
     );
@@ -163,6 +164,20 @@ export class Hud {
     this.file.classList.remove('flash');
     void this.file.offsetWidth;
     this.file.classList.add('flash');
+  }
+
+  /** big plain-language takeaway after each action */
+  lessons: { title: string; body: string }[] = [];
+  lesson(title: string, body: string) {
+    if (!this.lessons.find((l) => l.title === title)) this.lessons.push({ title, body });
+    const el = this.root.querySelector('.lesson') as HTMLElement;
+    el.querySelector('b')!.textContent = title;
+    el.querySelector('span')!.textContent = body;
+    el.classList.remove('hidden', 'show');
+    void el.offsetWidth;
+    el.classList.add('show');
+    clearTimeout((this as any)._lt);
+    (this as any)._lt = setTimeout(() => el.classList.add('hidden'), 6500);
   }
 
   toast(html: string, ms = 3200) {

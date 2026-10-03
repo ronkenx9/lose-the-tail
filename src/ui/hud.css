@@ -81,3 +81,12 @@
   .obj em { display: none; }
   .dlg { bottom: 24vh; }
 }
+
+.lesson { position: fixed; left: 50%; top: 22%; z-index: 21; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; width: min(560px, calc(100vw - 32px)); padding: 16px 20px; background: rgba(3, 10, 6, 0.94); border: 1px solid var(--ink); border-radius: 6px; box-shadow: 0 0 40px rgba(200,255,220,.18); pointer-events: none; }
+.lesson.show { animation: lessonin 6.5s forwards; }
+@keyframes lessonin { 0% { opacity: 0; transform: translate(-50%, -12px) scale(.96); } 6%, 88% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; } }
+.lesson i { font-style: normal; flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: #031; font-weight: 800; font-size: 20px; }
+.lesson b { display: block; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+.lesson span { display: block; margin-top: 4px; font-size: 14px; line-height: 1.45; color: #cfe9da; }
+@media (max-width: 760px) { .lesson { top: 16%; } .lesson b { font-size: 13px; } .lesson span { font-size: 13px; } }
+.card-art { width: calc(100% + 52px); margin: 6px -26px 8px; max-width: none; display: block; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }

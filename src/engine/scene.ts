@@ -12,6 +12,7 @@ import {
 } from 'postprocessing';
 import type { City, Facing, ScreenSpec, SignSpec } from './city';
 import { buildMeshes } from './voxels';
+import { createWetStreet } from './wet';
 
 export const FACING_ROT: Record<Facing, number> = { S: 0, N: Math.PI, E: Math.PI / 2, W: -Math.PI / 2 };
 
@@ -20,6 +21,7 @@ export interface Stage {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   composer: EffectComposer;
+  renderPass: RenderPass;
   chroma: ChromaticAberrationEffect;
   bloom: BloomEffect;
   screens: Record<ScreenSpec['id'], { canvas: HTMLCanvasElement; tex: THREE.CanvasTexture; spec: ScreenSpec }>;
@@ -43,6 +45,9 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
 
   // world
   scene.add(buildMeshes(city.world));
+  const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+  const wet = createWetStreet(city.world, mobile ? 0.3 : 0.5);
+  scene.add(wet.mesh);
   scene.add(skyline());
   scene.add(moon());
 
@@ -89,7 +94,8 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
 
   // post
   const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
-  composer.addPass(new RenderPass(scene, camera));
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
   const bloom = new BloomEffect({ intensity: 1.6, luminanceThreshold: 0.62, luminanceSmoothing: 0.2, mipmapBlur: true, radius: 0.72 });
   const chroma = new ChromaticAberrationEffect({ offset: new THREE.Vector2(0.0006, 0.0006), radialModulation: true, modulationOffset: 0.3 });
   const scan = new ScanlineEffect({ blendFunction: BlendFunction.OVERLAY, density: 1.3 });
@@ -108,6 +114,7 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
     camera.aspect = w / h;
     camera.fov = w < h ? 84 : 72;
     camera.updateProjectionMatrix();
+    wet.resize();
   };
   resize();
   window.addEventListener('resize', resize);
@@ -120,10 +127,11 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
       f.mat.opacity = on ? 1 : 0.25;
     }
     updateRain(rain, camera, dt);
+    wet.update(t);
     composer.render(dt);
   };
 
-  return { renderer, scene, camera, composer, chroma, bloom, screens, flickers, rain, resize, render };
+  return { renderer, scene, camera, composer, renderPass, chroma, bloom, screens, flickers, rain, resize, render };
 }
 
 function signMesh(s: SignSpec) {

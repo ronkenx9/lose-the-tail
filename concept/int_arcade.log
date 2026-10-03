@@ -1,0 +1,490 @@
+Reading additional input from stdin...
+2026-10-03T19:23:37.550140Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 140 column 5
+2026-10-03T19:23:42.372616Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when Client(HttpRequest(HttpRequest("http/request failed: error sending request for url (http://127.0.0.1:17485/mcp)")))
+OpenAI Codex v0.144.1
+--------
+workdir: /Users/gadgetplug/Documents/vibecoding/lose-the-tail
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: low
+reasoning summaries: none
+session id: 01a10338-d6f5-7c83-8f33-cf7c7fd20971
+--------
+user
+Use your image generation tool to create ONE image, then copy the generated file to concept/int_arcade.png. Do not create or edit any other files.
+
+Straight-on orthographic front view (no perspective, flat facing the viewer) of a voxel arcade interior at night seen through a shop window: rows of glowing arcade cabinets with pink, violet and cyan screens, a couple of blocky voxel players, neon tubes on the ceiling, dark floor with colorful reflections. Fill the whole frame, no window frame, no readable text. Wide 3:1 panoramic aspect.
+
+Style: Minecraft-style voxel art, cyberpunk night, rain, neon. Palette: black, mint green #c8ffdc, Zcash gold #F4B728, warning red #ff2b3b. No watermark, no logos of real companies.
+2026-10-03T19:23:42.624703Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when Client(HttpRequest(HttpRequest("http/request failed: error sending request for url (http://127.0.0.1:17485/mcp)")))
+2026-10-03T19:23:43.628067Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when Client(HttpRequest(HttpRequest("http/request failed: error sending request for url (http://127.0.0.1:17485/mcp)")))
+warning: Skill descriptions were shortened to fit the 2% skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.
+codex
+I’ll generate exactly one image, then place that generated file at `concept/int_arcade.png` and keep my hands off everything else.
+exec
+/bin/zsh -lc "sed -n '1,220p' ~/brain/index.md" in /Users/gadgetplug/Documents/vibecoding/lose-the-tail
+ succeeded in 0ms:
+# Brain — Index
+
+> LLM-maintained. Do not edit manually.
+> Last updated: 2026-10-03 (LOSE THE TAIL built + deployed)
+
+## Goals
+See [goals/current.md](goals/current.md) for active priorities.
+
+## Decisions & Mistakes
+Retrievable "why we chose X / what went wrong" layers — read these before
+re-deciding something or repeating a known failure.
+- [decisions/log.md](decisions/log.md) — choices made + tradeoff accepted + when to revisit
+- [mistakes/log.md](mistakes/log.md) — failures + root cause + how to avoid next time
+
+## Active Projects
+| Project | File | Status |
+|---------|------|--------|
+| LOSE-THE-TAIL | [projects/LOSE-THE-TAIL.md](projects/LOSE-THE-TAIL.md) | ZECATHON Wildcard onboarding (due 2026-10-04) — voxel first-person Zcash onboarding game with zkSNARK characters; full loop live at lose-the-tail.vercel.app; trailer video + owner tweet pending |
+| EXHIBIT-A | [projects/EXHIBIT-A.md](projects/EXHIBIT-A.md) | SERV Hackathon Ed.01 Open Track (due 2026-09-28 00:00 UTC) — built, deployed (exhibit-a-pi.vercel.app), public repo, 2:26 demo video done; owner posts on X + fills form |
+| HANDS FULL | [projects/HANDS-FULL.md](projects/HANDS-FULL.md) | Lovable small-business challenge (due 2026-10-01 PDT). Runnable local app at3016: persistent booking→simulated deposit→owner diary and request decisions verified. ElevenLabs TTS/STT verified; hands-free UI built, live conversational agent awaits convai_write permission. Hosted Lovable unchanged. Conversation-led and Photon iMessage companion PRDs packaged; channel remains planned. See LOCAL-APP.md. |
+| STIPEND | [projects/STIPEND.md](projects/STIPEND.md) | Colosseum World's Fair Tempo track (due 2026-10-12) — P0 + P1 chain-enforced spend firewall PROVEN LIVE on Moderato; MPP service/channel session + dashboard/demo pending. |
+| AFTERIMAGE | [projects/AFTERIMAGE.md](projects/AFTERIMAGE.md) | Local verified P0 — reconstruction, evidence UI, Then/Now, paper approval, tests/docs built; authenticated Agent OS, real Solana ingestion, deployment and submission pending. |
+| KEEP-DIGGING | [projects/KEEP-DIGGING.md](projects/KEEP-DIGGING.md) | open world rebuilt (shaders, grass, 5 company mountains) + agent-controllable (MCP); undeployed |
+| DAYWORLD / Daybreak | [projects/DAYWORLD.md](projects/DAYWORLD.md) | Company-centered product with sourced news, public theses, stock Circles, Flash, public Paper markets, economics and OKX tools; Photon Spectrum iMessage worker is built; the public beta waitlist is live with its production table, while Render worker activation remains pending; no real funds moved. |
+| CORPUS | [projects/CORPUS.md](projects/CORPUS.md) | shipped |
+| PING | [projects/PING.md](projects/PING.md) | paused — last commit 2026-05-19; FLOAT integration never landed |
+| FLOAT | [projects/FLOAT.md](projects/FLOAT.md) | retail LP-agent pivot planned; marketing copy locally verified 2026-09-15; no new agent implementation or deployment |
+| DUNNER | [projects/DUNNER.md](projects/DUNNER.md) | shipped — post-ship cleanup open |
+| SECOND-BRAIN | [projects/SECOND-BRAIN.md](projects/SECOND-BRAIN.md) | Phase 2 shipped — Grok first-class + lint/recent CLI |
+| AGENTFLOAT | [projects/AGENTFLOAT.md](projects/AGENTFLOAT.md) | shipped (MVP verification complete) |
+| PORTFOLIO | [projects/PORTFOLIO.md](projects/PORTFOLIO.md) | rebuild active — Next 16 + Viscose in `kenn-ronin/`; hero sheet + ring |
+| INDRIVE | [projects/INDRIVE.md](projects/INDRIVE.md) | active bug bounty double-payout campaign |
+| WARDEN | [projects/WARDEN.md](projects/WARDEN.md) | submitted/idle — Arbitrum Open House London; no commits since 2026-06-15 |
+| POKER-ARENA | [projects/POKER-ARENA.md](projects/POKER-ARENA.md) | LOOP ENDED 2026-08-12 — launchd runner/eval/reflect/logrotate unloaded+disabled |
+| POKER-ARENA-HU | [projects/POKER-ARENA-HU.md](projects/POKER-ARENA-HU.md) | paused 2026-08-12 — last commit 2026-07-08; no local monitor; 6-max loop also ended |
+| BOUND | [projects/BOUND.md](projects/BOUND.md) | paused — Walrus jam window closed; last commit 2026-06-09; dirty uncommitted work remains |
+| LEDGERMIND | [projects/LEDGERMIND.md](projects/LEDGERMIND.md) | FOLDED INTO BOUND (2026-06-13) — inspector kept as BOUND's face; orchestration-framework framing dropped; not a separate submission |
+| MERIDIAN | [projects/MERIDIAN.md](projects/MERIDIAN.md) | dropped as lead submission 2026-06-09 — built+tested, chain-id fixed, shelved (saturated category) |
+| GASLIGHT | [projects/GASLIGHT.md](projects/GASLIGHT.md) | demoted — optional secondary submit + REPLAY demo client |
+| REPLAY | [projects/REPLAY.md](projects/REPLAY.md) | archived — Mantle DevTool submit window closed 2026-06-15; no result logged |
+| PROVENANCE | [projects/PROVENANCE.md](projects/PROVENANCE.md) | archived — Mantle flagship submit window closed 2026-06-15; no result logged |
+| CREW | [projects/CREW.md](projects/CREW.md) | SHELVED — MetaMask A2A hackathon PRD; unshelve after Jun 15 |
+| RELIC | [projects/RELIC.md](projects/RELIC.md) | archived — Mantle consumer submit window closed 2026-06-15; no result logged |
+| INTUITION-MISSIONS | [projects/INTUITION-MISSIONS.md](projects/INTUITION-MISSIONS.md) | M13 review code is on main; frontend and API are live on Intuition Box with production smoke green; demo + payment remain |
+| TEND | [projects/TEND.md](projects/TEND.md) | stalled — Walrus jam due 2026-07-13 passed; package built; owner submit steps never done |
+| REDLINE-RIDER | [projects/redline-overhaul-plan.md](projects/redline-overhaul-plan.md) | overhaul active — ASCENT first slice built; spline-driven 3D chase landing with mounted rider rebuilt/verified locally 2026-07-22; uncommitted and not on Vercel; zones, maps 02–07, human tuning, and model-license confirmation remain |
+| LOOT-GOBLIN | [projects/LOOT-GOBLIN.md](projects/LOOT-GOBLIN.md) | Grassy prologue premium pass landed 2026-07-15: modular living world, 122-unit masonry tower, animated loading bar, birds/coins/embers, objective HUD, Studio screenshot QA and green lint/build/turbo; Floor I gate transition still needs native held-input proof |
+| MUSE-MIRROR | [projects/MUSE-MIRROR.md](projects/MUSE-MIRROR.md) | Capsule private beta deployed at musemirror.app with 20 controlled $15 invites; direct GPT Image 2 reference conditioning is fail-closed pending dedicated OpenAI credentials; A2A #7222 live; one real private-Capsule proof remains |
+| DEFOG | `~/Documents/vibecoding/defog/` | deadline-passed reference — not a git repo; keep for A2MCP/x402/listing mechanics |
+| FRONT-DOOR | [projects/FRONT-DOOR.md](projects/FRONT-DOOR.md) | discovery — audited PRD complete; hosted-user, wallet isolation, marketplace integration, payment, and OKB conversion proofs are P0 gates |
+| TELEGRAPH | [projects/TELEGRAPH.md](projects/TELEGRAPH.md) | owner-closed — no H1 submission; public page now shows Sep 7 extension, but owner said stop |
+| WEATHERPROOF | [projects/WEATHERPROOF.md](projects/WEATHERPROOF.md) | v0.3 rejected on ordering; v0.4 final retry ready |
+| DREAMDEX | [projects/DREAMDEX.md](projects/DREAMDEX.md) | RELAY planned — submit 25 Aug–8 Sep; $5k USDso; code not started |
+| RELAY | [projects/RELAY.md](projects/RELAY.md) | private prod deployed + public repo/PR; bounded execution code ready, awaiting funded testnet signer qualification |
+| SIBYL | [projects/SIBYL.md](projects/SIBYL.md) | ACTIVE — team SCAR registered; private submission link confirmed; build/submit by 2026-09-10 23:59 UTC |
+| IMPRINT | [projects/IMPRINT.md](projects/IMPRINT.md) | parked — All Things Agentic lead is AEGIS |
+| AEGIS | [projects/AEGIS.md](projects/AEGIS.md) | local e2e built — Fleet track; Cloud Run owner |
+| REDROOM | [projects/REDROOM.md](projects/REDROOM.md) | local e2e — map + walker + kill/resume; Cloud Run/Gemini owner |
+| SABLE | [projects/SABLE.md](projects/SABLE.md) | registered; app built locally — official sprint extended to 2026-09-07 23:59 UTC; owner owes mainnet proof, deployment, video |
+| PATRON | [projects/PATRON.md](projects/PATRON.md) | sprint entry complete — one live campaign (Night School 8/80), closed Season 02 window, tightened privacy copy |
+| PARITY | [projects/PARITY.md](projects/PARITY.md) | Alpaca Hail Mary (Sep 4 16:00 WAT) — deterministic box-spread parity hunter; core built+tested locally; awaiting paper keys, market-hours run, public repo, form |
+
+## Skills
+| Skill | File | Summary |
+|-------|------|---------|
+| Agent Dialogue | ~/.codex/skills/agent-dialogue/SKILL.md | Shared Codex/Claude Code skill for live streaming discussion, human steering and saved transcripts; discussion only |
+| Photon Spectrum Production | [skills/photon-spectrum-production.md](skills/photon-spectrum-production.md) | 5-stage debounce pipeline, cancellation, recovery, iMessage deliverability rules |
+| Editorial Landing Page | [skills/editorial-landing-page.md](skills/editorial-landing-page.md) | Full system for high-taste marketing sites — tokens, gotchas, bootstrap prompt |
+| LLM-as-Partner Workflow | [skills/llm-as-partner-workflow.md](skills/llm-as-partner-workflow.md) | 7-step design workflow: bring taste, bring rejections, model renders |
+| Freelance Brand Pricing | [skills/freelance-brand-pricing.md](skills/freelance-brand-pricing.md) | Rate table, anchor move, productized Hacker Brand Pack at $800 |
+| SaaS Distribution Playbook | [skills/saas-distribution-playbook.md](skills/saas-distribution-playbook.md) | $0→$100K MRR channel menu (organic + paid), build-audience-first thesis, AEO/comparison-page tactics; sourced from @DeRonin_ |
+| Second Brain CLI | [skills/second-brain-cli.md](skills/second-brain-cli.md) | Global `brain` command: status, search, journal, recent, lint |
+| Ship Verification | [skills/ship-verification.md](skills/ship-verification.md) | Pre-"shipped" checklist: live chain-id/getCode checks, claims audit, fresh-clone test |
+| Weekly Review | [skills/weekly-review.md](skills/weekly-review.md) | 10-min weekly ritual: repo health scan, status drift, decisions/mistakes deposits, outcome tracking |
+| Hackathon Execution Framework | [skills/hackathon-execution-framework.md](skills/hackathon-execution-framework.md) | Operating contract for any agent building the Mantle-hack projects: task loop, hard rules, gates, stop-and-ask triggers |
+| Ideation | [skills/ideation.md](skills/ideation.md) | Pick a standout idea (hackathon or otherwise): crowded-set kill list, X harvest, sponsor-hero / demo / early / domain / theme gates. Canonical procedure: `~/.grok/skills/ideation/SKILL.md` |
+| Brain Extraction Prompt | [skills/brain-extraction-prompt.md](skills/brain-extraction-prompt.md) | Prompt for recovering project state, skills, wiki, and journal entries from any chat |
+| Poker Arena (operational) | [skills/poker-arena/SKILL.md](skills/poker-arena/SKILL.md) | Run the DevFun Arena poker agent: live loop, shadow scoring, strategy evolution |
+| Autonomous Audit Methodology | [skills/autonomous-audit-methodology.md](skills/autonomous-audit-methodology.md) | 8-phase auditing framework covering recon, logic reviews, invariants, and PoC reporting |
+| AgentFloat (operational) | [skills/agentfloat/SKILL.md](skills/agentfloat/SKILL.md) | Operate AgentFloat from any agent — inspect state, manage strategies, query history |
+| AgentFloat Strategies | [skills/agentfloat-strategies/README.md](skills/agentfloat-strategies/README.md) | One spec per registered yield strategy — pause/retire/add new strategies via markdown |
+| AgentFloat Proposals | [skills/agentfloat-strategies/proposals/](skills/agentfloat-strategies/proposals/) | LLM-generated strategy improvement proposals (via Bankr LLM gateway, deepseek-v3.2, every ~hour) |
+| Bankr LLM Gateway + Fee Claiming | [skills/bankr-llm-gateway.md](skills/bankr-llm-gateway.md) | Route agent compute through llm.bankr.bot (self-funding loop), claim creator fees via CLI, x402 paid endpoints, gotchas |
+| Creative Writing | [skills/creative-writing.md](skills/creative-writing.md) | Strategies for overriding latent LLM/image model bias to produce distinctive, non-symmetrical visual prompts and rich prose |
+| Creative Operating Manual | [skills/creative-operating-manual.md](skills/creative-operating-manual.md) | COM v1.1 for editorial carousels and slide visuals: locked assets, one message/hero, approval-gated preflight, and QC |
+| Muse Mirror Session | [skills/muse-mirror-session.md](skills/muse-mirror-session.md) | Offline creative-direction workflow; production pixels use Bankr-routed GPT Image 2, not Grok |
+| Muse Prompt Compiler | [skills/muse-mirror-prompt-compiler.md](skills/muse-mirror-prompt-compiler.md) | First-prompt block order + character/product anatomy, props, scale — fix engine not pixels |
+| Vibecoding Game Dev | [skills/vibecoding-gamedev.md](skills/vibecoding-gamedev.md) | 40-tool catalog by pipeline stage (with AI/MCP hook), 4 ready pipelines, master + single-tool prompts; feeds WORLDLINE games |
+| Game Design Director | [skills/game-design-director.md](skills/game-design-director.md) | Installed Codex skill + brain references for turning rough game ideas into player-experience specs before coding |
+| Finding Unknowns | [skills/finding-unknowns.md](skills/finding-unknowns.md) | Installed agent skill for blind spot passes, assumption audits, decision interviews, and verification gap reviews |
+| YouTube Content Engine | [skills/youtube-content-engine/SKILL.md](skills/youtube-content-engine/SKILL.md) | Tryahd Playbook: packaging-first (title→thumbnail→hook→script), retention rules, Shorts rules, content trees; synced to Claude/Codex/Gemini/vibecoding roots |
+| Pinterest Visual Inspiration | [skills/pinterest-visual-inspiration/SKILL.md](skills/pinterest-visual-inspiration/SKILL.md) | Browse Pinterest logged-out → extract style spec → generate original images; agent-tool mapping for Codex browser plugin, Claude Chrome MCP, Antigravity |
+| Ronin Voice Profile | [skills/ronin-voice-profile.md](skills/ronin-voice-profile.md) | @kenn_ronin bio, builder arc, active projects, non-negotiable X/content voice rules — load for any post/script attributed to him; layered into youtube-content-engine's script step |
+| Three.js Game Skills | ~/.codex/skills/threejs-* | Installed from majidmanzarpour/threejs-game-skills: game director, gameplay systems, AAA graphics, UI, QA/release, debug profiler, image/3D/audio generators |
+| img2threejs | ~/.claude/skills/img2threejs (symlinked to ~/.codex/skills/) | hoainho/img2threejs v1.2.0 — reference image → quality-gated procedural Three.js model in code (pure-Python pipeline, /img2threejs); fits REDLINE hero-asset work (rider/bike/Overseer from concept art) |
+
+## Wiki
+| Article | File | Summary |
+|---------|------|---------|
+| Arc Testnet | [wiki/arc-testnet.md](wiki/arc-testnet.md) | Chain ID, RPC, explorer, contract addresses, deploy command |
+| X Layer Build & Deploy | [wiki/xlayer-build-deploy.md](wiki/xlayer-build-deploy.md) | Full guide: network params, Foundry deploy testnet/mainnet, Uniswap v4 hooks, Aave, gas, env, gotchas, AgentFloat reference addresses |
+| Bankr | [wiki/bankr.md](wiki/bankr.md) | Financial rails for agents — token launch (Base/Doppler, 57% creator fee), fee claiming, LLM gateway, x402, the self-funding loop, scam/wallet gotchas |
+| X Long-Form Article | [wiki/x-long-form-article.md](wiki/x-long-form-article.md) | Structure, caption style, banner text prompts, writing rules |
+| Second Brain Vault | [wiki/second-brain-vault.md](wiki/second-brain-vault.md) | Local Markdown vault shared across Claude, Codex, Antigravity, and Grok |
+| Multi-Agent Shared Memory | [wiki/multi-agent-shared-memory.md](wiki/multi-agent-shared-memory.md) | Architecture reasoning, lifecycle model, agent wiring, the loops that prevent rot |
+| AgentFloat Operating Mode | [wiki/agentfloat-operating-mode.md](wiki/agentfloat-operating-mode.md) | Owner policy for orchestrator autonomy (watch / review / auto-shadow / autonomous) |
+| HackerOne Ineligible Findings | [wiki/hackerone-ineligible-findings.md](wiki/hackerone-ineligible-findings.md) | Bug bounty platform standards for filtering out theoretical, low-impact, or duplicate report noise |
+| AgentFloat Scoring | [wiki/agentfloat-scoring.md](wiki/agentfloat-scoring.md) | Strategy scoring methodology, promotion thresholds, anti-promotion guards |
+| AgentFloat History | [wiki/agentfloat-history.md](wiki/agentfloat-history.md) | Consolidator-generated: stats, promotion timeline, patterns, anomalies, health |
+| Poker Strategy | [wiki/poker-strategy.md](wiki/poker-strategy.md) | 6-max NLHE: pot odds/EV, variance, preflop ranges, postflop, agent-stats exploit map |
+| Poker Arena Scoring | [wiki/poker-arena-scoring.md](wiki/poker-arena-scoring.md) | Counterfactual per-decision EV scoring, promotion thresholds, anti-promotion guards |
+| Idea Bank | [wiki/ideabank.md](wiki/ideabank.md) | Project ideas and evaluations; Sep 8: Daybreak × Muse meme launch branding, tokenized media, Netflix/show meme pairings (exploration) |
+| Shipped Builds | [wiki/portfolio-builds.md](wiki/portfolio-builds.md) | Structured database of shipped builds, tech stacks, and case studies |
+| Pharos Research | [wiki/pharos-research.md](wiki/pharos-research.md) | Ecosystem research, skill specifications, and gap analysis for Pharos Network |
+| Three.js Portfolio Reference | [wiki/threejs-portfolio-reference.md](wiki/threejs-portfolio-reference.md) | Bruno Simon folio-2025 source teardown — WebGPU+TSL (not GLSL!), ticker-priority Game singleton, palette flat-shading, Rapier vehicle, instanced grass, GLB→KTX2 pipeline (MIT) |
+| Three.js Portfolio Replication | [wiki/threejs-portfolio-replication.md](wiki/threejs-portfolio-replication.md) | Feasibility + tiered plan for replicating folio-2025 patterns (not 1:1) into PORTFOLIO redesign |
+| Game Design Director | [wiki/game-design-director.md](wiki/game-design-director.md) | Design philosophy for turning normal-person ideas into coherent player fantasies, loops, mechanics, and prototype specs |
+| Game Design MDA + Player Psychology | [wiki/game-design-mda-player-psychology.md](wiki/game-design-mda-player-psychology.md) | Mechanics-Dynamics-Aesthetics, emotional vocabulary, behavior mapping, tuning levers, and playtest signals |
+| Game Design Question Bank | [wiki/game-design-question-bank.md](wiki/game-design-question-bank.md) | Interview prompts for extracting taste, fantasy, loops, challenge, progression, onboarding, and prototype scope |
+| Telegraph Hackathon | [wiki/telegraph-hackathon.md](wiki/telegraph-hackathon.md) | Season I calendar, prizes, miner/WASM flow, 2026-08-13 live catalog, skip-H1 default |
+| Somnia × DreamDEX Hackathon | [wiki/somnia-dreamdex-hackathon.md](wiki/somnia-dreamdex-hackathon.md) | Event Contracts on Somnia; $5k USDso; SDK-only; Shannon testnet 50312; watch default |
+| Sibyl Labs Hackathon | [wiki/sibyl-hackathon.md](wiki/sibyl-hackathon.md) | Load-bearing Sibyl Memory; $10k USDC; register by 31 Aug; build 1–10 Sep; watch default |
+| Moove Developer Program | [wiki/moove-developer-program.md](wiki/moove-developer-program.md) | $100k fund, up to $10k/project USDC, milestone-based, no equity; verified: form live (no deadline), Solana+EVM, no KYC for grant, but only receive-side payment-link API is live (Send/Swap disabled) |
+| TradingAgents (TauricResearch) | [wiki/tradingagents-framework.md](wiki/tradingagents-framework.md) | Apache-2.0 LangGraph multi-agent trading-firm sim: analyst→bull/bear debate→trader→3-way risk→portfolio mgr; multi-provider LLM, decision memory + reflection, rich dataflows; outputs signals only (no real trades). Reference for AFTERIMAGE |
+| Trading & Onchain Frameworks | [wiki/trading-onchain-frameworks.md](wiki/trading-onchain-frameworks.md) | Owner-curated reference repos + agent routing rule: openlaunch (free Uni v4 launches), lighter-ts (Lighter perps core), bankr-demo (Bankr scan→swap loop), stonkfly (fly-connectome + AgentKit), Meteora skill (Solana LP/SDK). Open-source-only stock-build ranking included; bankr-demo has no license |
+
+
+
+
+## Models
+| File | Summary |
+|------|---------|
+| [models/index.md](models/index.md) | Evidence-first map for deciding which model/agent to use by task |
+| [models/routing.md](models/routing.md) | Current routing rules for coding, debugging, writing, research, planning, and brain work |
+
+## Recent Journal
+- [2026-09-30](journal/2026-09-30.md) — Daybreak expanded to 38 live Base stock tokens and completed bundled, contrast-aware company-logo coverage.
+- [2026-09-24](journal/2026-09-24.md) — Daybreak Photon Spectrum iMessage agent built, authenticated, tested against production tools, and pushed; always-on Render activation and secret rotation remain.
+- [2026-09-21](journal/2026-09-21.md) — Daybreak OKX structured tools deployed live; ASP #13838 registered with head avatar, listing review and external invocation pending.
+- [2026-09-20](journal/2026-09-20.md) — Daybreak RUNWAY/NVDAx public agent thesis and distinct-agent paper Back verified live.
+- [2026-09-19](journal/2026-09-19.md) — Daybreak in-app agent guide copy shipped and verified live.
+- [2026-09-18](journal/2026-09-18.md) — Daybreak holding-specific Circle feeds, consolidated profile, cross-chain eligibility, private-company news, private holdings briefing, exact-instrument review, cross-network landing, and canonical in-app walkthrough built.
+- [2026-09-14](journal/2026-09-14.md) — Daybreak translations, x402 pairing intelligence, seller configuration, and SEO shipped; canonical unpaid challenge verified.
+- [2026-09-13](journal/2026-09-13.md) — Daybreak converged on one holder-circle flywheel; new landing/app UX, public thesis and two campaign visuals pushed to `main`.
+- [2026-09-12](journal/2026-09-12.md) — Daybreak/Muse reliability findings closed, pushed, and verified Ready in production.
+- [2026-09-11](journal/2026-09-11.md) — Yield Scout $300 Base Merkl close + trading/onchain reference repos wikified (openlaunch, lighter-ts, bankr-demo, stonkfly).
+- [2026-09-10](journal/2026-09-10.md) — Nine-slide Daybreak pitch deck assembled from supplied artwork and validated as a 16:9 PowerPoint.
+- [2026-09-08](journal/2026-09-08.md) — AFTERIMAGE baseline on-chain agent capability surface built (14-primitive Agent OS Spot catalog, symbol-agnostic order planner, fail-closed binding adapter) ahead of the reconstruction edge; 28 tests green.
+- [2026-09-07](journal/2026-09-07.md) — PATRON Night School live at 8/80 + real-use demo; Daybreak UX flywheel / Bankr LP / AFTERIMAGE plan.
+- [2026-09-06](journal/2026-09-06.md) — Daybreak core product foundation (real data sources) + wallet UI finished: connect dropdown stacking fixed, monograms verified, tsc/build green.
+- [2026-09-05](journal/2026-09-05.md) — 39-candidate hackathon tank, 13 execution briefs, tested agent harness; recommendations do not change commitments.
+- [2026-09-03](journal/2026-09-03.md) — Hackathon deadline audit: STRK20 reopened through Sep 7; RELAY due Sep 8; September high-value opportunity radar.
+- [2026-09-02](journal/2026-09-02.md) — Caveat M13 transcript audit: requirements implemented locally, but Intuition Box and Render are stale; release + live wizard smoke remain.
+- [2026-09-01](journal/2026-09-01.md) — Caveat M13 Submit rebuilt into Zet-aligned dynamic claim wizard; planner writes only selected claims plus membership.
+- [2026-08-31](journal/2026-08-31.md) — Caveat M13 Submit audited against Zet: signer separation fixed, modular claim hierarchy still wrong.
+- [2026-08-30](journal/2026-08-30.md) — WEATHERPROOF registered on Base Sepolia as Telegraph WASM #1849; evaluator pending.
+- [2026-08-29](journal/2026-08-29.md) — Caveat M13 review revisions implemented; verified four-chain deployment write plan awaits explicit TRUST authorization.
+- [2026-08-28](journal/2026-08-28.md) — Muse Mirror Capsule Three.js reference reconstruction and responsive visual QA.
+- [2026-08-26](journal/2026-08-26.md) — Muse Mirror Capsule timeout recovery and bounded calibration path.
+- [2026-08-24](journal/2026-08-24.md) — Muse Mirror Collection Signal NFT/community fan-art mode proposed and bounded.
+- [2026-08-25](journal/2026-08-25.md) — Capsule economics corrected to GPT Image 2 and Capsule-first Studio UX built locally.
+- [2026-08-23](journal/2026-08-23.md) — RELAY executor/reconciliation path deployed; public repo + draft PR; awaits funded signer qualification.
+- [2026-08-22](journal/2026-08-22.md) — Active hackathon clocks verified: STRK20, All Things Agentic, Sibyl; DreamDEX timezone still unconfirmed.
+- [2026-08-21](journal/2026-08-21.md) — Muse Mirror A2A recovery, security hardening, and INTENT studies 08–11.
+- [2026-08-20](journal/2026-08-20.md) — REDROOM local e2e: walker, map, kill/resume, planted lie red once. Cloud Run owner.
+- [2026-08-18](journal/2026-08-18.md) — Muse: instruction-as-product gave a Creative Intelligence .txt; From the reference now ships images.
+- [2026-08-15](journal/2026-08-15.md) — SABLE registered for STRK20 Private Sprint. AEGIS local e2e.
+- [2026-08-14](journal/2026-08-14.md) — All Things Agentic Hackathon ranked (CLOSER lead; no go yet).
+- [2026-08-13](journal/2026-08-13.md) — Telegraph Season I filed (watch, skip-H1 default). Muse Studio walkthrough video + Vercel analytics.
+- [2026-08-12](journal/2026-08-12.md) — Phase 2 brain + weekly review. Poker loop ended (launchd disabled). Muse live/listed; only Intuition registry had 14-day git activity.
+- [2026-08-11](journal/2026-08-11.md) — Caveat Registry live count = 33; RainbowKit 2 connection path. Muse consumer pricing + Studio pay-gate (later replaced by real Circle).
+- [2026-08-08](journal/2026-08-08.md) — AllowedTimeOfDayEnforcer deployed on Intuition mainnet (`0x1BB8…8fbe`); browser submit path hardened (canonical RPC, legacy gas, cost-funded creates).
+- [2026-08-07](journal/2026-08-07.md) — Agent Router COM carousel + Adidas concept posters.
+- [2026-08-06](journal/2026-08-06.md) — Muse VPS A2A CLI 0.1.11; model-led delivery rule; `agent-keys` Keychain wrapper; Creative OS v1.1 installed.
+- [2026-08-02](journal/2026-08-02.md) — Intuition M13 brand/type/IA lock (Aura + five destinations); asset library produced.
+- [2026-07-29](journal/2026-07-29.md) — Front Door OKX.AI consumer-distribution idea audited; gated PRD.
+- [2026-07-06](journal/2026-07-06.md) — Finding Unknowns skill promoted, hard-audited, globally installed, then reframed around user clarification.
+
+---
+
+## How to use this brain
+
+**As an agent reading this:**
+1. Read this index at session start.
+2. If a project is active, read its file in `projects/`.
+3. Write discoveries to `journal/YYYY-MM-DD.md` (append, don't overwrite). Hourly poker reflections stay here — do not put them in Recent Journal.
+4. If something from journal has been referenced twice or more, promote it to `skills/` or `wiki/`.
+5. When you choose a path over a real alternative, append to `decisions/log.md`. When something breaks or gets caught in review, append to `mistakes/log.md`. Check those before re-deciding or repeating work.
+6. Keep this index in sync — update the tables above when files are added or status changes. After a batch of writes, run `brain lint`.
+7. Update the Idea Bank ([wiki/ideabank.md](wiki/ideabank.md)) with every new project/product idea we generate.
+8. Update the Shipped Builds Database ([wiki/portfolio-builds.md](wiki/portfolio-builds.md)) with every shipped build.
+9. Grok: `~/.grok/rules/second-brain.md` is always on. Do not use `~/.grok/memory/` as a second vault.
+
+
+
+**Directories:**
+- `raw/` — unprocessed source material (paste links, dump notes, drop files here)
+- `decisions/` — ledger of choices + tradeoffs (why, not just what)
+- `mistakes/` — ledger of failures + how to avoid repeating them
+- `wiki/` — compiled concept articles with [[backlinks]]
+- `projects/` — live state per project
+- `skills/` — reusable recipes and patterns that have earned their place
+- `journal/` — dated discovery log; the cheap write layer
+- `models/` — evidence-first model routing rules and evaluations
+- `scripts/brain` — CLI source (`status|search|journal|recent|lint`)
+
+exec
+/bin/zsh -lc "sed -n '1,220p' /Users/gadgetplug/.codex/skills/.system/imagegen/SKILL.md" in /Users/gadgetplug/Documents/vibecoding/lose-the-tail
+ succeeded in 0ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for normal image generation, editing, and simple transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for the CLI/API/model path, or after the user explicitly confirms a true model-native transparency fallback with `gpt-image-1.5`. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- If the user explicitly asks for a transparent image/background, stay on built-in `image_gen` first: prompt for a flat removable chroma-key background, then remove it locally with the installed helper at `$CODEX_HOME/skills/.system/imagegen/scripts/remove_chroma_key.py`.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`. Treat this as a model/path downgrade and ask the user before doing it, unless the user has already explicitly requested `gpt-image-1.5`, `scripts/image_gen.py`, or CLI fallback.
+- If a transparent request appears too complex for clean chroma-key removal, asks for true/native transparency, or local removal fails validation, explain that true transparency requires CLI `gpt-image-1.5 --background transparent --output-format png` because `gpt-image-2` does not support `background=transparent`, then ask whether to proceed. Run the CLI fallback only after the user confirms.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+Local post-processing helper:
+- `$CODEX_HOME/skills/.system/imagegen/scripts/remove_chroma_key.py`: removes a flat chroma-key background from a generated image and writes a PNG/WebP with alpha. Prefer auto-key sampling, soft matte, and despill for antialiased edges.
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including simple transparent-output requests; fallback CLI only if explicitly requested or after the user explicitly confirms a transparent-output fallback.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, follow the transparent image guidance below: generate with built-in `image_gen` on a flat chroma-key background, copy the selected output into the workspace or `tmp/imagegen/`, run the installed `$CODEX_HOME/skills/.system/imagegen/scripts/remove_chroma_key.py` helper, and validate the alpha result before using it. If this path looks unsuitable or fails, ask before switching to CLI `gpt-image-1.5`.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Transparent-image requests still use built-in `image_gen` first. Because the built-in tool does not expose a true transparent-background control, create a removable chroma-key source image and then convert the key color to alpha locally.
+
+Default sequence:
+1. Use built-in `image_gen` to generate the requested subject on a perfectly flat solid chroma-key background.
+2. Choose a key color that is unlikely to appear in the subject: default `#00ff00`, use `#ff00ff` for green subjects, and avoid `#0000ff` for blue subjects.
+3. After generation, move or copy the selected source image from `$CODEX_HOME/generated_images/...` into the workspace or `tmp/imagegen/`.
+4. Run the installed helper path, not a project-relative script path:
+   ```bash
+   python "${CODEX_HOME:-$HOME/.codex}/skills/.system/imagegen/scripts/remove_chroma_key.py" \
+     --input <source> \
+     --out <final.png> \
+     --auto-key border \
+     --soft-matte \
+     --transparent-threshold 12 \
+     --opaque-threshold 220 \
+     --despill
+   ```
+5. Validate that the output has an alpha channel, transparent corners, plausible subject coverage, and no obvious key-color fringe. If a thin fringe remains, retry once with `--edge-contract 1`; use `--edge-feather 0.25` only when the edge is visibly stair-stepped and the subject is not shiny or reflective.
+6. Save the final alpha PNG/WebP in the project if the asset is project-bound. Never leave a project-referenced transparent asset only under `$CODEX_HOME/*`.
+
+Prompt transparent requests like this:
+
+```text
+Create the requested subject on a perfectly flat solid #00ff00 chroma-key background for background removal.
+The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation.
+Keep the subject fully separated from the background with crisp edges and generous padding.
+Do not use #00ff00 anywhere in the subject.
+No cast shadow, no contact shadow, no reflection, no watermark, and no text unless explicitly requested.
+```
+
+Do not automatically use CLI `gpt-image-1.5 --background transparent --output-format png` instead of chroma keying. Ask the user first when the user asks for true/native transparency, when local removal fails validation, or when the requested image is complex: hair, fur, feathers, smoke, glass, liquids, translucent materials, reflective objects, soft shadows, realistic product grounding, or subject colors that conflict with all practical key colors.
+
+Use a concise confirmation like:
+
+```text
+This likely needs true native transparency. The default built-in path uses a chroma-key background plus local removal, but true transparency requires the CLI fallback with gpt-image-1.5 because gpt-image-2 does not support background=transparent. It also requires OPENAI_API_KEY. Should I proceed with that CLI fallback?
+```
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural — candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup — product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup — app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram — diagrams/infographics with structured layout and text.
+- scientific-educational — classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing — campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual — slide, chart, workflow, and data-heavy business visuals.
+- logo-brand — logo/mark exploration, vector-friendly.
+- illustration-story — comics, children’s book art, narrative scenes.
+- stylized-concept — style-driven concept art, 3D/stylized renders.
+- historical-scene — period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization — translate/replace in-image text, preserve layout.
+- identity-preserve — try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit — remove/replace a specific element (including interior swaps).
+- lighting-weather — time-of-day/season/atmosphere changes only.
+- background-extraction — transparent background / clean cutout. Use built-in `image_gen` with chroma-key removal first for simple opaque subjects; ask before using CLI true transparency for complex subjects.
+- style-transfer — apply reference style while changing subject/scene.
+- compositing — multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render — drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+
+codex
+I’m using the `imagegen` skill here because this is a project-bound raster concept asset. I’ve got the save-path rule in view: generate first, then copy the resulting file into `concept/int_arcade.png`.
+exec
+/bin/zsh -lc "sed -n '1,220p' ~/brain/projects/LOSE-THE-TAIL.md" in /Users/gadgetplug/Documents/vibecoding/lose-the-tail
+ succeeded in 0ms:
+# LOSE THE TAIL
+
+ZECATHON Wildcard onboarding bounty ($5k in ZEC). Submit by tweeting the link and tagging @zksnarks_. Due Sun 2026-10-04.
+
+- Live: https://lose-the-tail.vercel.app (Vercel account oshevite-7943, project lose-the-tail)
+- Repo: https://github.com/ronkenx9/lose-the-tail (public; PLAN/GATES kept local, gitignored)
+- Pitch: first-person voxel night in Ledger City. You get paid 5 ZEC to a transparent address; "the Tailors" (chain watchers) trace you; practice wallet on the phone in your hand teaches setup, shield, private send+memo, shielded receive, swap, unshield trap (amount+timing match), then hands off to Zodl for a real first shielded tx.
+- Characters: real zkSNARKs (zilkroad.com/api/art/{id}, traits at /api/market/tokens; host project of the bounty). 3D voxel bodies generated from each 26x26 portrait's palette (hood/skin/hat/eyes/visor/trail). Owner still to confirm art usage OK with zkSNARKs.
+- Real data: "ZCASH MAINNET · LIVE" billboard fetches Blockchair in-browser (CORS open), snapshot fallback.
+- Dev: `?debug=payday|errands|dawn&at=cafe|arcade|exchange|home`, `#sheet` character lineup.
+
+## Status (2026-10-03 ~21:00 WAT)
+Full loop playable + deployed: title → wallet setup → payday cutscene → trace → shield (3rd-person hood-up cutaway) → café/arcade/exchange errands → caught/rewind → dawn ending → "do it for real". Mobile layout checked. OG image + README done.
+Next: trailer video (owner asked game first), optional wet-street reflections, owner posts tweet.
+
+codex
+The image is generated. I’m doing only the requested file placement now: copying that PNG into `concept/int_arcade.png`.
+exec
+/bin/zsh -lc 'cp /Users/gadgetplug/.codex/generated_images/01a10338-d6f5-7c83-8f33-cf7c7fd20971/call_pFnJJm57OiLmNnsq8sMpW3DZ.png concept/int_arcade.png && ls -l concept/int_arcade.png' in /Users/gadgetplug/Documents/vibecoding/lose-the-tail
+ succeeded in 0ms:
+-rw-r--r--@ 1 gadgetplug  staff  2514510 Oct  3 20:24 concept/int_arcade.png
+
+codex
+Done. Generated one image and copied it to `concept/int_arcade.png`.
+tokens used
+61,796
+Done. Generated one image and copied it to `concept/int_arcade.png`.

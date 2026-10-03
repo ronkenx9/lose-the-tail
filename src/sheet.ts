@@ -11,7 +11,8 @@ export function sheet() {
   scene.background = new THREE.Color(0xd9d6d0);
   const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const pick = (location.search.match(/n=(\d+)/)?.[1] ?? '12') as string;
-  const list = HEADS.slice(0, +pick);
+  const role = new URLSearchParams(location.search).get('role');
+  const list = role ? HEADS.filter((h) => h.role === role) : HEADS.slice(0, +pick);
   const cols = Math.ceil(Math.sqrt(list.length * 1.8));
   const chars = list.map((h, k) => {
     const c = new Character(h);

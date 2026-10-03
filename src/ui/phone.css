@@ -136,3 +136,4 @@ input[type=range] { width: 100%; accent-color: #ff2b3b; }
   .phone.down:hover { transform: translate(24vw, 28%) rotate(-6deg) scale(calc(var(--phs, 1) * 0.5)); }
   .phone.up { transform: translate(0, calc(-50vh + 50%)) scale(var(--phs, 1)); }
 }
+.actions.two { grid-template-columns: 1fr 1fr; }
