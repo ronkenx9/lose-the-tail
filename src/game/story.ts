@@ -736,7 +736,7 @@ export class Story {
     const p = this.c.player;
     for (const st of Object.values(this.c.city.stations)) {
       const near = Math.hypot(st.x - p.x, st.z - p.z) < 2.4;
-      if (near && !this.visited.has(st.id)) {
+      if (near && !this.visited.has(st.id) && !this.busy && !this.c.hud.talking) {
         this.visited.add(st.id);
         this.arrive(st.id);
       } else if (!near && Math.hypot(st.x - p.x, st.z - p.z) > 4) this.visited.delete(st.id);

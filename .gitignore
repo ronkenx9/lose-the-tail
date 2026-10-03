@@ -7,3 +7,4 @@ dist
 PLAN*.md
 GATES.md
 .claude/
+e2e-fail.png
