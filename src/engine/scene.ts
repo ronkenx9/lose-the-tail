@@ -109,6 +109,15 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
     scene.add(sp);
   }
 
+  // steam rising from the alley and manholes
+  const steamTex = radialTex();
+  const steamPuffs: { sp: THREE.Sprite; base: THREE.Vector3; t: number; life: number }[] = [];
+  for (const st of city.steam)
+    for (let i = 0; i < 7; i++) {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: steamTex, color: 0x9aa8b8, transparent: true, opacity: 0, depthWrite: false }));
+      scene.add(sp);
+      steamPuffs.push({ sp, base: new THREE.Vector3(st.x, 1.1, st.z), t: Math.random() * 4, life: 3.5 + Math.random() * 2 });
+    }
   const rain = makeRain();
   scene.add(rain);
 
@@ -147,6 +156,14 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
       f.mat.opacity = on ? 1 : 0.25;
     }
     updateRain(rain, camera, dt);
+    for (const p of steamPuffs) {
+      p.t += dt;
+      if (p.t > p.life) p.t = 0;
+      const k = p.t / p.life;
+      p.sp.position.set(p.base.x + Math.sin(p.t * 1.3 + p.life) * 0.3 * k, p.base.y + k * 3.2, p.base.z + Math.cos(p.t + p.life) * 0.25 * k);
+      p.sp.scale.setScalar(0.6 + k * 2.4);
+      (p.sp.material as THREE.SpriteMaterial).opacity = Math.sin(Math.PI * k) * 0.16;
+    }
     wet.update(t);
     composer.render(dt);
   };

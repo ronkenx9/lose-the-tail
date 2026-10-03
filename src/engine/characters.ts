@@ -438,6 +438,26 @@ export class Character {
     if (head.role === 'tailor') this.dressTailor();
   }
 
+  /** a blocky umbrella held over the head */
+  addUmbrella(color: THREE.Color) {
+    const g = new THREE.Group();
+    const canopyMat = new THREE.MeshBasicMaterial({ color });
+    const dark = new THREE.MeshBasicMaterial({ color: color.clone().multiplyScalar(0.6) });
+    const top = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.06, 0.95), canopyMat);
+    const rim = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.05, 1.15), dark);
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 0.5), canopyMat);
+    rim.position.y = -0.06;
+    cap.position.y = 0.06;
+    const pole = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.75, 0.035), new THREE.MeshBasicMaterial({ color: 0x222226 }));
+    pole.position.y = -0.4;
+    g.add(top, rim, cap, pole);
+    g.position.set(0.12, 2.18, 0.08);
+    this.group.add(g);
+    this.arms[1].rotation.x = -1.2;
+    this.umbrella = true;
+  }
+  umbrella = false;
+
   /** the boss gets his coat: long charcoal trench, red armband, glowing ledger tablet */
   private dressTailor() {
     const C: RGB = [34, 34, 38],
@@ -487,7 +507,7 @@ export class Character {
     this.legs[0].rotation.x = s * sw;
     this.legs[1].rotation.x = -s * sw;
     this.arms[0].rotation.x = -s * sw * 0.8;
-    this.arms[1].rotation.x = s * sw * 0.8;
+    this.arms[1].rotation.x = this.umbrella ? -1.25 + s * sw * 0.1 : s * sw * 0.8;
     const idle = Math.sin(this.phase * 0.5) * 0.04 * (1 - Math.min(1, this.speed));
     this.arms[0].rotation.z = -0.05 - idle;
     this.arms[1].rotation.z = 0.05 + idle;

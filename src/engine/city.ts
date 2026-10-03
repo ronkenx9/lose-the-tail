@@ -101,6 +101,7 @@ export interface City {
   spawn: { x: number; z: number; yaw: number };
   tags: Tag[];
   decals: Decal[];
+  steam: { x: number; z: number }[];
 }
 
 const AVE = { a: 42, b: 53 }; // z range of the avenue (incl. sidewalks)
@@ -403,6 +404,23 @@ export function buildCity(): City {
     [SZ - 1, SZ - 1],
   ]) w.fill(ST.a, 1, z0, ST.b, 22, z1, B.DARKBRICK);
 
+  // planters with voxel shrubs (café + home frontage)
+  for (const [x, z] of [[79, 52], [92, 52], [5, 43], [15, 43], [57, 43], [67, 43]]) {
+    if (w.get(x, 1, z) !== B.AIR) continue;
+    w.set(x, 1, z, B.STONE);
+    w.set(x, 2, z, B.LEAF);
+    if ((x + z) % 2) w.set(x, 3, z, B.LEAF);
+  }
+  // café chalkboard sign
+  signs.push({ text: 'COFFEE', sub: 'shielded only · memos welcome', color: '#e9e3d0', x: 81, y: 1.45, z: 52.4, facing: 'N', w: 1.4, h: 0.9 });
+  const steam = [
+    { x: 74.9, z: 14 },
+    { x: 74.9, z: 30 },
+    { x: 47.5, z: 60 },
+    { x: 30, z: 47.5 },
+    { x: 66, z: 48.5 },
+  ];
+
   // street posters (Codex concept art) on tall facades
   decals.push({ img: 'ad_nullstate', x: 42.03, y: 7.5, z: 10, facing: 'E', w: 3.2, h: 6.2, glow: 1.3 });
   decals.push({ img: 'ad_shield', x: 31, y: 7.5, z: 53.97, facing: 'N', w: 3.2, h: 6.2, glow: 1.3 });
@@ -439,5 +457,5 @@ export function buildCity(): City {
   for (let x = 0; x < SX; x++)
     for (let z = 0; z < SZ; z++) walk[x + z * SX] = w.solid(x, 0, z) && !w.solid(x, 1, z) && !w.solid(x, 2, z) ? 1 : 0;
 
-  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 10.5, z: 44.5, yaw: Math.PI }, tags, decals };
+  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 10.5, z: 44.5, yaw: Math.PI }, tags, decals, steam };
 }

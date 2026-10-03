@@ -41,6 +41,7 @@ export const B = {
   PUDDLE: 26,
   TILE: 27,
   NEON_ZEC: 28,
+  LEAF: 29,
 } as const;
 
 export const PALETTE: BlockDef[] = [];
@@ -49,7 +50,7 @@ def(B.AIR, { color: [0, 0, 0] });
 def(B.ASPHALT, { color: [0.11, 0.115, 0.13], jitter: 0.12 });
 def(B.SIDEWALK, { color: [0.3, 0.3, 0.32], jitter: 0.08 });
 def(B.CURB, { color: [0.45, 0.45, 0.47], jitter: 0.05 });
-def(B.LINE, { color: [0.75, 0.68, 0.35], jitter: 0.05 });
+def(B.LINE, { color: [0.42, 0.4, 0.33], jitter: 0.05 });
 def(B.CONCRETE, { color: [0.36, 0.36, 0.39], jitter: 0.1 });
 def(B.BRICK, { color: [0.42, 0.2, 0.17], jitter: 0.14 });
 def(B.DARKBRICK, { color: [0.2, 0.13, 0.14], jitter: 0.14 });
@@ -73,6 +74,7 @@ def(B.LAMP, { glow: 2.4, color: [1, 0.92, 0.75], emit: [1, 0.82, 0.55] });
 def(B.SCREEN_OFF, { color: [0.03, 0.03, 0.04] });
 def(B.PUDDLE, { color: [0.14, 0.16, 0.22], jitter: 0.05 });
 def(B.TILE, { color: [0.22, 0.2, 0.24], jitter: 0.1 });
+def(B.LEAF, { color: [0.16, 0.36, 0.2], jitter: 0.3 });
 def(B.NEON_ZEC, { glow: 1.7, color: [0.96, 0.72, 0.16], emit: [1, 0.7, 0.12] });
 
 const LIGHT_MAX = 15;

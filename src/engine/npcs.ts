@@ -53,7 +53,11 @@ export class Npcs {
     for (let i = 0; i < n; i++) {
       const head = crowd[i % crowd.length];
       const p = this.randomSidewalk();
-      this.spawn(head, p.x, p.z, { wander: true, wait: this.r() * 4, speedMul: 0.55 + this.r() * 0.35 });
+      const n = this.spawn(head, p.x, p.z, { wander: true, wait: this.r() * 4, speedMul: 0.55 + this.r() * 0.35 });
+      if (this.r() < 0.4) {
+        const cols = [0x1b1d24, 0x2a0d12, 0x0f2a24, 0x2b1640, 0xf4b728, 0x14303d];
+        n.ch.addUmbrella(new THREE.Color(cols[Math.floor(this.r() * cols.length)]));
+      }
     }
   }
 
