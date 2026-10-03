@@ -565,3 +565,112 @@ export class Trails {
     if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Zero: the narrator. Bespoke model from the Codex character sheet: big rounded
+// hood-head, tall black eyes, stub arms, no legs, body dissolving into cubes.
+// ---------------------------------------------------------------------------
+export class Zero {
+  readonly group = new THREE.Group();
+  private head: THREE.Mesh;
+  private body: THREE.Mesh;
+  private arms: THREE.Mesh[] = [];
+  private bits: THREE.Mesh[] = [];
+  private t = Math.random() * 10;
+  readonly look: Look = {
+    body: [236, 238, 240],
+    face: [246, 247, 248],
+    hood: null,
+    hat: null,
+    hatStyle: null,
+    eye: [8, 8, 10],
+    visor: false,
+    trail: [
+      [250, 250, 252],
+      [220, 224, 228],
+      [200, 255, 220],
+    ],
+    pants: [200, 200, 205],
+    boots: [180, 180, 185],
+  };
+  speed = 0;
+  trailBoost = 0.2;
+  yaw = 0;
+  constructor() {
+    const mat = new THREE.MeshBasicMaterial({ vertexColors: true });
+    const W: RGB = [244, 245, 247],
+      G: RGB = [214, 217, 221],
+      K: RGB = [6, 6, 8];
+    const head = part({
+      w: 12,
+      h: 12,
+      d: 11,
+      pivot: [6, 0, 5.5],
+      color: (x, y, z) => {
+        // rounded hood: shave corners and the top edges
+        const ex = x === 0 || x === 11,
+          ez = z === 0 || z === 10,
+          top = y === 11,
+          bot = y === 0;
+        if ((ex && ez) || (top && (ex || ez)) || (bot && ex && z < 3)) return null;
+        if (top && (x === 1 || x === 10)) return null;
+        if (z === 10 && y >= 4 && y <= 6 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
+        if (z === 10 && y === 7 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
+        return y >= 9 || z <= 2 ? G : W;
+      },
+    });
+    const body = part({
+      w: 8,
+      h: 10,
+      d: 6,
+      pivot: [4, 10, 3],
+      color: (x, y, z) => {
+        // tapering, dissolving toward the bottom
+        const inset = y < 3 ? 2 : y < 5 ? 1 : 0;
+        if (x < inset || x > 7 - inset || z < Math.min(inset, 2) || z > 5 - Math.min(inset, 2)) return null;
+        if (y < 2 && hash(x, y, z) < 0.45) return null;
+        return z <= 1 || x === inset || x === 7 - inset ? G : W;
+      },
+    });
+    const arm = part({ w: 3, h: 6, d: 3, pivot: [1.5, 6, 1.5], color: (x, y) => (y === 0 ? G : W) });
+    this.head = new THREE.Mesh(head, mat);
+    this.body = new THREE.Mesh(body, mat);
+    this.head.position.y = 0;
+    this.body.position.y = 0.02;
+    this.group.add(this.head, this.body);
+    for (const s of [-1, 1]) {
+      const a = new THREE.Mesh(arm, mat);
+      a.position.set(s * 5.2 * VOX, -1.5 * VOX, 0.5 * VOX);
+      a.rotation.z = s * 0.35;
+      this.arms.push(a);
+      this.group.add(a);
+    }
+    // a few loose cubes orbiting under the body
+    const cube = new THREE.BoxGeometry(VOX * 1.4, VOX * 1.4, VOX * 1.4);
+    for (let i = 0; i < 7; i++) {
+      const m = new THREE.Mesh(cube, new THREE.MeshBasicMaterial({ color: new THREE.Color(0.95, 0.96, 0.97) }));
+      this.bits.push(m);
+      this.group.add(m);
+    }
+    mat.color.setScalar(0.74);
+  }
+  /** emulate Character's interface for trails */
+  get asCharacter() {
+    return this as unknown as Character;
+  }
+  update(dt: number) {
+    this.t += dt;
+    const bob = Math.sin(this.t * 1.6) * 0.06;
+    this.head.position.y = 0.5 + bob;
+    this.body.position.y = 0.52 + bob * 0.8;
+    this.arms[0].rotation.z = -0.35 - Math.sin(this.t * 1.6) * 0.08;
+    this.arms[1].rotation.z = 0.35 + Math.sin(this.t * 1.6 + 0.6) * 0.08;
+    this.arms.forEach((a) => (a.position.y = 0.42 + bob * 0.9));
+    this.head.rotation.z = Math.sin(this.t * 0.7) * 0.05;
+    this.bits.forEach((b, i) => {
+      const a = this.t * (0.6 + i * 0.07) + i;
+      b.position.set(Math.cos(a) * (0.12 + i * 0.02), 0.02 + ((this.t * 0.25 + i * 0.13) % 0.55), Math.sin(a) * (0.1 + i * 0.015));
+      b.scale.setScalar(1 - ((this.t * 0.25 + i * 0.13) % 0.55) / 0.55);
+    });
+  }
+}

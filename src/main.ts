@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { buildCity } from './engine/city';
 import { createStage } from './engine/scene';
 import { Player } from './engine/player';
-import { Character, HEADS, Trails, headByRole, loadAtlas, lookOf } from './engine/characters';
+import { Character, HEADS, Trails, Zero, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
 import { Drones } from './engine/drones';
@@ -71,21 +71,19 @@ async function boot() {
   const voidScene = new THREE.Scene();
   voidScene.background = new THREE.Color(0x000000);
   const voidCam = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.05, 100);
-  voidCam.position.set(0.2, 1.6, 4.6);
-  voidCam.lookAt(0, 1.35, 0);
+  voidCam.position.set(0, 1.05, 3.1);
+  voidCam.lookAt(0, 0.95, 0);
   addEventListener('resize', () => {
     voidCam.aspect = innerWidth / innerHeight;
     voidCam.updateProjectionMatrix();
   });
-  const zero = new Character(headByRole('narrator'));
-  zero.minLight = 0.55;
-  zero.setLight(new THREE.Color(0.28, 0.28, 0.3));
-  zero.faceDir(0, 1);
+  const zero = new Zero();
+  zero.group.position.set(0, 0.25, 0);
   voidScene.add(zero.group);
   const voidTrails = new Trails(voidScene, 400);
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(1.6, 48), new THREE.MeshBasicMaterial({ color: 0x0c0f0d }));
-  floor.rotation.x = -Math.PI / 2;
-  voidScene.add(floor);
+  const vbg = new THREE.TextureLoader().load('/art/void_bg.jpg');
+  vbg.colorSpace = THREE.SRGBColorSpace;
+  voidScene.background = vbg;
   const blackEl = document.createElement('div');
   blackEl.className = 'blackout';
   document.body.appendChild(blackEl);
@@ -337,8 +335,8 @@ async function boot() {
     }
     if (inVoid) {
       zero.update(dt);
-      zero.group.rotation.y = Math.sin(performance.now() / 2600) * 0.25;
-      voidTrails.update(dt, [zero], voidCam.position);
+      zero.group.rotation.y = Math.sin(performance.now() / 2600) * 0.3;
+      voidTrails.update(dt, [zero.asCharacter], voidCam.position);
     }
     player.update(dt);
     if (!cut) player.applyCamera(stage.camera);

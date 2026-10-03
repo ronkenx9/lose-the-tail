@@ -123,9 +123,9 @@ export class Story {
     this.c.drones.hunt();
     await hud.say([
       why === 'paid'
-        ? T('The Tailor', 'tailor', 'The five-ZEC wallet just bought noodles. Plaza kiosk, right now. Same address, same person.', true)
-        : T('The Tailor', 'tailor', 'Five ZEC sitting on a public address near Ave & 4th, and nobody moved it. Go collect.', true),
-      T('The Tailor', 'tailor', 'Take them.', true),
+        ? T('The Tailor', 'tailor', 'Our five-ZEC friend just bought noodles. Plaza kiosk. People are so generous with their secrets.', true)
+        : T('The Tailor', 'tailor', 'Five ZEC, sitting on a public address near Ave & 4th, waiting like an open door. Go collect.', true),
+      T('The Tailor', 'tailor', 'Quietly, please. Take them.', true),
     ]);
     await this.c.ambush();
     await this.voidTalk();
@@ -136,11 +136,12 @@ export class Story {
     this.c.setVoid(true);
     await sleep(900);
     await hud.say([
-      T('Zero', 'narrator', '...'),
-      T('Zero', 'narrator', "Well. That wasn't fun to watch."),
-      T('Zero', 'narrator', 'You got paid to a *public* address. Then you spent from it, in public. Every step left a trail, and they followed it straight to you.'),
-      T('Zero', 'narrator', "In Ledger City that happens to people every night. It doesn't have to happen to you."),
-      T('Zero', 'narrator', "I'm Zero. Let me help. We're going back to the start of the night."),
+      T('Zero', 'narrator', '...There you are.'),
+      T('Zero', 'narrator', "Well. That was hard to watch. Even for me, and I've watched this city a long time."),
+      T('Zero', 'narrator', 'You were paid in a city made of glass, and your first instinct was to hold the money up to the light.'),
+      T('Zero', 'narrator', 'Address. Amount. Time. Place. You handed them a *map*, then acted surprised when they read it.'),
+      T('Zero', 'narrator', "I'm not angry. It happens to ten thousand people a night. You just happen to be the one I've decided to help."),
+      T('Zero', 'narrator', "Call me *Zero*. That's exactly how much they'll know about you when we're done. Let's start the night again."),
     ]);
     this.c.sfx.rewind();
     this.c.glitch(2);
@@ -174,6 +175,10 @@ export class Story {
     this.s.wallet.created = true;
     if (beat === 'payday') {
       this.payday();
+      return;
+    }
+    if (beat === 'void') {
+      this.voidTalk();
       return;
     }
     this.s.wallet.shielded = 5;
@@ -235,7 +240,7 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "Same night, second try. The payment lands soon. This time, set up a proper wallet first. Open it.",
+      "Same night. Same rain. Same people watching. The only thing that changed is you. Open the wallet.",
     );
     this.c.sfx.buzz();
     phone.el.classList.add('nudge');
@@ -253,7 +258,7 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      'Those 24 words ARE your money. Nobody legit will ever ask for them. Not me, not a website, not "support".',
+      'Twenty-four words. Your whole fortune, in a language thieves would kill to read. Never let anyone read it. Not me. Especially not people who ask nicely.',
     );
     await sleep(2600);
     this.payday();
@@ -285,8 +290,8 @@ export class Story {
     this.c.sfx.alarm();
     hud.lesson('Transparent = public', 'Money sent to a transparent (t1…) address shows its amount, time and address to anyone watching the blockchain.');
     await hud.say([
-      T('The Tailor', 'tailor', 'Fresh money on the public ledger. *Five ZEC*, just landed on Ave & 4th.', true),
-      T('The Tailor', 'tailor', "Public address, public amount, public time. Somebody's carrying it. Wake the drones.", true),
+      T('The Tailor', 'tailor', 'Fresh money on the public ledger. *Five ZEC*, Ave & 4th. Someone just lit a candle in a dark room.', true),
+      T('The Tailor', 'tailor', "Public address. Public amount. Public time. They might as well have mailed us an invitation. Wake the drones.", true),
     ]);
     await this.turnTo(30, 40, 700);
     player.frozen = false;
@@ -298,7 +303,7 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "Here they come again. Money in your transparent pocket is public, like a glass wallet. That's how they found you last time. Open your wallet and hold SHIELD. Now.",
+      "And there it is. Five ZEC on a transparent address, glowing like a lighthouse. That's how they found you last time. Open the wallet and hold SHIELD. Let's turn the lights off.",
     );
     phone.el.classList.add('nudge');
     this.spawnLookouts();
@@ -341,8 +346,8 @@ export class Story {
     hud.lesson('Shielded = private', 'Shielding moves ZEC into the shielded pool. The chain shows money went in, and nothing about where it goes next.');
     await sleep(1600);
     await hud.say([
-      T('The Tailor', 'tailor', `...lost it. ${fmtZec(amt)} went into the shielded pool at ${fmtClock(this.s.clock)}. After that: nothing.`, true),
-      T('The Tailor', 'tailor', "Keep watching the pool. Whatever goes in has to come out someday. Match the amounts.", true),
+      T('The Tailor', 'tailor', `...gone. ${fmtZec(amt)} slipped into the shielded pool at ${fmtClock(this.s.clock)}, and the pool doesn't gossip. Pity.`, true),
+      T('The Tailor', 'tailor', "Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.", true),
     ]);
     this.errands();
   }
@@ -355,14 +360,14 @@ export class Story {
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "Good. Now live your night like a normal person. Coffee at Nullstate, Mika owes you money at the arcade, and rent's due at Cobalt Exchange. Cobalt only takes public money, so be careful there.",
+      "Better. Now live. Coffee at Nullstate. Mika owes you at the arcade. Rent at Cobalt, and Cobalt only takes public money, so tread lightly there. This city adores a pattern.",
     );
     await sleep(2500);
     phone.message(
       SAINT.id,
       SAINT.name,
       SAINT.role,
-      "PS: the big screen over the street shows the REAL Zcash network, live. Look how much of it is blacked out.",
+      "Look up at the big screen over the street. That's the real Zcash network, breathing. Notice how much of it simply isn't there.",
       { silent: true },
     );
     this.updateObjective();
@@ -534,7 +539,7 @@ export class Story {
       this.c.drones.hunt();
       await hud.say([
         T('The Tailor', 'tailor', `Pool exit: *${m.why}*. Only ${m.others} other exits in that window.`, true),
-        T('The Tailor', 'tailor', "Same money, barely moved. That's our ghost, standing at Cobalt. Go.", true),
+        T('The Tailor', 'tailor', "Same money, barely rinsed. Our ghost is standing at Cobalt, admiring the view. Go.", true),
       ]);
       this.s.trace = { left: 8, total: 8, reason: 'amount + timing match' };
       for (const l of this.lookouts) this.c.npcs.send(l, this.c.player.x, this.c.player.z);
@@ -543,10 +548,10 @@ export class Story {
       this.c.sfx.good();
       hud.lesson('Unshield carefully', 'Leaving the pool is public. Take out only what you need, not right after shielding, and not the same amount.');
       await hud.say([
-        T('The Tailor', 'tailor', `Pool exit: ${fmtZec(amount)} to Cobalt. ${m.others} exits tonight, none of them look like our five. Could be anyone.`, true),
+        T('The Tailor', 'tailor', `Pool exit: ${fmtZec(amount)} to Cobalt. ${m.others} exits tonight, and none of them look like our five. Could be anyone. I hate anyone.`, true),
         T('Cobalt clerk', 'landlord', 'Rent received. Have a good night.'),
       ]);
-      phone.message(SAINT.id, SAINT.name, SAINT.role, 'Clean. You only took out what you needed, and it didn\'t look like what went in. That\'s how you stay invisible.');
+      phone.message(SAINT.id, SAINT.name, SAINT.role, 'Small. Late. Different. Three words that keep people whole in this city. Well done.');
       this.updateObjective();
     }
   }
@@ -647,7 +652,7 @@ export class Story {
       this.c.boards.face = { role: 'you_bare', mode: 'static' };
       for (const l of this.lookouts) l.wander = true;
       this.updateObjective();
-      phone.message(SAINT.id, SAINT.name, SAINT.role, 'Rewound. Talk to the clerk again, and only take out the rent.');
+      phone.message(SAINT.id, SAINT.name, SAINT.role, 'Five went in, five came out. You might as well have signed it. Again. Only the rent this time.');
     } else {
       this.s.trace = { left: 45, total: 45, reason: 'public pocket' };
       this.c.drones.hunt();
@@ -673,8 +678,8 @@ export class Story {
       await sleep(60);
     }
     await hud.say([
-      T('The Tailor', 'tailor', "Sun's up. What've we got on the five-ZEC ghost?", true),
-      T('The Tailor', 'tailor', 'An address that went empty at 18:14. That\'s it. Close the file.', true),
+      T('The Tailor', 'tailor', "Sun's up. Tell me something about our five-ZEC ghost.", true),
+      T('The Tailor', 'tailor', 'An address that went quiet at 18:14. That\'s all? ...Close the file. I despise a blank page.', true),
     ]);
     const priv = this.s.txs.filter((t) => t.pocket === 'shielded').length;
     await hud.card({
@@ -687,8 +692,9 @@ export class Story {
       button: 'Continue',
     });
     await hud.say([
-      T('Zero', 'narrator', 'You were never hiding. You were just private. Like cash, like a closed door.'),
-      T('Zero', 'narrator', 'Everything you did tonight works the same way in a real wallet. Same buttons.'),
+      T('Zero', 'narrator', 'They hunted you all night and found a ghost. How does it feel to be nobody?'),
+      T('Zero', 'narrator', 'You were never hiding. Hiding is for the guilty. You were simply *private*. Like a sealed letter. Like a closed door.'),
+      T('Zero', 'narrator', 'Everything you did tonight works the same in a real wallet. Same buttons. Same silence. Go on, the real city is waiting.'),
     ]);
     (window as any).__showReal?.();
   }
@@ -729,7 +735,7 @@ export class Story {
     }
     if (s.beat === 'errands' && s.errands.cafe && s.errands.friend && s.errands.exchange) {
       s.beat = 'dawn';
-      this.c.phone.message(SAINT.id, SAINT.name, SAINT.role, "That's the night. Go home. The Tailors have nothing.");
+      this.c.phone.message(SAINT.id, SAINT.name, SAINT.role, "Dawn's coming. Go home. The Tailors are holding an empty file, and it's driving them mad.");
       this.updateObjective();
     }
     if (s.beat === 'errands' && Math.random() < dt * 0.5) this.updateObjective();
