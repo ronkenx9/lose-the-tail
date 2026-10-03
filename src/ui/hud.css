@@ -90,3 +90,4 @@
 .lesson span { display: block; margin-top: 4px; font-size: 14px; line-height: 1.45; color: #cfe9da; }
 @media (max-width: 760px) { .lesson { top: 16%; } .lesson b { font-size: 13px; } .lesson span { font-size: 13px; } }
 .card-art { width: calc(100% + 52px); margin: 6px -26px 8px; max-width: none; display: block; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.zero-says { color: #e9f2ec; border-left: 2px solid #fff; padding-left: 10px; text-align: left; }

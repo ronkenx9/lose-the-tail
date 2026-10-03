@@ -196,6 +196,7 @@ export class Story {
       this.s.beat = 'errands';
       return;
     }
+    phone.message(SAINT.id, SAINT.name, SAINT.role, 'Feel that? Every eye in this city just lost focus at the same time. Delicious.', { silent: true });
     this.errands();
   }
 
@@ -290,6 +291,7 @@ export class Story {
     this.c.sfx.alarm();
     hud.lesson('Transparent = public', 'Money sent to a transparent (t1…) address shows its amount, time and address to anyone watching the blockchain.');
     await hud.say([
+      ...(this.s.loop >= 2 ? [T('The Tailor', 'tailor', 'Strange. I have the oddest feeling we have done this before.', true)] : []),
       T('The Tailor', 'tailor', 'Fresh money on the public ledger. *Five ZEC*, Ave & 4th. Someone just lit a candle in a dark room.', true),
       T('The Tailor', 'tailor', "Public address. Public amount. Public time. They might as well have mailed us an invitation. Wake the drones.", true),
     ]);
@@ -519,6 +521,7 @@ export class Story {
         ]);
         this.setContacts([]);
         this.updateObjective();
+        phone.message(SAINT.id, SAINT.name, SAINT.role, 'A note only one person alive can read. Romantic, really. The ledger saw a payment happen and learned nothing else.');
       }
       return;
     }
@@ -585,6 +588,7 @@ export class Story {
     this.s.errands.friend = true;
     await sleep(800);
     await hud.say([T('Mika', 'friend', 'Only you can read the note. To everyone else it\'s just... nothing happened. Love that.')]);
+    phone.message(SAINT.id, SAINT.name, SAINT.role, "Money arrived and nobody noticed. That's the trick. Not invisibility. Indifference.");
     this.busy = false;
     this.updateObjective();
   }
@@ -623,8 +627,8 @@ export class Story {
     const cp = this.cp!;
     const lesson =
       cp.beat === 'exchange'
-        ? '<p>You shielded 5 ZEC, then took almost all of it straight back out. The amount going <b>in</b> and the amount coming <b>out</b> are public. Matching them is easy.</p><p><b>Fix:</b> only take out what you need (rent is 1.20), and don\'t do it right after shielding.</p>'
-        : '<p>Money sitting in your <b>transparent</b> pocket is public: address, amount, time. That\'s all they needed.</p><p><b>Fix:</b> shield it as soon as it arrives. Wallet → Shield → hold.</p>';
+        ? '<p>You shielded 5 ZEC, then took almost all of it straight back out. What goes <b>in</b> and what comes <b>out</b> of the pool are public. Matching them is child\'s play.</p><p class="zero-says">Zero: <i>“Five in, five out. You might as well have signed it. Take only what you need, and take it later.”</i></p>'
+        : '<p>Money sitting in your <b>transparent</b> pocket is public: address, amount, time. That was all they needed.</p><p class="zero-says">Zero: <i>“Glass pockets, again. Shield it the moment it lands. Wallet, Shield, hold.”</i></p>';
     await hud.card({
       kicker: 'TAILOR & CO.',
       title: 'Found you.',
