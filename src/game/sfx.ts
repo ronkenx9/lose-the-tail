@@ -215,6 +215,11 @@ export class Sfx {
   ui() {
     this.tone(880, 0.06, 'square', 0.05);
   }
+  /** glass door sliding open: a soft pneumatic whoosh + chime */
+  door() {
+    this.tone(320, 0.35, 'sine', 0.03, -180);
+    this.tone(1760, 0.18, 'triangle', 0.025, 0, 0.05);
+  }
   private noiseBuf: AudioBuffer | null = null;
   /** a footstep: short filtered noise thump */
   footstep(vol = 0.08, rate = 1) {

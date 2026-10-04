@@ -5,6 +5,7 @@ import { createStage } from './engine/scene';
 import { Player } from './engine/player';
 import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { buildVoid } from './engine/voidworld';
+import { Doors } from './engine/doors';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
 import { Drones } from './engine/drones';
@@ -100,6 +101,7 @@ async function boot() {
       blackEl.classList.toggle('on', on);
       setTimeout(res, 950);
     });
+  const doors = new Doors(stage.scene, city.doors);
   // people in the world
   const intro = new Intro(stage.scene, stage.camera, player, city.bed, { x: 5, z: 33 });
   intro.onPulse = () => sfx.buzz();
@@ -401,6 +403,12 @@ async function boot() {
     runUi.classList.toggle('on', started && !inVoid && !intro.active && (crew.mode === 'hunt' || matchMedia('(pointer: coarse)').matches));
     runUi.classList.toggle('low', player.stamina < 0.25);
     stamBar.style.transform = `scaleX(${player.stamina})`;
+    // storefront doors part for anyone walking up
+    if (!inVoid) {
+      const ppl: { x: number; z: number }[] = [player];
+      for (const n of npcs.list) if (Math.abs(n.x - player.x) < 30 && Math.abs(n.z - player.z) < 30) ppl.push(n);
+      if (doors.update(dt, ppl, player)) sfx.door();
+    }
     // footsteps: yours, and theirs getting louder as they close in
     const ph = Math.floor(player.bobT / Math.PI);
     if (ph !== stepPhase) {

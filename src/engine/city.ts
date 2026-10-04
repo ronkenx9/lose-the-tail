@@ -92,6 +92,12 @@ interface Building {
   style: 'office' | 'brick' | 'glass' | 'black';
 }
 
+export interface Door {
+  line: 'x' | 'z';
+  at: number;
+  door0: number;
+}
+
 export interface City {
   world: VoxelWorld;
   signs: SignSpec[];
@@ -103,6 +109,8 @@ export interface City {
   tags: Tag[];
   decals: Decal[];
   steam: { x: number; z: number }[];
+  /** sliding glass doors on each storefront */
+  doors: Door[];
   props: PropSpec[];
   bed: { x: number; z: number };
 }
@@ -273,6 +281,7 @@ export function buildCity(): City {
 
   // ---- landmarks ----
   const stations: Record<string, Station> = {};
+  const doors: Door[] = [];
 
   // door helper: on face at (x,z) facing dir, 2 wide 3 high, awning + lamp
   const door = (x: number, z: number, facing: Facing, mat: number, awn: number) => {
@@ -300,6 +309,7 @@ export function buildCity(): City {
   };
   // storefront: glass along a facade line with a 2-wide doorway and an awning light outside
   const front = (line: 'x' | 'z', at: number, from: number, to: number, door0: number, outDir: 1 | -1, awn: number, sill = 0) => {
+    doors.push({ line, at, door0 });
     for (let t = from; t <= to; t++) {
       const isDoor = t === door0 || t === door0 + 1;
       for (let y = 1; y <= 3; y++) {
@@ -311,6 +321,7 @@ export function buildCity(): City {
     }
   };
   const P = (kind: string, x: number, z: number, rot = 0, extra: Partial<PropSpec> = {}) => props.push({ kind, x, z, rot, ...extra });
+  void P;
 
   // HOME — apartment 4B (NW lot), facade z=41, door x 9..10
   room(3, 33, 11, 40, B.FLOOR_WOOD, B.CEIL_WARM, 4, B.PLASTER);
@@ -555,5 +566,5 @@ export function buildCity(): City {
     for (let z = 0; z < SZ; z++) walk[x + z * SX] = w.solid(x, 0, z) && !w.solid(x, 1, z) && !w.solid(x, 2, z) ? 1 : 0;
   for (const pr of props) for (const [cx, cz] of propCells(pr)) if (cx >= 0 && cz >= 0 && cx < SX && cz < SZ) walk[cx + cz * SX] = 0;
 
-  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 5.5, z: 35.5, yaw: Math.PI * 0.85 }, tags, decals, steam, props, bed: { x: 4.5, z: 33.6 } };
+  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 5.5, z: 35.5, yaw: Math.PI * 0.85 }, tags, decals, steam, props, doors, bed: { x: 4.5, z: 33.6 } };
 }

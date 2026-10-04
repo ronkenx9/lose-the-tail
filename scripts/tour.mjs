@@ -109,6 +109,17 @@ if (steps.includes('errands')) {
     await shot(`${n}-${id}`);
   }
 }
+if (steps.includes('doors')) {
+  await page.goto(URL + '?debug=errands');
+  await page.waitForFunction(() => window.__game);
+  await sleep(800);
+  await ev(() => { const g = window.__game; g.player.x = 85; g.player.z = 49.5; g.player.yaw = Math.PI; g.player.pitch = 0; });
+  await sleep(1200);
+  await shot('50-door-closed');
+  await ev(() => { const g = window.__game; g.player.goTo(85, 53); });
+  await sleep(1200);
+  await shot('51-door-open');
+}
 if (steps.includes('ending')) {
   await page.goto(URL + '?debug=dawn');
   await page.waitForFunction(() => window.__game);
