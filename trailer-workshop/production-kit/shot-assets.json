@@ -1,0 +1,255 @@
+[
+  {
+    "shot": "S01",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/01-incoming-call.png",
+      "continuity/bedroom.png"
+    ]
+  },
+  {
+    "shot": "S02",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/02-create-wallet.png",
+      "screens/03-secure-backup.png",
+      "screens/04-transparent-receive.png",
+      "screens/05-request-shared-rook.png",
+      "branding/practice-disclosure.png",
+      "continuity/bedroom.png"
+    ]
+  },
+  {
+    "shot": "S03",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/06-rook-payment-received.png",
+      "branding/practice-disclosure.png",
+      "continuity/bedroom.png"
+    ]
+  },
+  {
+    "shot": "S04",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/6306-auntie-node.png",
+      "references/originals/6306.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S05",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/6306-auntie-node.png",
+      "references/originals/6306.png",
+      "screens/07-public-cafe-review.png",
+      "screens/08-public-cafe-submitted.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S06",
+    "files": [
+      "references/fullbody/3583-tailor.png",
+      "references/originals/3583.png",
+      "monitors/01-public-clue.png",
+      "continuity/props.png"
+    ]
+  },
+  {
+    "shot": "S07",
+    "files": [
+      "references/fullbody/320-needle.png",
+      "references/originals/320.png",
+      "references/fullbody/1200-hem.png",
+      "references/originals/1200.png",
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S08",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/320-needle.png",
+      "references/originals/320.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S09",
+    "files": [
+      "cards/01-you-died.png"
+    ]
+  },
+  {
+    "shot": "S10",
+    "files": [
+      "references/fullbody/5838-zero.png",
+      "references/originals/5838.png",
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "continuity/void.png"
+    ]
+  },
+  {
+    "shot": "S11",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/5838-zero.png",
+      "references/originals/5838.png",
+      "continuity/void.png"
+    ]
+  },
+  {
+    "shot": "S12",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/09-shield-review.png",
+      "screens/10-shield-submitted.png",
+      "screens/11-shield-confirmed.png",
+      "continuity/bedroom.png"
+    ]
+  },
+  {
+    "shot": "S13",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/12-unshield-warning.png",
+      "screens/13-unshield-submitted.png",
+      "continuity/exchange.png"
+    ]
+  },
+  {
+    "shot": "S14",
+    "files": [
+      "references/fullbody/3583-tailor.png",
+      "references/originals/3583.png",
+      "monitors/02-possible-match.png",
+      "continuity/props.png"
+    ]
+  },
+  {
+    "shot": "S15",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/1200-hem.png",
+      "references/originals/1200.png",
+      "references/fullbody/320-needle.png",
+      "references/originals/320.png",
+      "continuity/exchange.png"
+    ]
+  },
+  {
+    "shot": "S16",
+    "files": [
+      "cards/02-you-died-again.png"
+    ]
+  },
+  {
+    "shot": "S17",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/14-shielded-request.png",
+      "screens/15-shielded-request-shared.png",
+      "continuity/bedroom.png"
+    ]
+  },
+  {
+    "shot": "S18",
+    "files": [
+      "references/fullbody/2304-mika.png",
+      "references/originals/2304.png",
+      "screens/16-mika-send-review.png",
+      "screens/17-mika-send-submitted.png",
+      "continuity/arcade.png"
+    ]
+  },
+  {
+    "shot": "S19",
+    "files": [
+      "references/fullbody/2304-mika.png",
+      "references/originals/2304.png",
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "continuity/arcade.png"
+    ]
+  },
+  {
+    "shot": "S20",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/18-niko-shielded-receipt.png",
+      "continuity/arcade.png"
+    ]
+  },
+  {
+    "shot": "S21",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "references/fullbody/6306-auntie-node.png",
+      "references/originals/6306.png",
+      "screens/19-private-cafe-review.png",
+      "screens/20-private-cafe-submitted.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S22",
+    "files": [
+      "references/fullbody/6306-auntie-node.png",
+      "references/originals/6306.png",
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "screens/21-auntie-receipt.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S23",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S24",
+    "files": [
+      "references/fullbody/3583-tailor.png",
+      "references/originals/3583.png",
+      "monitors/03-no-new-details.png",
+      "continuity/props.png"
+    ]
+  },
+  {
+    "shot": "S25",
+    "files": [
+      "references/fullbody/9701-niko.png",
+      "references/originals/9701.png",
+      "branding/game-title-transparent.png",
+      "continuity/cafe.png"
+    ]
+  },
+  {
+    "shot": "S26",
+    "files": [
+      "cards/03-end-card.png"
+    ]
+  }
+]

@@ -1,154 +1,331 @@
 {
- "1itf2ae": {
-  "who": "The Tailor",
-  "dur": 6.78
- },
- "ut67yf": {
-  "who": "The Tailor",
-  "dur": 6.83
- },
- "q8iuyv": {
-  "who": "The Tailor",
-  "dur": 1.9
- },
- "bb3ta2": {
-  "who": "Zero",
-  "dur": 1.16
- },
- "5e5d6i": {
-  "who": "Zero",
-  "dur": 4.69
- },
- "v81vqn": {
-  "who": "Zero",
-  "dur": 5.62
- },
- "j0g97n": {
-  "who": "Zero",
-  "dur": 5.66
- },
- "13idjzf": {
-  "who": "Zero",
-  "dur": 6.73
- },
- "118etbj": {
-  "who": "Zero",
-  "dur": 6.12
- },
- "bxdokh": {
-  "who": "The Tailor",
-  "dur": 3.99
- },
- "gzbjv9": {
-  "who": "The Tailor",
-  "dur": 7.2
- },
- "43k024": {
-  "who": "The Tailor",
-  "dur": 7.24
- },
- "1vibxm9": {
-  "who": "The Tailor",
-  "dur": 6.92
- },
- "1r3jpzp": {
-  "who": "The Tailor",
-  "dur": 6.18
- },
- "1d1x01n": {
-  "who": "Courier",
-  "dur": 4.41
- },
- "dxpdfj": {
-  "who": "Courier",
-  "dur": 5.48
- },
- "18lrk8i": {
-  "who": "Barista",
-  "dur": 4.55
- },
- "546pqe": {
-  "who": "Barista",
-  "dur": 5.29
- },
- "jsp34r": {
-  "who": "Mika",
-  "dur": 3.67
- },
- "payxkj": {
-  "who": "Mika",
-  "dur": 1.86
- },
- "17d076u": {
-  "who": "Cobalt clerk",
-  "dur": 5.81
- },
- "1tss6tf": {
-  "who": "Cobalt clerk",
-  "dur": 8.17
- },
- "17pvjaj": {
-  "who": "Courier",
-  "dur": 5.67
- },
- "24y20e": {
-  "who": "Courier",
-  "dur": 6.13
- },
- "1lviy4k": {
-  "who": "Barista",
-  "dur": 4.41
- },
- "1e2o7h4": {
-  "who": "The Tailor",
-  "dur": 7.76
- },
- "5lhh45": {
-  "who": "The Tailor",
-  "dur": 6.22
- },
- "v8nmud": {
-  "who": "Cobalt clerk",
-  "dur": 2.32
- },
- "173l4or": {
-  "who": "Mika",
-  "dur": 7.24
- },
- "k1lsj8": {
-  "who": "Mika",
-  "dur": 2.6
- },
- "1ptvqzy": {
-  "who": "Mika",
-  "dur": 2.32
- },
- "19xg0qe": {
-  "who": "Mika",
-  "dur": 6.59
- },
- "kd53mr": {
-  "who": "Courier",
-  "dur": 5.67
- },
- "1u1fzsc": {
-  "who": "The Tailor",
-  "dur": 3.58
- },
- "oxq34e": {
-  "who": "The Tailor",
-  "dur": 6.69
- },
- "1fmc57y": {
-  "who": "Zero",
-  "dur": 4.97
- },
- "svfpaa": {
-  "who": "Zero",
-  "dur": 7.1
- },
- "1cvo63f": {
-  "who": "Zero",
-  "dur": 8.27
- }
+  "1y3n94f": {
+    "who": "Rook",
+    "text": "Your five ZEC is in. Good work. Go treat yourself.",
+    "dur": 4.16,
+    "voice_id": "kIdaq3mPZbYm2kpFTtYI",
+    "model_id": "eleven_v4"
+  },
+  "oykhav": {
+    "who": "Niko",
+    "text": "Now that's worth getting up for.",
+    "dur": 2.64,
+    "voice_id": "LEvd0YiWkwZ6hTZOmdVE",
+    "model_id": "eleven_v4"
+  },
+  "1xbp928": {
+    "who": "The Tailor",
+    "text": "Our five-ZEC friend just bought noodles. Plaza kiosk. People are so generous with their secrets.",
+    "dur": 6.96,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "11e995d": {
+    "who": "The Tailor",
+    "text": "Five ZEC, sitting on a public address near Ave & 4th, waiting like an open door. Go collect.",
+    "dur": 6.8,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "1il9oht": {
+    "who": "The Tailor",
+    "text": "Quietly, please. Take them.",
+    "dur": 2.72,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "16tqnc3": {
+    "who": "Needle",
+    "text": "There you are. Five ZEC, and you went straight for noodles. Nice.",
+    "dur": 5.92,
+    "voice_id": "IRHApOXLvnW57QJPQH2P",
+    "model_id": "eleven_v4"
+  },
+  "1if5qc": {
+    "who": "Needle",
+    "text": "Still here? Five ZEC in your pocket, and nowhere to hide. Nice.",
+    "dur": 5.68,
+    "voice_id": "IRHApOXLvnW57QJPQH2P",
+    "model_id": "eleven_v4"
+  },
+  "l6d6j4": {
+    "who": "Zero",
+    "text": "...There you are.",
+    "dur": 1.2,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "udf5s4": {
+    "who": "Zero",
+    "text": "Well. That was hard to watch. Even for me, and I've watched this city a long time.",
+    "dur": 6,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1htlwr9": {
+    "who": "Zero",
+    "text": "You were paid in a city made of glass, and your first instinct was to hold the money up to the light.",
+    "dur": 5.6,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "13ck8e1": {
+    "who": "Zero",
+    "text": "Address. Amount. Time. Place. You handed them a *map*, then acted surprised when they read it.",
+    "dur": 7.12,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "87kobt": {
+    "who": "Zero",
+    "text": "I'm not angry. It happens to ten thousand people a night. You just happen to be the one I've decided to help.",
+    "dur": 6.08,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "fpbil9": {
+    "who": "Zero",
+    "text": "Call me *Zero*. That's exactly how much they'll know about you when we're done. Let's start the night again.",
+    "dur": 5.68,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "ygbplv": {
+    "who": "The Tailor",
+    "text": "Strange. I have the oddest feeling we have done this before.",
+    "dur": 4.48,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "nox9ff": {
+    "who": "The Tailor",
+    "text": "Fresh money on the public ledger. *Five ZEC*, Ave & 4th. Someone just lit a candle in a dark room.",
+    "dur": 7.6,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "7xlzi6": {
+    "who": "The Tailor",
+    "text": "Public address. Public amount. Public time. They might as well have mailed us an invitation. Wake the drones.",
+    "dur": 7.2,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "am30nb": {
+    "who": "The Tailor",
+    "text": "...Gone. Five ZEC slipped into the shielded pool, and the pool doesn't gossip. Pity.",
+    "dur": 7.12,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "1grk94v": {
+    "who": "The Tailor",
+    "text": "Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.",
+    "dur": 6.72,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "ns7q0y": {
+    "who": "Courier",
+    "text": "Noodles? *0.3 ZEC*. Just send it to my address.",
+    "dur": 4.4,
+    "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+    "model_id": "eleven_v4"
+  },
+  "gh4f3k": {
+    "who": "Courier",
+    "text": "Not now, you're lit up like a billboard. Shield first, then come talk to me.",
+    "dur": 5.6,
+    "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+    "model_id": "eleven_v4"
+  },
+  "1i3jnsi": {
+    "who": "Auntie Node",
+    "text": "Welcome to Nullstate. Shielded payments only. We don't keep a glass register.",
+    "dur": 5.52,
+    "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
+    "model_id": "eleven_v4"
+  },
+  "elytae": {
+    "who": "Auntie Node",
+    "text": "Coffee is *0.02 ZEC*. Leave a note in the memo if you like. Only I can read it.",
+    "dur": 6.16,
+    "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
+    "model_id": "eleven_v4"
+  },
+  "1qr0zop": {
+    "who": "Mika",
+    "text": "There you are! I owe you *0.5 ZEC* for the pizza.",
+    "dur": 4.16,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "hj37p1": {
+    "who": "Mika",
+    "text": "Show me your address and I'll send it.",
+    "dur": 2.4,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "ec8q2k": {
+    "who": "Cobalt clerk",
+    "text": "Cobalt Exchange. Rent, cash-outs, anything that needs to be public.",
+    "dur": 4.64,
+    "voice_id": "onwK4e9ZLuTAKqWW03F9",
+    "model_id": "eleven_v4"
+  },
+  "yresu9": {
+    "who": "Cobalt clerk",
+    "text": "Your rent is *1.20 ZEC*, paid to our transparent address. Want to cash out anything else while you're here?",
+    "dur": 7.36,
+    "voice_id": "onwK4e9ZLuTAKqWW03F9",
+    "model_id": "eleven_v4"
+  },
+  "1qvn4iu": {
+    "who": "Courier",
+    "text": "Psst. Got coins on another chain? I swap them straight into *shielded* ZEC.",
+    "dur": 4.96,
+    "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+    "model_id": "eleven_v4"
+  },
+  "te68rn": {
+    "who": "Courier",
+    "text": "Fresh coins that never touched the glass. The real Zodl app does this with its Swap button.",
+    "dur": 6.4,
+    "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+    "model_id": "eleven_v4"
+  },
+  "1sh4olp": {
+    "who": "The Tailor",
+    "text": "Nice hood. Seen a fella with five ZEC? No? Didn't think so.",
+    "dur": 5.04,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "17k5gk0": {
+    "who": "The Tailor",
+    "text": "Evening. Nice night to be... visible.",
+    "dur": 3.6,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "197pc0r": {
+    "who": "Auntie Node",
+    "text": "Got it. I can read your private note. Coffee is on the counter.",
+    "dur": 4.08,
+    "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
+    "model_id": "eleven_v4"
+  },
+  "1hqdxia": {
+    "who": "Auntie Node",
+    "text": "Got it. Coffee's on the counter.",
+    "dur": 2.24,
+    "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
+    "model_id": "eleven_v4"
+  },
+  "1mxvbr8": {
+    "who": "Auntie Node",
+    "text": "On the public chain that payment is just a blur. No amount, no names.",
+    "dur": 5.6,
+    "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
+    "model_id": "eleven_v4"
+  },
+  "1kkotgi": {
+    "who": "The Tailor",
+    "text": "Pool exit. Almost exactly what went in, and barely any time later. Hardly anyone else left the pool in that window.",
+    "dur": 8,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "1q7bsk7": {
+    "who": "The Tailor",
+    "text": "Same money, barely rinsed. Our ghost is standing at Cobalt, admiring the view. Go.",
+    "dur": 6.48,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "dbi44a": {
+    "who": "The Tailor",
+    "text": "Another pool exit to Cobalt. Plenty of exits tonight, and none of them look like our five. Could be anyone. I hate anyone.",
+    "dur": 8.72,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "1tse6xv": {
+    "who": "Cobalt clerk",
+    "text": "Rent received. Have a good night.",
+    "dur": 2.4,
+    "voice_id": "onwK4e9ZLuTAKqWW03F9",
+    "model_id": "eleven_v4"
+  },
+  "15054pp": {
+    "who": "Mika",
+    "text": "Hm, that's your *transparent* address. If I pay that, the whole city sees it on the ledger, and the Tailors get your address again.",
+    "dur": 7.92,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "b2b2xe": {
+    "who": "Mika",
+    "text": "Got a shielded one? Starts with *u1*.",
+    "dur": 2.96,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "y676xc": {
+    "who": "Mika",
+    "text": "Shielded. Perfect. Sending now.",
+    "dur": 2.72,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "1qjwqa0": {
+    "who": "Mika",
+    "text": "Only you can read the note. To everyone else it's just... nothing happened. Love that.",
+    "dur": 6.08,
+    "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "jfbz7g": {
+    "who": "Courier",
+    "text": "Pleasure. The coins you swapped FROM are still public on their own chain, remember that.",
+    "dur": 5.76,
+    "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+    "model_id": "eleven_v4"
+  },
+  "ip59mq": {
+    "who": "The Tailor",
+    "text": "Sun's up. Tell me something about our five-ZEC ghost.",
+    "dur": 3.76,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "132x948": {
+    "who": "The Tailor",
+    "text": "An address that went quiet at 18:14. That's all? ...Close the file. I despise a blank page.",
+    "dur": 7.36,
+    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "yl5z34": {
+    "who": "Zero",
+    "text": "They hunted you all night and found a ghost. How does it feel to be nobody?",
+    "dur": 4.96,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "zf4fz8": {
+    "who": "Zero",
+    "text": "You were never hiding. Hiding is for the guilty. You were simply *private*. Like a sealed letter. Like a closed door.",
+    "dur": 7.52,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "15yzfrt": {
+    "who": "Zero",
+    "text": "Everything you did tonight works the same in a real wallet. Same buttons. Same silence. Go on, the real city is waiting.",
+    "dur": 7.92,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  }
 }

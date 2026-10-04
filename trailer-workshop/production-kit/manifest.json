@@ -1,0 +1,306 @@
+[
+  {
+    "file": "screens/01-incoming-call.png",
+    "shots": [
+      "S01"
+    ],
+    "description": "Incoming call",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/02-create-wallet.png",
+    "shots": [
+      "S02"
+    ],
+    "description": "Practice wallet",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/03-secure-backup.png",
+    "shots": [
+      "S02"
+    ],
+    "description": "Secure backup",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/04-transparent-receive.png",
+    "shots": [
+      "S02"
+    ],
+    "description": "Transparent address",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/05-request-shared-rook.png",
+    "shots": [
+      "S02"
+    ],
+    "description": "Ready for Rook",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/06-rook-payment-received.png",
+    "shots": [
+      "S03"
+    ],
+    "description": "+5 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/07-public-cafe-review.png",
+    "shots": [
+      "S05"
+    ],
+    "description": "0.03 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/08-public-cafe-submitted.png",
+    "shots": [
+      "S05"
+    ],
+    "description": "0.03 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/09-shield-review.png",
+    "shots": [
+      "S12"
+    ],
+    "description": "Shield funds",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/10-shield-submitted.png",
+    "shots": [
+      "S12"
+    ],
+    "description": "Processing",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/11-shield-confirmed.png",
+    "shots": [
+      "S12"
+    ],
+    "description": "Shielded balance",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/12-unshield-warning.png",
+    "shots": [
+      "S13"
+    ],
+    "description": "4.90 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/13-unshield-submitted.png",
+    "shots": [
+      "S13"
+    ],
+    "description": "4.90 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/14-shielded-request.png",
+    "shots": [
+      "S17"
+    ],
+    "description": "SHIELDED",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/15-shielded-request-shared.png",
+    "shots": [
+      "S17"
+    ],
+    "description": "Ready for Mika",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/16-mika-send-review.png",
+    "shots": [
+      "S18"
+    ],
+    "description": "0.02 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/17-mika-send-submitted.png",
+    "shots": [
+      "S18"
+    ],
+    "description": "0.02 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/18-niko-shielded-receipt.png",
+    "shots": [
+      "S20"
+    ],
+    "description": "+0.02 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/19-private-cafe-review.png",
+    "shots": [
+      "S21"
+    ],
+    "description": "0.03 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/20-private-cafe-submitted.png",
+    "shots": [
+      "S21"
+    ],
+    "description": "0.03 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "screens/21-auntie-receipt.png",
+    "shots": [
+      "S22"
+    ],
+    "description": "0.03 ZEC",
+    "width": 1080,
+    "height": 1920
+  },
+  {
+    "file": "monitors/01-public-clue.png",
+    "shots": [
+      "S06"
+    ],
+    "description": "CASE 01 / PUBLIC TRAIL",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "monitors/02-possible-match.png",
+    "shots": [
+      "S14"
+    ],
+    "description": "CASE 01 / BOUNDARY OBSERVATIONS",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "monitors/03-no-new-details.png",
+    "shots": [
+      "S24"
+    ],
+    "description": "CASE 01 / LEAD ENDS",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "cards/01-you-died.png",
+    "shots": [
+      "S09"
+    ],
+    "description": "YOU DIED.",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "cards/02-you-died-again.png",
+    "shots": [
+      "S16"
+    ],
+    "description": "YOU DIED. AGAIN.",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "cards/03-end-card.png",
+    "shots": [
+      "S26"
+    ],
+    "description": "Final five-second card",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "branding/game-title-transparent.png",
+    "shots": [
+      "S25"
+    ],
+    "description": "Transparent typeset game title; not official Zcash logo",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "branding/practice-disclosure.png",
+    "shots": [
+      "S02",
+      "S03"
+    ],
+    "description": "Lower-corner disclosure overlay",
+    "width": 1400,
+    "height": 120
+  },
+  {
+    "file": "continuity/bedroom.png",
+    "shots": [],
+    "description": "bedroom continuity rules",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "continuity/cafe.png",
+    "shots": [],
+    "description": "cafe continuity rules",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "continuity/exchange.png",
+    "shots": [],
+    "description": "exchange continuity rules",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "continuity/arcade.png",
+    "shots": [],
+    "description": "arcade continuity rules",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "continuity/void.png",
+    "shots": [],
+    "description": "void continuity rules",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "file": "continuity/props.png",
+    "shots": [],
+    "description": "props continuity rules",
+    "width": 1920,
+    "height": 1080
+  }
+]

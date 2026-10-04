@@ -38,7 +38,7 @@ async function boot() {
   const sfx = new Sfx();
   ui.innerHTML = '';
   const hud = new Hud(ui);
-  fetch('/vo/manifest.json')
+  await fetch('/vo/manifest.json')
     .then((r) => r.json())
     .then((m) => (hud.vo = m))
     .catch(() => {});

@@ -1,0 +1,312 @@
+[
+  [
+    "01-incoming-call",
+    [
+      "S01"
+    ],
+    "ROOK",
+    "Incoming call",
+    [
+      "Morning, Niko.",
+      "Mentor / trusted contact"
+    ],
+    "Answer",
+    "#F2B84B"
+  ],
+  [
+    "02-create-wallet",
+    [
+      "S02"
+    ],
+    "YOUR FIRST STEP",
+    "Practice wallet",
+    [
+      "A fresh start.",
+      "Learn with simulated ZEC."
+    ],
+    "Create wallet",
+    "#F2B84B"
+  ],
+  [
+    "03-secure-backup",
+    [
+      "S02"
+    ],
+    "KEEP IT PRIVATE",
+    "Secure backup",
+    [
+      "Keep recovery details private.",
+      "Store your backup securely.",
+      "Never share recovery details."
+    ],
+    "Backup saved",
+    "#F2B84B"
+  ],
+  [
+    "04-transparent-receive",
+    [
+      "S02"
+    ],
+    "RECEIVE",
+    "Transparent address",
+    [
+      "t1Demo\u2026NIKO",
+      "Fictional address label",
+      "Share this request with Rook."
+    ],
+    "Share with Rook",
+    "#F2B84B"
+  ],
+  [
+    "05-request-shared-rook",
+    [
+      "S02"
+    ],
+    "REQUEST SHARED",
+    "Ready for Rook",
+    [
+      "Transparent receiving request",
+      "Shared with your mentor."
+    ],
+    "Done",
+    "#F2B84B"
+  ],
+  [
+    "06-rook-payment-received",
+    [
+      "S03"
+    ],
+    "PAYMENT RECEIVED",
+    "+5 ZEC",
+    [
+      "From Rook",
+      "Transparent payment",
+      "Confirmed"
+    ],
+    "Received",
+    "#F2B84B"
+  ],
+  [
+    "07-public-cafe-review",
+    [
+      "S05"
+    ],
+    "REVIEW PAYMENT",
+    "0.03 ZEC",
+    [
+      "To Noodle Caf\u00e9",
+      "Transparent recipient",
+      "Public payment details"
+    ],
+    "Confirm payment",
+    "#F2B84B"
+  ],
+  [
+    "08-public-cafe-submitted",
+    [
+      "S05"
+    ],
+    "PAYMENT SUBMITTED",
+    "0.03 ZEC",
+    [
+      "To Noodle Caf\u00e9",
+      "Awaiting confirmation"
+    ],
+    "Submitted",
+    "#F2B84B"
+  ],
+  [
+    "09-shield-review",
+    [
+      "S12"
+    ],
+    "PRACTICE WALLET",
+    "Shield funds",
+    [
+      "Transparent balance: 5 ZEC",
+      "Move funds to your shielded balance.",
+      "Earlier public history remains."
+    ],
+    "Shield funds",
+    "#86D6BB"
+  ],
+  [
+    "10-shield-submitted",
+    [
+      "S12"
+    ],
+    "SHIELDING SUBMITTED",
+    "Processing",
+    [
+      "Transparent \u2192 Shielded",
+      "Awaiting confirmation",
+      "Earlier public history remains."
+    ],
+    "Submitted",
+    "#86D6BB"
+  ],
+  [
+    "11-shield-confirmed",
+    [
+      "S12"
+    ],
+    "SHIELDING CONFIRMED",
+    "Shielded balance",
+    [
+      "Transparent \u2192 Shielded",
+      "Funds are now shielded.",
+      "Earlier public history remains."
+    ],
+    "Done",
+    "#86D6BB"
+  ],
+  [
+    "12-unshield-warning",
+    [
+      "S13"
+    ],
+    "REVIEW PUBLIC OUTPUT",
+    "4.90 ZEC",
+    [
+      "To Demo Exchange",
+      "Transparent recipient",
+      "RECIPIENT + AMOUNT BECOME PUBLIC"
+    ],
+    "Confirm",
+    "#F27855"
+  ],
+  [
+    "13-unshield-submitted",
+    [
+      "S13"
+    ],
+    "UNSHIELD SUBMITTED",
+    "4.90 ZEC",
+    [
+      "To Demo Exchange",
+      "Transparent recipient",
+      "Awaiting confirmation"
+    ],
+    "Submitted",
+    "#F27855"
+  ],
+  [
+    "14-shielded-request",
+    [
+      "S17"
+    ],
+    "RECEIVE ZEC",
+    "SHIELDED",
+    [
+      "Niko \u00b7 practice request",
+      "Fictional receiving request",
+      "Share with your friend."
+    ],
+    "Share with Mika",
+    "#86D6BB"
+  ],
+  [
+    "15-shielded-request-shared",
+    [
+      "S17"
+    ],
+    "REQUEST SHARED",
+    "Ready for Mika",
+    [
+      "Shielded receiving request",
+      "Niko \u00b7 practice request"
+    ],
+    "Done",
+    "#86D6BB"
+  ],
+  [
+    "16-mika-send-review",
+    [
+      "S18"
+    ],
+    "SEND TO NIKO",
+    "0.02 ZEC",
+    [
+      "Shielded payment",
+      "Recipient: Niko",
+      "Review amount and recipient."
+    ],
+    "Confirm",
+    "#86D6BB"
+  ],
+  [
+    "17-mika-send-submitted",
+    [
+      "S18"
+    ],
+    "PAYMENT SUBMITTED",
+    "0.02 ZEC",
+    [
+      "To Niko",
+      "Shielded payment",
+      "Awaiting confirmation"
+    ],
+    "Submitted",
+    "#86D6BB"
+  ],
+  [
+    "18-niko-shielded-receipt",
+    [
+      "S20"
+    ],
+    "SHIELDED PAYMENT RECEIVED",
+    "+0.02 ZEC",
+    [
+      "From Mika",
+      "Confirmed",
+      "Your test payment has arrived."
+    ],
+    "Received",
+    "#86D6BB"
+  ],
+  [
+    "19-private-cafe-review",
+    [
+      "S21"
+    ],
+    "PAY NOODLE CAF\u00c9",
+    "0.03 ZEC",
+    [
+      "SHIELDED PAYMENT",
+      "Recipient verified",
+      "Review before sending."
+    ],
+    "Confirm payment",
+    "#86D6BB"
+  ],
+  [
+    "20-private-cafe-submitted",
+    [
+      "S21"
+    ],
+    "PAYMENT SUBMITTED",
+    "0.03 ZEC",
+    [
+      "To Noodle Caf\u00e9",
+      "Shielded payment",
+      "Awaiting confirmation"
+    ],
+    "Submitted",
+    "#86D6BB"
+  ],
+  [
+    "21-auntie-receipt",
+    [
+      "S22"
+    ],
+    "PAYMENT RECEIVED",
+    "0.03 ZEC",
+    [
+      "Noodle Caf\u00e9",
+      "Confirmed",
+      "Ready to serve."
+    ],
+    "Received",
+    "#86D6BB"
+  ]
+]

@@ -23,8 +23,12 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 @keyframes bootbar { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
 
 .title-ov { background: #000; overflow: hidden; }
-.title-ov::before { content: ''; position: absolute; inset: -4%; background: url('/art/keyart.jpg') center 30% / cover no-repeat; animation: kenburns 24s ease-in-out infinite alternate; filter: saturate(1.1); }
-.title-ov::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.5), rgba(0,0,0,.25) 60%, rgba(0,0,0,.7) 100%), linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55)); }
+.title-ov::before { content: ''; position: absolute; inset: -3%; background: url('/art/cover_wide.jpg') 92% 40% / cover no-repeat; animation: kenburns 26s ease-in-out infinite alternate; }
+@media (max-aspect-ratio: 4/5) { .title-ov::before { background-image: url('/art/cover_tall.jpg'); background-position: center bottom; } }
+.title-ov::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,6,24,.78) 0%, rgba(2,6,24,.45) 38%, rgba(2,6,24,0) 62%), linear-gradient(0deg, rgba(0,0,0,.45), rgba(0,0,0,0) 40%); }
+@media (max-aspect-ratio: 4/5) { .title-ov::after { background: linear-gradient(180deg, rgba(2,6,24,.55) 0%, rgba(2,6,24,.2) 45%, rgba(0,0,0,.75) 100%); } }
+@media (min-aspect-ratio: 4/5) { .title-ov { place-items: center start; padding-left: clamp(24px, 7vw, 120px); } .title-ov .title { align-items: flex-start; text-align: left; max-width: min(640px, 52vw); } .title-ov .title-cast, .title-ov .title-help { justify-content: flex-start; } }
+@media (max-aspect-ratio: 4/5) { .title-ov { place-items: start center; padding-top: 9vh; } }
 .title-ov > .title { position: relative; z-index: 1; }
 @keyframes kenburns { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.1) translate(-1.5%, 1%); } }
 .title { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; max-width: 640px; animation: fade 1.2s; }
@@ -33,7 +37,7 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 .title-cast .pt:nth-child(2) { animation-delay: .05s } .title-cast .pt:nth-child(3) { animation-delay: .1s } .title-cast .pt:nth-child(4) { animation-delay: .15s }
 .title-cast .pt:nth-child(5) { animation-delay: .2s } .title-cast .pt:nth-child(6) { animation-delay: .25s } .title-cast .pt:nth-child(7) { animation-delay: .3s } .title-cast .pt:nth-child(8) { animation-delay: .35s }
 @keyframes castin { from { transform: translateY(16px); opacity: 0; } }
-.title h1 { margin: 6px 0 0; font-size: clamp(56px, 13vw, 120px); line-height: .86; font-weight: 800; letter-spacing: -.04em; color: #fff; text-shadow: 0 0 30px rgba(200,255,220,.45), 0 0 2px #fff; }
+.title h1 { margin: 6px 0 0; font-size: clamp(56px, 11vw, 132px); line-height: .86; font-weight: 800; letter-spacing: -.04em; color: #fff; text-shadow: 0 0 30px rgba(200,255,220,.45), 0 0 2px #fff; }
 .title-sub { margin: 0; font-size: clamp(14px, 2.2vw, 17px); line-height: 1.55; color: #cfe9da; }
 .title-sub b { color: #F4B728; }
 .cta.big { font-size: 18px; padding: 18px 36px; }

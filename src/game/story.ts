@@ -84,6 +84,10 @@ export class Story {
     this.s.wallet.transparent = 5;
     addTx(this.s, { kind: 'receive', amount: 5, pocket: 'transparent', who: 'Rook', publicView: 'visible' });
     phone.message(CLIENT.id, CLIENT.name, CLIENT.role, 'Paid! 5 ZEC sent to your wallet. Great work. Go treat yourself tonight 🎉');
+    await hud.say([
+      T('Rook', 'miner', 'Your five ZEC is in. Good work. Go treat yourself.'),
+      T('Niko', 'you_bare', "Now that's worth getting up for."),
+    ]);
     this.c.sfx.coin();
     phone.el.classList.add('nudge');
     this.c.boards.push({ time: fmtClock(this.s.clock), from: 't1Rook…9x', to: 't1YouR…Zf3', amount: '5.000', place: 'Ave & 4th' });
@@ -126,6 +130,9 @@ export class Story {
         ? T('The Tailor', 'tailor', 'Our five-ZEC friend just bought noodles. Plaza kiosk. People are so generous with their secrets.', true)
         : T('The Tailor', 'tailor', 'Five ZEC, sitting on a public address near Ave & 4th, waiting like an open door. Go collect.', true),
       T('The Tailor', 'tailor', 'Quietly, please. Take them.', true),
+      why === 'paid'
+        ? T('Needle', 'lookout', 'There you are. Five ZEC, and you went straight for noodles. Nice.')
+        : T('Needle', 'lookout', 'Still here? Five ZEC in your pocket, and nowhere to hide. Nice.'),
     ]);
     await this.c.ambush();
     await this.voidTalk();
@@ -210,7 +217,7 @@ export class Story {
       return n;
     };
     at('tailor', st.tailor, 'The Tailor');
-    at('cafe', st.cafe, 'Barista');
+    at('cafe', st.cafe, 'Auntie Node');
     at('friend', st.arcade, 'Mika');
     at('courier', st.kiosk, 'Courier');
     at('landlord', st.exchange, 'Cobalt clerk');
@@ -432,8 +439,8 @@ export class Story {
       if (id === 'cafe' && !e.cafe) {
         this.face('cafe');
         await hud.say([
-          T('Barista', 'cafe', 'Welcome to Nullstate. Shielded payments only. We don\'t keep a glass register.'),
-          T('Barista', 'cafe', 'Coffee is *0.02 ZEC*. Leave a note in the memo if you like. Only I can read it.'),
+          T('Auntie Node', 'cafe', 'Welcome to Nullstate. Shielded payments only. We don\'t keep a glass register.'),
+          T('Auntie Node', 'cafe', 'Coffee is *0.02 ZEC*. Leave a note in the memo if you like. Only I can read it.'),
         ]);
         this.setContacts([{ id: 'cafe', name: 'Nullstate Café', addr: ADDR.cafe, pocket: 'shielded', role: 'cafe', hint: 'coffee 0.02', presetAmount: 0.02, memoHint: 'oat milk, please' }]);
         hud.objective('Pay for your coffee', 'Wallet → Send → Nullstate Café. Add a note.');
@@ -520,8 +527,8 @@ export class Story {
         await sleep(1300);
         phone.lower();
         await hud.say([
-          T('Barista', 'cafe', memo ? `Got it. Your note says: “${memo}”. Nobody else will ever see that.` : 'Got it. Coffee\'s on the counter.'),
-          T('Barista', 'cafe', 'On the public chain that payment is just a blur. No amount, no names.'),
+          T('Auntie Node', 'cafe', memo ? 'Got it. I can read your private note. Coffee is on the counter.' : 'Got it. Coffee\'s on the counter.'),
+          T('Auntie Node', 'cafe', 'On the public chain that payment is just a blur. No amount, no names.'),
         ]);
         this.setContacts([]);
         this.updateObjective();
@@ -555,7 +562,7 @@ export class Story {
       this.c.sfx.good();
       hud.lesson('Unshield carefully', 'Leaving the pool is public. Take out only what you need, not right after shielding, and not the same amount.');
       await hud.say([
-        T('The Tailor', 'tailor', `Pool exit: ${fmtZec(amount)} to Cobalt. ${m.others} exits tonight, and none of them look like our five. Could be anyone. I hate anyone.`, true),
+        T('The Tailor', 'tailor', 'Another pool exit to Cobalt. Plenty of exits tonight, and none of them look like our five. Could be anyone. I hate anyone.', true),
         T('Cobalt clerk', 'landlord', 'Rent received. Have a good night.'),
       ]);
       phone.message(SAINT.id, SAINT.name, SAINT.role, 'Small. Late. Different. Three words that keep people whole in this city. Well done.');

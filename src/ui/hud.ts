@@ -1,4 +1,5 @@
 import './hud.css';
+import { voiceKey, type VoiceEntry } from './voice';
 import { portrait, portraitById } from './portrait';
 import { esc } from './phone';
 import { fmtClock, type Clue, type GameState } from '../game/state';
@@ -11,17 +12,15 @@ export interface Line {
   radio?: boolean;
 }
 
-const vclean = (t: string) => t.replace(/\*([^*]+)\*/g, '$1').replace(/_([^_]+)_/g, '$1');
-function vhash(t: string) {
-  let h = 2166136261;
-  for (const c of vclean(t)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
-  return (h >>> 0).toString(36);
-}
-
 export class Hud {
   /** voice-over manifest (public/vo/manifest.json) */
-  vo: Record<string, { who: string; dur: number }> = {};
-  voiceOn = true;
+  vo: Record<string, VoiceEntry> = {};
+  private _voiceOn = true;
+  get voiceOn() { return this._voiceOn; }
+  set voiceOn(enabled: boolean) {
+    this._voiceOn = enabled;
+    if (!enabled) { clearTimeout(this.autoT); this.stopVoice(); }
+  }
   onVoice?: (playing: boolean) => void;
   private audio: HTMLAudioElement | null = null;
   private autoT = 0;
@@ -104,14 +103,18 @@ export class Hud {
     p.innerHTML = '';
     this.typed = false;
     this.lineAt = performance.now();
-    const id = vhash(l.text);
+    const id = voiceKey(l.who, l.text);
     const vo = this.voiceOn ? this.vo[id] : undefined;
     let step = 2;
-    if (vo) {
+    if (vo && vo.who === l.who) {
       const a = new Audio(`/vo/${id}.mp3`);
       this.audio = a;
-      a.play().catch(() => {});
+      const failed = () => {
+        if (this.audio === a) this.stopVoice();
+      };
+      a.onerror = failed;
       this.onVoice?.(true);
+      a.play().catch(failed);
       // finish typing at ~85% of the spoken line
       step = Math.max(1, Math.ceil(this.full.length / ((vo.dur * 0.85 * 1000) / 16)));
       const me = this.cur;
@@ -136,6 +139,7 @@ export class Hud {
   private stopVoice() {
     if (this.audio) {
       this.audio.onended = null;
+      this.audio.onerror = null;
       this.audio.pause();
       this.audio = null;
       this.onVoice?.(false);
