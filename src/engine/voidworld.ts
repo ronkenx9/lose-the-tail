@@ -21,6 +21,16 @@ export function buildVoid() {
       for (let y = Y - depth; y <= Y; y++) w.set(x, y, z, y === Y ? B.STONE : y > Y - 2 ? B.CONCRETE : B.DARKBRICK);
       if (d > R - 0.8) w.set(x, Y, z, B.NEON_MINT);
     }
+  // an inlaid ring and a cross of light in the floor, like a sigil you're standing on
+  for (let a = 0; a < Math.PI * 2; a += 0.06) {
+    const x = Math.round(cx + Math.cos(a) * 4.5),
+      z = Math.round(cz + Math.sin(a) * 4.5);
+    if (Math.floor(a * 6) % 2 === 0) w.set(x, Y, z, B.VOID_INLAY);
+  }
+  for (let k = -2; k <= 2; k++) {
+    w.set(cx + k, Y, cz, B.VOID_INLAY);
+    w.set(cx, Y, cz + k, B.VOID_INLAY);
+  }
   // broken pillars
   for (const [px, pz, h] of [
     [cx - 6, cz - 4, 5],
@@ -65,18 +75,68 @@ export function buildVoid() {
   for (let x = 0; x < SX; x++)
     for (let z = 0; z < SZ; z++) {
       const top = w.get(x, Y, z);
-      if ((top === B.STONE || top === B.NEON_MINT) && w.get(x, Y + 1, z) === 0 && Math.hypot(x - cx, z - cz) < R - 0.6) walk[x + z * SX] = 1;
+      if ((top === B.STONE || top === B.NEON_MINT || top === B.VOID_INLAY) && w.get(x, Y + 1, z) === 0 && Math.hypot(x - cx, z - cz) < R - 0.6) walk[x + z * SX] = 1;
     }
   const m4 = new THREE.Matrix4();
   const q = new THREE.Quaternion();
   let t = 0;
+  // what you leaked, floating around you as pages of their file
+  const pages: { mesh: THREE.Mesh; a: number; r: number; y: number; s: number }[] = [];
+  const pageTex = (key: string, text: string) => {
+    const cv = document.createElement('canvas');
+    cv.width = 512;
+    cv.height = 160;
+    const g = cv.getContext('2d')!;
+    g.fillStyle = 'rgba(30,4,8,0.88)';
+    g.fillRect(0, 0, 512, 160);
+    g.strokeStyle = '#ff2b3b';
+    g.lineWidth = 4;
+    g.strokeRect(4, 4, 504, 152);
+    g.fillStyle = '#ff4757';
+    g.font = '600 26px ui-monospace, Menlo, monospace';
+    g.fillText('TAILOR & CO. · ' + key.toUpperCase(), 24, 48);
+    g.fillStyle = '#f4f0e8';
+    g.font = '500 30px ui-monospace, Menlo, monospace';
+    const words = text.split(' ');
+    let line = '',
+      y = 96;
+    for (const wd of words) {
+      if (g.measureText(line + wd).width > 460) {
+        g.fillText(line, 24, y);
+        line = '';
+        y += 36;
+      }
+      line += wd + ' ';
+    }
+    g.fillText(line, 24, y);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  };
+  const showClues = (clues: { key: string; text: string }[]) => {
+    for (const p of pages) scene.remove(p.mesh);
+    pages.length = 0;
+    clues.forEach((c, i) => {
+      const mat = new THREE.MeshBasicMaterial({ map: pageTex(c.key, c.text), transparent: true, side: THREE.DoubleSide, depthWrite: false, fog: false });
+      mat.color.setScalar(1.25);
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.75), mat);
+      scene.add(mesh);
+      pages.push({ mesh, a: (i / clues.length) * Math.PI * 2, r: 6.2 + (i % 2) * 0.8, y: 2.2 + (i % 3) * 0.55, s: 0.12 + (i % 2) * 0.05 });
+    });
+  };
   return {
     scene,
     walk,
     spawn: { x: cx + 0.5, z: cz + 6.5, yaw: 0 },
     zeroAt: { x: cx + 0.5, z: cz - 2.5 },
-    update(dt: number) {
+    showClues,
+    update(dt: number, cam?: THREE.Camera) {
       t += dt;
+      for (const p of pages) {
+        const a = p.a + t * p.s;
+        p.mesh.position.set(cx + 0.5 + Math.cos(a) * p.r, p.y + Math.sin(t * 0.8 + p.a) * 0.15, cz + 0.5 + Math.sin(a) * p.r);
+        if (cam) p.mesh.lookAt(cam.position.x, p.mesh.position.y, cam.position.z);
+      }
       seeds.forEach((s, i) => {
         const y = ((s.y + t * s.v + 30) % 30) - 10;
         q.setFromEuler(new THREE.Euler(t * s.v, t * 0.7 * s.v, 0));

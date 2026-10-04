@@ -59,6 +59,15 @@ if (steps.includes('chase')) {
   await shot('08-crew-close');
   await sleep(1300);
   await shot('09-robbed');
+  await page.waitForFunction(() => window.__game.story.s.beat === 'void', null, { timeout: 20000 });
+  await sleep(2500);
+  await shot('20-void-pages');
+  await ev(() => { const g = window.__game; g.player.goTo(g.vw.zeroAt.x + 1, g.vw.zeroAt.z + 4); });
+  await sleep(2500);
+  await shot('21-void-zero-meets');
+  await ev(() => { const g = window.__game; g.player.yaw += 1.6; });
+  await sleep(300);
+  await shot('22-void-pages-side');
 }
 if (steps.includes('payday')) {
   await page.goto(URL + '?start=payday');

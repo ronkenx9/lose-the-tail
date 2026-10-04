@@ -55,6 +55,7 @@ export const B = {
   RUG_RED: 40,
   CEIL_WARM: 41,
   CEIL_COOL: 42,
+  VOID_INLAY: 43,
 } as const;
 
 /** blocks you can see (and light can pass) through */
@@ -105,6 +106,7 @@ def(B.PANEL_LIGHT, { glow: 1.4, color: [0.95, 0.97, 1], emit: [0.75, 0.78, 0.85]
 def(B.RUG_RED, { color: [0.5, 0.12, 0.12], jitter: 0.1 });
 def(B.CEIL_WARM, { glow: 1.25, color: [1, 0.86, 0.66], emit: [1, 0.8, 0.56] });
 def(B.CEIL_COOL, { glow: 1.25, color: [0.86, 0.94, 1], emit: [0.82, 0.92, 1] });
+def(B.VOID_INLAY, { glow: 0.85, color: [0.5, 0.95, 0.68], emit: [0.3, 0.7, 0.45] });
 def(B.NEON_ZEC, { glow: 1.7, color: [0.96, 0.72, 0.16], emit: [1, 0.7, 0.12] });
 
 const LIGHT_MAX = 15;

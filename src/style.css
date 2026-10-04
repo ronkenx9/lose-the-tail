@@ -72,3 +72,4 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 .run-ui .run-btn { pointer-events: auto; touch-action: none; width: 76px; height: 76px; border-radius: 50%; border: 2px solid #6dffb0aa; background: rgba(4,12,9,.72); color: #6dffb0; font: 700 14px/1 ui-monospace, monospace; letter-spacing: .14em; }
 .run-ui .run-btn:active { background: #6dffb033; }
 @media (pointer: fine) { .run-ui .run-btn { display: none; } .run-ui { bottom: 24px; right: 50%; transform: translateX(50%); align-items: center; } }
+.blackout.white { background: #f2fff8; transition: opacity 1.1s ease-in; }

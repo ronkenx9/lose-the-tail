@@ -35,7 +35,7 @@ export interface Ctx {
   burst(): void;
   shieldCut(): Promise<void>;
   /** fade to / from black */
-  blackout(on: boolean): Promise<void>;
+  blackout(on: boolean, white?: boolean): Promise<void>;
   /** swap into the 3D void island (player + Zero move there) */
   enterVoid(): { zeroAt: { x: number; z: number } };
   exitVoid(): void;
@@ -408,7 +408,7 @@ export class Story {
     ]);
     this.c.sfx.rewind();
     this.c.glitch(2);
-    await this.c.blackout(true);
+    await this.c.blackout(true, true);
     this.c.exitVoid();
     this.c.resetWorld();
     this.visited.clear();

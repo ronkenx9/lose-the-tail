@@ -91,8 +91,9 @@ async function boot() {
   const blackEl = document.createElement('div');
   blackEl.className = 'blackout';
   document.body.appendChild(blackEl);
-  const blackout = (on: boolean) =>
+  const blackout = (on: boolean, white = false) =>
     new Promise<void>((res) => {
+      if (on) blackEl.classList.toggle('white', white);
       blackEl.classList.toggle('on', on);
       setTimeout(res, 950);
     });
@@ -227,6 +228,7 @@ async function boot() {
       player.yaw = vw.spawn.yaw;
       player.pitch = -0.04;
       player.slow = false;
+      vw.showClues(story.s.clues);
       vw.scene.add(companion.zero.group);
       vw.scene.add(stage.camera); // the camera (and your hands) come with you
       companion.show(vw.zeroAt);
@@ -366,7 +368,7 @@ async function boot() {
       player.yaw = city.spawn.yaw + Math.sin(titleT * 0.15) * 0.6 - 0.4;
       player.pitch = 0.08;
     }
-    if (inVoid) vw.update(dt);
+    if (inVoid) vw.update(dt, stage.camera);
     player.update(dt);
     intro.update(dt);
     if (!cut && !intro.applyCamera()) player.applyCamera(stage.camera);
