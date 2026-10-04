@@ -122,6 +122,14 @@ if (steps.includes('doors')) {
   await sleep(1200);
   await shot('51-door-open');
 }
+if (steps.includes('hq')) {
+  await page.goto(URL + '?debug=errands');
+  await page.waitForFunction(() => window.__game);
+  await sleep(800);
+  await ev(() => { const g = window.__game; g.player.x = 9.5; g.player.z = 58.5; g.player.yaw = Math.PI; g.player.pitch = -0.05; });
+  await sleep(1500);
+  await shot('60-tailor-hq');
+}
 if (steps.includes('ending')) {
   await page.goto(URL + '?debug=dawn');
   await page.waitForFunction(() => window.__game);

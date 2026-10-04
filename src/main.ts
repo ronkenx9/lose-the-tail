@@ -102,6 +102,16 @@ async function boot() {
       setTimeout(res, 950);
     });
   const doors = new Doors(stage.scene, city.doors);
+  // the Tailor's monitors mirror the live ledger screens: they really are watching the chain
+  [5, 8, 11, 14].forEach((x, k) => {
+    const scr = k % 2 ? stage.screens.mainnet : stage.screens.ledger;
+    const mat = new THREE.MeshBasicMaterial({ map: scr.tex, toneMapped: false });
+    mat.color.setScalar(1.15);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.86, 1.24), mat);
+    m.position.set(x, 2.69, 63.33);
+    m.rotation.y = Math.PI;
+    stage.scene.add(m);
+  });
   // people in the world
   const intro = new Intro(stage.scene, stage.camera, player, city.bed, { x: 5, z: 33 });
   intro.onPulse = () => sfx.buzz();
