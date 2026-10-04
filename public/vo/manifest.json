@@ -397,5 +397,26 @@
     "dur": 6.08,
     "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
+  },
+  "176iaga": {
+    "who": "Zero",
+    "text": "Don't stare at them. Staring is a pattern too.",
+    "dur": 3.28,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "10ngty1": {
+    "who": "Zero",
+    "text": "Running draws eyes. You're private, not prey. Walk.",
+    "dur": 4.56,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "ilzbt2": {
+    "who": "Zero",
+    "text": "Look up. That's the real Zcash network, breathing. Notice how much of it simply isn't there.",
+    "dur": 6.48,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
   }
 }

@@ -71,6 +71,8 @@ export class Story {
   private loop1Done = false;
   private trapLeft = 0;
   private A: Record<string, At>;
+  private said = new Set<string>();
+  private sprintT = 0;
 
   constructor(private c: Ctx) {
     const head = (role: string) => () => {
@@ -422,6 +424,7 @@ export class Story {
     this.s.loop = 2;
     this.s.beat = 'wake2';
     this.ended = false;
+    this.said.clear();
     phone.show('lock');
     phone.lower();
     this.setContacts([]);
@@ -880,6 +883,19 @@ export class Story {
       this.updateObjective();
     }
     if (s.beat === 'errands' && Math.random() < dt * 0.5) this.updateObjective();
+    // Zero notices what you do
+    if ((s.beat === 'errands' || s.beat === 'dawn') && this.c.zero.visible && !hud.talking && !this.busy) {
+      const tl = this.c.city.stations.tailor;
+      this.sprintT = player.sprinting ? this.sprintT + dt : 0;
+      const fx = -Math.sin(player.yaw),
+        fz = -Math.cos(player.yaw);
+      const mx = 52 - player.x,
+        mz = 30 - player.z,
+        md = Math.hypot(mx, mz);
+      if (Math.hypot(tl.x - player.x, tl.z - player.z) < 6) this.aside('hq', T('Zero', 'narrator', "Don't stare at them. Staring is a pattern too.", N, this.A.zero));
+      else if (this.sprintT > 1.5 && s.hooded) this.aside('run', T('Zero', 'narrator', "Running draws eyes. You're private, not prey. Walk.", N, this.A.zero));
+      else if (md < 18 && (mx * fx + mz * fz) / md > 0.8) this.aside('ledger', T('Zero', 'narrator', "Look up. That's the real Zcash network, breathing. Notice how much of it simply isn't there.", N, this.A.zero));
+    }
     const home = this.c.city.stations.home;
     if (s.beat === 'dawn' && !this.ended && !this.busy && Math.hypot(home.x - player.x, home.z - player.z) < 2.4) this.arrive('home');
     if (s.beat !== 'void')
@@ -893,6 +909,12 @@ export class Story {
       }
     this.c.phone.tick();
     hud.update(s);
+  }
+
+  private aside(id: string, line: Line) {
+    if (this.said.has(id)) return;
+    this.said.add(id);
+    this.c.hud.say([line]);
   }
 
   /** player tapped an NPC: they turn and answer in person */
