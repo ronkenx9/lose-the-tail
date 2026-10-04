@@ -393,6 +393,35 @@ export function buildCity(): City {
   signs.push({ text: 'COBALT EXCHANGE', sub: 'cash out · public ledger', color: '#3fe6ff', x: 88, y: 8, z: 42.02, facing: 'S', w: 10, h: 2 });
   stations.exchange = { id: 'exchange', x: 88.5, z: 37.4, npc: { x: 88.5, z: 33.6, yaw: -Math.PI / 2 }, label: 'Cobalt Exchange' };
 
+  // NONCE MART — 24/7 corner shop (S of plaza), facade z=54, door x 64..65
+  room(58, 55, 72, 63, B.TILE_DARK, B.PANEL_LIGHT, 3);
+  front('z', 54, 58, 72, 64, -1, B.NEON_CYAN, 1);
+  for (let x = 58; x <= 61; x++) w.set(x, 1, 60, B.COUNTER);
+  P('register', 59, 60, 2, { y: 2, block: [] });
+  P('cups', 61, 60, 0, { y: 2, block: [] });
+  for (let x = 63; x <= 69; x++) {
+    P('shelf', x, 58, 0);
+    P('shelf', x, 59, 2);
+    P('shelf', x, 63, 0);
+  }
+  for (let z = 56; z <= 62; z++) P('fridge', 72, z, 1);
+  P('camera', 58, 63, 2, { y: 3, block: [] });
+  P('plant', 58, 55);
+  signs.push({ text: 'NONCE MART', sub: '24/7 · every coin welcome', color: '#7dd3ff', x: 65, y: 6.2, z: 53.98, facing: 'N', w: 7, h: 1.8 });
+  stations.mart = { id: 'mart', x: 59.5, z: 58.2, npc: { x: 59.5, z: 61.6, yaw: -Math.PI / 2 }, label: 'Nonce Mart' };
+
+  // SPIN CYCLE — laundromat (S of plaza), facade z=54, door x 30..31
+  room(23, 55, 38, 62, B.TILE_DARK, B.CEIL_COOL, 4, B.PLASTER);
+  front('z', 54, 23, 38, 30, -1, B.NEON_VIOLET, 1);
+  for (let x = 24; x <= 37; x++) if (x !== 30 && x !== 31) P('washer', x, 62, 2);
+  for (const x of [25, 27, 34, 36]) P('stool', x, 58, 0, { opts: { c: [150, 110, 220] } });
+  P('table', 33, 57);
+  P('plant', 23, 55);
+  P('plant', 38, 55);
+  P('lamp', 23, 62, 0, { opts: { c: [200, 170, 255] } });
+  signs.push({ text: 'SPIN CYCLE', sub: 'wash · dry · wait', color: '#c6a2ff', x: 30.5, y: 6.2, z: 53.98, facing: 'N', w: 6.5, h: 1.8 });
+  stations.laundry = { id: 'laundry', x: 26.5, z: 57.2, npc: { x: 26.5, z: 59.2, yaw: -Math.PI / 2 }, label: 'Spin Cycle' };
+
   // DARK ALLEY (NE, x 74..75), dead end with dumpsters
   w.fill(74, 1, 2, 75, 6, 2, B.DARKBRICK);
   w.fill(74, 1, 4, 75, 2, 5, B.PANEL_GREEN); // dumpster

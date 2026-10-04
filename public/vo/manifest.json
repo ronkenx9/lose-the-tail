@@ -160,6 +160,41 @@
     "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
+  "18mofub": {
+    "who": "Dee",
+    "text": "Paid in public tonight? Brave. The whole street can read your balance off that screen.",
+    "dur": 5.12,
+    "voice_id": "77aEIu0qStu8Jwv1EdhX",
+    "model_id": "eleven_v4"
+  },
+  "nive": {
+    "who": "Dee",
+    "text": "Evening. Heads up, your face is on the big screen. Whatever you buy, they'll know.",
+    "dur": 5.2,
+    "voice_id": "77aEIu0qStu8Jwv1EdhX",
+    "model_id": "eleven_v4"
+  },
+  "iq0t7a": {
+    "who": "Dee",
+    "text": "Evening. Coins, cards, shielded, whatever. I don't keep receipts with names on them.",
+    "dur": 5.84,
+    "voice_id": "77aEIu0qStu8Jwv1EdhX",
+    "model_id": "eleven_v4"
+  },
+  "lstdt4": {
+    "who": "Old Bill",
+    "text": "Twenty years I've watched this street. Folks who get paid in public don't stay lucky long.",
+    "dur": 5.92,
+    "voice_id": "pqHfZKP75CvOlQylNhV4",
+    "model_id": "eleven_v4"
+  },
+  "1i9n3ll": {
+    "who": "Old Bill",
+    "text": "My grandson told me: give out the u1 address, never the t1. Wish I had known that sooner.",
+    "dur": 7.6,
+    "voice_id": "pqHfZKP75CvOlQylNhV4",
+    "model_id": "eleven_v4"
+  },
   "ns7q0y": {
     "who": "Courier",
     "text": "Noodles? *0.3 ZEC*. Just send it to my address.",

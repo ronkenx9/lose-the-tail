@@ -85,6 +85,8 @@ export class Story {
       cafe: head('cafe'),
       friend: head('friend'),
       clerk: head('landlord'),
+      dee: head('mart'),
+      bill: head('laundry'),
       zero: () => this.c.zero.head(),
       needle: () => {
         const n = this.c.crew.members[0];
@@ -119,6 +121,12 @@ export class Story {
     at('landlord', st.exchange, 'Cobalt clerk');
     // regulars inside the café and the arcade, so the rooms feel lived in
     const crowd = headsByRole('crowd');
+    const local = (key: string, s: Station, k: number, name: string) => {
+      const h = crowd[k % Math.max(1, crowd.length)];
+      if (h) this.named[key] = npcs.spawn(h, s.npc!.x, s.npc!.z, { idleYaw: s.npc!.yaw, name });
+    };
+    local('mart', st.mart, 21, 'Dee');
+    local('laundry', st.laundry, 27, 'Old Bill');
     const extra: [number, number, number, number, string][] = [
       [3, 79.5, 58.6, Math.PI / 2, 'Regular'],
       [9, 90.5, 57.4, -Math.PI / 2, 'Regular'],
@@ -572,6 +580,28 @@ export class Story {
     if (this.busy) return;
     const { phone, hud } = this.c;
     const e = this.s.errands;
+    // the locals: not part of any errand, but they notice you
+    if (id === 'mart' || id === 'laundry') {
+      if (!['loop1', 'payday', 'errands', 'dawn'].includes(this.s.beat)) return;
+      const lit = this.s.wallet.transparent > 0.0001;
+      const naive = this.s.beat === 'loop1';
+      this.face(id);
+      if (id === 'mart')
+        hud.say([
+          naive
+            ? T('Dee', 'crowd', 'Paid in public tonight? Brave. The whole street can read your balance off that screen.', N, this.A.dee)
+            : lit
+              ? T('Dee', 'crowd', "Evening. Heads up, your face is on the big screen. Whatever you buy, they'll know.", N, this.A.dee)
+              : T('Dee', 'crowd', "Evening. Coins, cards, shielded, whatever. I don't keep receipts with names on them.", N, this.A.dee),
+        ]);
+      else
+        hud.say([
+          lit
+            ? T('Old Bill', 'crowd', "Twenty years I've watched this street. Folks who get paid in public don't stay lucky long.", N, this.A.bill)
+            : T('Old Bill', 'crowd', 'My grandson told me: give out the u1 address, never the t1. Wish I had known that sooner.', N, this.A.bill),
+        ]);
+      return;
+    }
     if (this.s.beat === 'loop1') {
       if (id === 'kiosk' && !this.loop1Done) {
         this.busy = true;

@@ -100,7 +100,7 @@ if (steps.includes('void')) {
   await shot('21-void-zero');
 }
 if (steps.includes('errands')) {
-  for (const [id, n] of [['cafe', 30], ['arcade', 31], ['exchange', 32]]) {
+  for (const [id, n] of [['cafe', 30], ['arcade', 31], ['exchange', 32], ['mart', 33], ['laundry', 34]]) {
     await page.goto(URL + '?debug=errands');
     await page.waitForFunction(() => window.__game);
     await sleep(800);

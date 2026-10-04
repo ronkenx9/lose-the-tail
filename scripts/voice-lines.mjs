@@ -28,4 +28,6 @@ export const cast={
  'Auntie Node':{id:'D9xwB6HNBJ9h4YvQFWuE',tag:'[warmly]'},
  Courier:{id:'N2lVS1w4EtoT3dr4eOWO',tag:'[playfully]'},
  'Cobalt clerk':{id:'onwK4e9ZLuTAKqWW03F9',tag:'[matter-of-fact]'},
+ Dee:{id:'77aEIu0qStu8Jwv1EdhX',tag:'[casually]'},
+ 'Old Bill':{id:'pqHfZKP75CvOlQylNhV4',tag:'[wistfully]'},
 };
