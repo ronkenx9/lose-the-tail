@@ -217,7 +217,7 @@ export class Story {
     hud.objective(null);
     await this.c.blackout(true);
     const woke = this.c.intro.wake(() => {
-      hud.objective('Your phone is buzzing', 'Tap the phone on the nightstand');
+      hud.objective('Your phone is buzzing', matchMedia('(pointer: coarse)').matches ? 'Tap the phone on the nightstand' : 'Click the phone on the nightstand, or press E');
     });
     await this.c.blackout(false);
     await woke;
@@ -449,7 +449,7 @@ export class Story {
     // Zero is already in the room, by the door
     this.c.zero.show(this.zeroSpot());
     const woke = this.c.intro.wake(() => {
-      hud.objective('Same night', 'Tap the phone on the nightstand');
+      hud.objective('Same night', matchMedia('(pointer: coarse)').matches ? 'Tap the phone on the nightstand' : 'Click the phone on the nightstand, or press E');
     });
     await this.c.blackout(false);
     await woke;

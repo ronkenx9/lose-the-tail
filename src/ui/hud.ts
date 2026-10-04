@@ -283,6 +283,7 @@ export class Hud {
     this.obj.classList.remove('hidden');
     this.obj.querySelector('b')!.textContent = title;
     this.obj.querySelector('em')!.textContent = sub;
+    this.obj.classList.toggle('short', sub.length > 0 && sub.length <= 52);
     this.obj.classList.remove('flash');
     void this.obj.offsetWidth;
     this.obj.classList.add('flash');

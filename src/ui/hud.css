@@ -79,6 +79,7 @@
   .file-k { font-size: 9px; }
   .obj { max-width: none; }
   .obj em { display: none; }
+  .obj.short em { display: block; }
   .dlg { bottom: 24vh; }
 }
 
