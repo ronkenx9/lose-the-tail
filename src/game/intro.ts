@@ -99,6 +99,27 @@ export class Intro {
     return picked;
   }
 
+  /** after a rewind: eyes open in bed, a breath, sit up. No phone to pick up this time. */
+  async respawn() {
+    this.active = true;
+    this.buzzing = false;
+    this.player.frozen = true;
+    this.player.stop();
+    this.phone.visible = false;
+    const hx = this.bed.x,
+      hy = 1.92,
+      hz = this.bed.z - 0.15;
+    this.cam = { x: hx, y: hy, z: hz, yaw: Math.PI * 0.3, pitch: 1.3, roll: 0.1 };
+    this.lid('shut');
+    await this.sleep(450);
+    this.lid('open');
+    await this.sleep(700);
+    const sp = this.player;
+    await this.tween({ x: sp.x, y: 2.62, z: sp.z, yaw: sp.yaw, pitch: -0.05, roll: 0 }, 1.4);
+    this.active = false;
+    sp.frozen = false;
+  }
+
   /** called from the tap handler; true if the ray hit the phone */
   tryTap(ray: THREE.Ray) {
     if (!this.active || !this.buzzing) return false;

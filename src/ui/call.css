@@ -1,0 +1,37 @@
+/* GTA-style call: lives in the corner while you keep playing */
+.call { position: fixed; left: 16px; top: 132px; z-index: 18; width: min(380px, calc(100vw - 32px)); padding: 12px 14px 12px; background: rgba(4, 8, 7, 0.9); border: 1px solid rgba(157, 255, 196, 0.35); border-radius: 10px; color: #eaf3ee; font-family: 'JetBrains Mono', ui-monospace, monospace; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); animation: call-in .45s cubic-bezier(.2,1.3,.4,1) both; pointer-events: none; }
+.call.hidden { display: none; }
+.call.ending { animation: call-out .6s .8s ease-in forwards; }
+@keyframes call-in { from { opacity: 0; transform: translateX(-30px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes call-out { to { opacity: 0; transform: translateX(-30px); } }
+
+.call-head { display: flex; align-items: center; gap: 12px; }
+.call-pt { position: relative; width: 46px; height: 46px; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 2px rgba(157, 255, 196, .5); }
+.call.ringing .call-pt { animation: call-ring .65s ease-in-out infinite; }
+@keyframes call-ring { 0%, 100% { transform: rotate(0); box-shadow: 0 0 0 2px rgba(157,255,196,.5); } 25% { transform: rotate(-7deg); } 75% { transform: rotate(7deg); box-shadow: 0 0 0 7px rgba(157,255,196,.15); } }
+.call-id { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.call-id b { font-size: 15px; letter-spacing: .14em; }
+.call-st { font-size: 11px; color: #9dffc4; letter-spacing: .08em; }
+.call.ringing .call-st { animation: call-blink .65s steps(2) infinite; }
+@keyframes call-blink { 50% { opacity: .35; } }
+.call-ic { font-size: 18px; }
+.call.live .call-ic { filter: hue-rotate(80deg); }
+
+.call-sub { margin: 10px 0 0; min-height: 3em; font-size: 14px; line-height: 1.5; color: #fff; }
+.call.ringing .call-sub, .call.ringing .call-step, .call.ringing .call-dots { display: none; }
+
+.call-step { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; padding: 9px 11px; background: rgba(12, 40, 28, 0.85); border: 1px solid #9dffc4; border-radius: 6px; }
+.call-step:empty { display: none; }
+.call-step.pop { animation: call-pop .4s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes call-pop { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+.call-step i { font-style: normal; font-size: 20px; line-height: 1.1; }
+.call-step b { display: block; font-size: 13px; color: #fff; }
+.call-step span { display: block; margin-top: 2px; font-size: 12.5px; line-height: 1.45; color: #cfe3d8; }
+.call-step span b { display: inline; font-size: inherit; }
+.call-dots { display: flex; gap: 6px; margin-top: 9px; }
+.call-dots i { width: 22px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .15); transition: background .3s; }
+.call-dots i.on { background: #9dffc4; }
+
+@media (max-width: 760px) {
+  .call { top: auto; bottom: calc(24vh + 120px); left: 12px; width: calc(100vw - 24px); }
+}

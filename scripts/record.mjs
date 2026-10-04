@@ -344,8 +344,13 @@ try {
   await page.keyboard.up('Shift');
   await sleep(8000); // Zero laughs; read the lesson
   await tap('.go.in .go-btn', 200);
-  log('rewound');
-  await until((s) => s.screen === 'send2' && s.up, 'exchange pay again', 30000);
+  log('rewound: back in bed, Zero calling');
+  await page.waitForSelector('.call.live', { timeout: 30000 });
+  await sleep(2500);
+  await walk(9.5, 42.5); // out the door while he talks
+  await walk(70, 46, true);
+  await arrive(88.5, 37.4); // back to Cobalt
+  await until((s) => s.screen === 'send2' && s.up, 'exchange pay again', 60000);
   await sleep(1200);
   await G(() => {
     const sl = document.querySelector('#slider');

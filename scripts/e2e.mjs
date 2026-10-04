@@ -130,7 +130,8 @@ try {
     log('PASS standing still on a public balance got you caught');
     await click('.go.in .go-btn');
     await until((s) => s.beat === 'payday' && s.w.transparent === 5, 'rewound to payday', 8000);
-    log('PASS rewind to payday');
+    await page.waitForSelector('.call.live', { timeout: 20000 });
+    log('PASS rewind: woke in bed, Zero calls to explain shielding');
   }
   await page.evaluate(() => {
     window.__game.phone.raise();
@@ -195,9 +196,18 @@ try {
     await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 5000 });
     log('PASS trap: unshielding everything got matched and caught');
     await click('.go.in .go-btn');
-    await until((s) => s.talking || s.screen === 'send2', 'clerk again after rewind', 15000);
+    await page.waitForSelector('.call.live', { timeout: 20000 });
+    log('PASS woke in bed, Zero is calling about the exit');
     const w = await state();
     if (Math.abs(w.w.shielded - 5.4799) > 0.01) throw new Error('rewind did not restore wallet: ' + w.w.shielded);
+    await page.evaluate(() => {
+      const g = window.__game;
+      g.player.x = 70;
+      g.player.z = 47;
+    });
+    await sleep(600);
+    await teleport('exchange');
+    await until((s) => s.talking || s.screen === 'send2', 'clerk again after rewind', 30000);
     await talk();
     await until((s) => s.screen === 'send2', 'exchange pay screen after rewind');
     log('PASS rewind restored wallet and re-opened the clerk');

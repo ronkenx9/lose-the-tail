@@ -7,6 +7,7 @@ import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { buildVoid } from './engine/voidworld';
 import { Doors } from './engine/doors';
 import { GameOver } from './ui/gameover';
+import { Call } from './ui/call';
 import { makeBeacon } from './engine/beacon';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
@@ -160,6 +161,10 @@ async function boot() {
   runBtn.addEventListener('pointerup', runOff);
   runBtn.addEventListener('pointercancel', runOff);
   runBtn.addEventListener('pointerleave', runOff);
+  const call = new Call(ui);
+  call.voiceOn = () => hud.voiceOn;
+  call.duck = (on) => sfx.duck(on);
+  call.ring = () => sfx.buzz();
   const gameOver = new GameOver();
   gameOver.voiceOn = () => hud.voiceOn;
   gameOver.duck = (on) => sfx.duck(on);
@@ -178,6 +183,8 @@ async function boot() {
     zero: companion,
     blackout,
     gameOver: (o) => gameOver.show(o),
+    call: (o) => call.start(o),
+    hangUp: () => call.cancel(),
     setHood: (on) => hand.setHood(on),
     setDawn: (k) => {
       const f = stage.scene.fog as THREE.FogExp2;

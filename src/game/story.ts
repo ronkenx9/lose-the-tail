@@ -37,6 +37,9 @@ export interface Ctx {
   shieldCut(): Promise<void>;
   /** the game-over screen: Zero laughing at you */
   gameOver(o: GameOverOpts): Promise<void>;
+  /** a phone call you take while playing (GTA-style); resolves when it ends */
+  call(o: { who: string; role: string; lines: string[]; steps: { icon: string; title: string; text: string }[] }): Promise<void>;
+  hangUp(): void;
   /** fade to / from black */
   blackout(on: boolean, white?: boolean): Promise<void>;
   /** swap into the 3D void island (player + Zero move there) */
@@ -59,6 +62,35 @@ const R = true;
 /** one spoken line; `at` anchors it to a speaker standing in the world (bubble + positional voice) */
 const T = (who: string, role: string | undefined, text: string, radio = false, at?: At): Line => ({ who, role, text, radio, at });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Zero's walk-through after you get caught holding public money */
+const TEACH_SHIELD = {
+  steps: [
+    { icon: '👁', title: 'Transparent = glass', text: 'A <b>t1…</b> address shows its address, amount and time to anyone reading the public ledger.' },
+    { icon: '🧵', title: 'How they found you', text: 'The Thread watches the ledger for fresh money and follows it to whoever spends it.' },
+    { icon: '🛡', title: 'Shielding', text: 'Moves ZEC into the shielded pool. Zero-knowledge proofs keep sender, receiver and amount hidden.' },
+    { icon: '✋', title: 'Do it', text: 'Money lands in t1 → <b>Wallet → Shield → hold</b>. Same button in Zodl.' },
+  ],
+  lines: [
+    T('Zero', 'narrator', 'Let me slow down, since they did not. A transparent address, the kind that starts with t1, is a glass jar on a public shelf. Anyone can read the address, the amount, and the minute it landed.'),
+    T('Zero', 'narrator', 'That is all The Thread does. They watch the public ledger, see fresh money land, and follow it to whoever spends it.'),
+    T('Zero', 'narrator', 'Shielding moves your money into the shielded pool. The chain records that something went in. After that, zero-knowledge proofs check every payment is valid without revealing who sent it, who got it, or how much.'),
+    T('Zero', 'narrator', 'So the moment money lands in a t1 address, open your wallet and hold Shield. In a real wallet like Zodl, it is the same button. Again.'),
+  ],
+};
+/** Zero's walk-through after the five-in, five-out cash-out */
+const TEACH_EXIT = {
+  steps: [
+    { icon: '🚪', title: 'The doors are public', text: 'Going <b>into</b> the pool and coming <b>out</b> both show on the chain, with amounts and times.' },
+    { icon: '🔗', title: 'Why they matched you', text: '5 ZEC in, ~5 ZEC out minutes later. Almost nobody else did that. Easy link.' },
+    { icon: '⏳', title: 'Unshield carefully', text: 'Take out only what you need, later, in a different amount. Better: pay <b>u1…</b> addresses and stay in the pool.' },
+  ],
+  lines: [
+    T('Zero', 'narrator', 'Here is the part people miss. Shielding hides what happens inside the pool, but the doors are public. Money going in and money coming out both show up, with amounts and times.'),
+    T('Zero', 'narrator', 'You put five in, and a few minutes later took almost five out. Out of everyone using the pool tonight, how many did that? One. You.'),
+    T('Zero', 'narrator', 'When you must unshield, take only what you need, wait a while, and avoid matching amounts. Better still, pay people at their shielded addresses, and never leave the pool at all.'),
+  ],
+};
 
 export class Story {
   s: GameState = fresh();
@@ -311,6 +343,7 @@ export class Story {
     player.stop();
     phone.lower();
     hud.hush();
+    this.c.hangUp();
     hud.flashRed();
     this.c.sfx.caught();
     this.c.glitch(2.5);
@@ -377,33 +410,47 @@ export class Story {
     });
     this.c.glitch(1);
     this.c.sfx.rewind();
+    await this.c.blackout(true);
     const keep = this.s.caughtCount;
     this.s = clone(cp.s);
     this.s.caughtCount = keep;
-    player.x = cp.px;
-    player.z = cp.pz;
-    player.yaw = cp.yaw;
-    player.frozen = false;
+    // rewind: you wake back up in your own bed
+    const home = this.c.city.spawn;
+    player.x = home.x;
+    player.z = home.z;
+    player.yaw = home.yaw;
     player.stamina = 1;
     this.visited.clear();
     hud.setFile(this.s.clues, this.s.clues.length > 0);
     this.c.setHood(this.s.hooded);
     this.c.drones.patrol();
-    if (cp.beat === 'exchange') {
+    this.c.zero.show(this.zeroSpot());
+    this.c.zero.follow();
+    if (trap) {
       crew.clear();
       this.c.boards.face = { role: 'you_bare', mode: 'static' };
-      this.updateObjective();
     } else {
       this.resetGang();
       this.crewOut();
-      this.spindleOut();
-      this.c.drones.hunt();
-      hud.objective('Shield it. Now.', 'Phone → Shield → hold. You can still move while it proves.');
-      this.c.phone.el.classList.add('nudge');
-      await sleep(2500);
-      if (this.s.wallet.transparent > 0) crew.hunt();
     }
+    const woke = this.c.intro.respawn();
+    await this.c.blackout(false);
+    await woke;
     this.catching = false;
+    // ...and your phone rings. Zero explains while you play.
+    const lesson = trap ? TEACH_EXIT : TEACH_SHIELD;
+    const call = this.c.call({ who: 'Zero', role: 'narrator', lines: lesson.lines.map((l) => l.text), steps: lesson.steps });
+    if (trap) {
+      this.updateObjective();
+      return;
+    }
+    hud.objective('Shield it. Now.', 'Phone → Shield → hold. You can still move while it proves.');
+    this.c.phone.el.classList.add('nudge');
+    this.spindleOut();
+    this.c.drones.hunt();
+    // the crew sets off once Zero has made his point
+    await Promise.race([call, sleep(45000)]);
+    if (this.s.beat === 'payday' && this.s.wallet.transparent > 0 && !this.catching) crew.hunt();
   }
 
   /** what The Thread had on you, as file chips */

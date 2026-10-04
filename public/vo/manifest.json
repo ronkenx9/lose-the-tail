@@ -1,4 +1,53 @@
 {
+  "1dvk8h2": {
+    "who": "Zero",
+    "text": "Let me slow down, since they did not. A transparent address, the kind that starts with t1, is a glass jar on a public shelf. Anyone can read the address, the amount, and the minute it landed.",
+    "dur": 12.96,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1j7td3": {
+    "who": "Zero",
+    "text": "That is all The Thread does. They watch the public ledger, see fresh money land, and follow it to whoever spends it.",
+    "dur": 7.6,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "j05kgf": {
+    "who": "Zero",
+    "text": "Shielding moves your money into the shielded pool. The chain records that something went in. After that, zero-knowledge proofs check every payment is valid without revealing who sent it, who got it, or how much.",
+    "dur": 12.56,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1rgoluh": {
+    "who": "Zero",
+    "text": "So the moment money lands in a t1 address, open your wallet and hold Shield. In a real wallet like Zodl, it is the same button. Again.",
+    "dur": 8.96,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1im06ke": {
+    "who": "Zero",
+    "text": "Here is the part people miss. Shielding hides what happens inside the pool, but the doors are public. Money going in and money coming out both show up, with amounts and times.",
+    "dur": 11.6,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1uw5p7d": {
+    "who": "Zero",
+    "text": "You put five in, and a few minutes later took almost five out. Out of everyone using the pool tonight, how many did that? One. You.",
+    "dur": 9.12,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "51l3fd": {
+    "who": "Zero",
+    "text": "When you must unshield, take only what you need, wait a while, and avoid matching amounts. Better still, pay people at their shielded addresses, and never leave the pool at all.",
+    "dur": 10.8,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
   "1y3n94f": {
     "who": "Rook",
     "text": "Your five ZEC is in. Good work. Go treat yourself.",

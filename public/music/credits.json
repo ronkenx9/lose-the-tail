@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Caves",
+    "src": "/music/caves.mp3",
+    "artist": "tricksntraps",
+    "license": "CC0-1.0",
+    "source": "https://opengameart.org/content/t-t-free-cyberpunk-pack",
+    "download": "https://opengameart.org/sites/default/files/Caves.ogg"
+  },
+  {
+    "title": "Currents",
+    "src": "/music/currents.mp3",
+    "artist": "tricksntraps",
+    "license": "CC0-1.0",
+    "source": "https://opengameart.org/content/t-t-free-cyberpunk-pack",
+    "download": "https://opengameart.org/sites/default/files/Currents.ogg"
+  },
+  {
+    "title": "Simulation Unknown",
+    "src": "/music/simulation-unknown.mp3",
+    "artist": "tricksntraps",
+    "license": "CC0-1.0",
+    "source": "https://opengameart.org/content/t-t-free-cyberpunk-pack",
+    "download": "https://opengameart.org/sites/default/files/Simulation%20Unknown.ogg"
+  }
+]
