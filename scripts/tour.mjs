@@ -27,9 +27,11 @@ if (steps.includes('wake')) {
   await ev(() => document.getElementById('start').click());
   await sleep(500);
   await ev(() => document.querySelector('.card .cta').click());
-  await sleep(2500);
+  await sleep(1700);
+  await shot('00-wake-lids-half');
+  await sleep(1300);
   await shot('01-wake-ceiling');
-  await sleep(3500);
+  await sleep(3000);
   await shot('02-wake-buzz');
   await page.keyboard.press('e');
   await sleep(2500);

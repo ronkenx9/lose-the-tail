@@ -336,6 +336,10 @@ export function buildCity(): City {
   P('plant', 3, 40);
   P('lamp', 11, 40, 0, { opts: { c: [255, 200, 140] } });
   P('rug', 6, 36, 0, { block: [] });
+  P('poster', 7, 33, 0, { y: 1, block: [] });
+  P('poster', 3, 35, 3, { y: 1, block: [], opts: { v: 1 } });
+  P('curtain', 3, 40, 0, { block: [] });
+  P('curtain', 11, 40, 0, { block: [], opts: { c: [120, 40, 60] } });
   signs.push({ text: 'HOME', sub: 'apt 4B', color: '#ffb547', x: 10, y: 5.6, z: 42.02, facing: 'S', w: 3, h: 1.1 });
   stations.home = { id: 'home', x: 7.5, z: 38, label: 'Home' };
 

@@ -27,6 +27,7 @@ export class Intro {
   private cam: Pose = { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, roll: 0 };
   private anim: { t: number; dur: number; from: Pose; to: Pose; done: () => void } | null = null;
 
+  private lids: HTMLElement;
   constructor(
     private scene: THREE.Scene,
     private camera: THREE.PerspectiveCamera,
@@ -50,6 +51,14 @@ export class Intro {
     this.phone.add(glow);
     this.resetPhone();
     scene.add(this.phone);
+    // eyelids: two soft black curtains that blink open as you wake
+    this.lids = document.createElement('div');
+    this.lids.className = 'lids open';
+    this.lids.innerHTML = '<i></i><i></i>';
+    document.body.appendChild(this.lids);
+  }
+  private lid(state: 'shut' | 'half' | 'open') {
+    this.lids.className = 'lids ' + state;
   }
 
   resetPhone() {
@@ -74,7 +83,14 @@ export class Intro {
     const yaw = Math.atan2(-dx, -dz);
     const pitch = Math.atan2(ph.y - hy, Math.hypot(dx, dz));
     this.cam = { x: hx, y: hy, z: hz, yaw: yaw + 0.5, pitch: 1.3, roll: 0.1 };
-    await this.sleep(1800);
+    this.lid('shut');
+    await this.sleep(700);
+    this.lid('half');
+    await this.sleep(650);
+    this.lid('shut');
+    await this.sleep(260);
+    this.lid('open');
+    await this.sleep(500);
     // the buzz: roll the head over toward the nightstand
     const picked = new Promise<void>((res) => (this.picked = res));
     this.buzzing = true;
