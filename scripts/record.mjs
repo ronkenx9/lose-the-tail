@@ -118,7 +118,7 @@ async function until(pred, what, ms = 90000) {
   throw new Error('timeout: ' + what + ' ' + JSON.stringify(await st()));
 }
 /** let the dialogue play out by itself (voices auto-advance); returns once it's been quiet for `quiet` ms */
-async function idle(quiet = 900, ms = 120000) {
+async function idle(quiet = 1800, ms = 120000) {
   const end = Date.now() + ms;
   let calm = 0;
   while (Date.now() < end) {
@@ -269,7 +269,7 @@ try {
   await walk(9.5, 39.6);
   await look([75, 40], 1000, 0.1);
   await until((s) => s.crew === 'hunt', 'crew dispatched', 60000);
-  await until((s) => s.near < 30, 'crew closing', 40000).catch(() => {});
+  await sleep(2500); // see the red beacons start toward you, then shield (proving takes a few seconds)
   await page.keyboard.press('e');
   await sleep(700);
   await tap('[data-go="shield"]', 300);

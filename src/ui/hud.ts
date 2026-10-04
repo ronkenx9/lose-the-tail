@@ -46,6 +46,7 @@ export class Hud {
   private curLine: Line | null = null;
   private pv: { stop(): void; setPaused(p: boolean): void } | null = null;
   private paused = false;
+  private pausedAt = 0;
   private typing = 0;
   talking = false;
 
@@ -226,8 +227,17 @@ export class Hud {
     const pp = this.playerPos?.();
     if (pp && !l.radio) {
       const d = Math.hypot(head.x - pp.x, head.z - pp.z);
+      if (this.paused && performance.now() - this.pausedAt > 3500) {
+        // you walked off mid-conversation: they give up on this line instead of holding everything up
+        this.paused = false;
+        this.bub.classList.remove('far');
+        this.stopVoice();
+        this.next();
+        return;
+      }
       if (!this.paused && d > 14) {
         this.paused = true;
+        this.pausedAt = performance.now();
         this.pv?.setPaused(true);
         this.bub.classList.add('far');
       } else if (this.paused && d < 9) {
