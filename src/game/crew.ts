@@ -50,6 +50,7 @@ export class Crew {
 
   /** start the chase */
   hunt() {
+    for (const n of this.members) n.wander = false;
     this.mode = 'hunt';
     this.tracking = true;
     this.caught = false;
@@ -62,6 +63,17 @@ export class Crew {
       this.mode = 'search';
       this.searchT = 12;
       this.lastSeen.set(this.player.x, 0, this.player.z);
+    }
+  }
+  /** after they lose you: drift around the streets, eyeing faces */
+  patrol() {
+    this.mode = 'idle';
+    this.tracking = false;
+    for (const n of this.members) {
+      n.speedMul = 0.62;
+      n.wander = true;
+      n.wait = Math.random() * 3;
+      n.ch.lookAt = null;
     }
   }
   /** call them off */
@@ -122,7 +134,9 @@ export class Crew {
           n.ch.lookAt = null;
         });
       }
-      if (this.searchT <= 0) this.standDown();
+      if (this.searchT <= 0) this.patrol();
+    } else if (this.mode === 'idle') {
+      for (const n of this.members) if (n.ch.lookAt && Math.hypot(n.x - p.x, n.z - p.z) > 6) n.ch.lookAt = null;
     }
   }
 }

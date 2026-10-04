@@ -926,7 +926,11 @@ export class Story {
       const mx = 52 - player.x,
         mz = 30 - player.z,
         md = Math.hypot(mx, mz);
-      if (Math.hypot(tl.x - player.x, tl.z - player.z) < 6) this.aside('hq', T('Zero', 'narrator', "Don't stare at them. Staring is a pattern too.", N, this.A.zero));
+      const eye = crew.mode === 'idle' ? crew.members.find((m) => Math.hypot(m.x - player.x, m.z - player.z) < 4) : undefined;
+      if (eye) {
+        eye.ch.lookAt = new THREE.Vector3(player.x, 2.4, player.z);
+        this.aside('crewpass', T('Zero', 'narrator', "Easy. He's looking for a pocket full of glass. You're not carrying one.", N, this.A.zero));
+      } else if (Math.hypot(tl.x - player.x, tl.z - player.z) < 6) this.aside('hq', T('Zero', 'narrator', "Don't stare at them. Staring is a pattern too.", N, this.A.zero));
       else if (this.sprintT > 1.5 && s.hooded) this.aside('run', T('Zero', 'narrator', "Running draws eyes. You're private, not prey. Walk.", N, this.A.zero));
       else if (md < 18 && (mx * fx + mz * fz) / md > 0.8) this.aside('ledger', T('Zero', 'narrator', "Look up. That's the real Zcash network, breathing. Notice how much of it simply isn't there.", N, this.A.zero));
     }
