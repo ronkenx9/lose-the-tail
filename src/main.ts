@@ -351,6 +351,10 @@ async function boot() {
   const v3 = new THREE.Vector3();
   let last = performance.now();
   let pingT = 0;
+  let stepPhase = 0;
+  let crewStepT = 0;
+  let reactT = 0;
+  const staring = new Set<(typeof npcs.list)[number]>();
   const perf = { acc: 0, n: 0, level: 0 };
   const ended = () => !!(story as any).ended;
   let titleT = 0;
@@ -388,9 +392,41 @@ async function boot() {
     phone.el.style.visibility = intro.active ? 'hidden' : '';
     hud.frame();
     // stamina + run button show up when someone is chasing you (always on touch screens)
-    runUi.classList.toggle('on', started && !inVoid && (crew.mode === 'hunt' || matchMedia('(pointer: coarse)').matches));
+    runUi.classList.toggle('on', started && !inVoid && !intro.active && (crew.mode === 'hunt' || matchMedia('(pointer: coarse)').matches));
     runUi.classList.toggle('low', player.stamina < 0.25);
     stamBar.style.transform = `scaleX(${player.stamina})`;
+    // footsteps: yours, and theirs getting louder as they close in
+    const ph = Math.floor(player.bobT / Math.PI);
+    if (ph !== stepPhase) {
+      stepPhase = ph;
+      if (player.speed > 1) sfx.footstep(player.sprinting ? 0.07 : 0.04, 0.9 + Math.random() * 0.2);
+    }
+    if (crew.mode === 'hunt' && crew.members.length) {
+      crewStepT -= dt;
+      const d = crew.nearest();
+      if (crewStepT <= 0 && d < 32) {
+        crewStepT = 0.16 + Math.random() * 0.12;
+        sfx.footstep(0.22 * Math.pow(1 - d / 32, 1.6), 0.75 + Math.random() * 0.15);
+      }
+    }
+    // passers-by react: they stare when you're lit up, flinch when you sprint past
+    reactT -= dt;
+    if (reactT <= 0) {
+      reactT = 0.4;
+      const loud = story.exposed || crew.mode === 'hunt';
+      for (const n of npcs.list) {
+        if (n.role !== 'crowd') continue;
+        const d = Math.hypot(n.x - player.x, n.z - player.z);
+        const react = (loud && d < 7) || (player.sprinting && d < 3.5);
+        if (react) {
+          n.ch.lookAt = v3.set(player.x, 2.4, player.z).clone();
+          staring.add(n);
+        } else if (staring.has(n)) {
+          n.ch.lookAt = null;
+          staring.delete(n);
+        }
+      }
+    }
     // adaptive score
     sfx.setMood(inVoid ? 'void' : story.s.trace ? 'tension' : story.s.beat === 'dawn' || ended() ? 'dawn' : 'calm');
     // exposure ring + ping

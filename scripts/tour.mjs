@@ -5,7 +5,7 @@ const OUT = process.argv[2] ?? 'shots';
 const URL = process.argv[3] ?? 'http://localhost:5191/';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] });
-const page = await browser.newPage({ viewport: { width: 1280, height: 760 } });
+const page = await browser.newPage(process.env.MOBILE ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : { viewport: { width: 1280, height: 760 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 const sleep = (ms) => page.waitForTimeout(ms);
@@ -44,6 +44,21 @@ if (steps.includes('wake')) {
   await ev(() => { const g = window.__game; const k = g.city.stations.kiosk; g.player.x = k.x; g.player.z = k.z + 3; g.player.goTo(k.x, k.z); });
   await sleep(4000);
   await shot('06-kiosk-courier');
+}
+if (steps.includes('chase')) {
+  await ev(() => { const g = window.__game; const k = g.city.stations.kiosk; g.player.x = k.x; g.player.z = k.z + 2; });
+  await page.waitForFunction(() => window.__game.phone.current === 'send2', null, { timeout: 20000 }).catch(() => {});
+  await sleep(500);
+  await ev(() => document.querySelector('[data-hold=send]')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
+  await page.waitForFunction(() => window.__game.crew.mode === 'hunt', null, { timeout: 20000 });
+  await sleep(1500);
+  await shot('07-chase-start');
+  await page.waitForFunction(() => window.__game.crew.nearest() < 5, null, { timeout: 30000 });
+  await ev(() => { const g = window.__game; const m = g.crew.members[0]; g.player.yaw = Math.atan2(-(m.x - g.player.x), -(m.z - g.player.z)); });
+  await sleep(200);
+  await shot('08-crew-close');
+  await sleep(1300);
+  await shot('09-robbed');
 }
 if (steps.includes('payday')) {
   await page.goto(URL + '?start=payday');

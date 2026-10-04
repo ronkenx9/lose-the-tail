@@ -90,6 +90,20 @@ export class Hud {
       if (!this.talking) this.next();
     });
   }
+  /** cut all dialogue now (someone just grabbed you); pending say() promises resolve */
+  hush() {
+    const pend = [...(this.cur ? [this.cur] : []), ...this.queue];
+    this.queue = [];
+    this.cur = null;
+    clearInterval(this.typing);
+    clearTimeout(this.autoT);
+    this.talking = false;
+    this.stopVoice();
+    this.dlg.classList.add('hidden');
+    this.bub.classList.add('hidden');
+    this.curLine = null;
+    for (const p of pend) p.done();
+  }
   private cur: { lines: Line[]; done: () => void } | null = null;
   private full = '';
   private next() {

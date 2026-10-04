@@ -215,6 +215,28 @@ export class Sfx {
   ui() {
     this.tone(880, 0.06, 'square', 0.05);
   }
+  private noiseBuf: AudioBuffer | null = null;
+  /** a footstep: short filtered noise thump */
+  footstep(vol = 0.08, rate = 1) {
+    const c = this.ctx;
+    if (!c || !this.master) return;
+    if (!this.noiseBuf) {
+      const b = c.createBuffer(1, Math.floor(c.sampleRate * 0.09), c.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      this.noiseBuf = b;
+    }
+    const s = c.createBufferSource();
+    s.buffer = this.noiseBuf;
+    s.playbackRate.value = rate;
+    const f = c.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 900;
+    const g = c.createGain();
+    g.gain.value = vol;
+    s.connect(f).connect(g).connect(this.master);
+    s.start();
+  }
   buzz() {
     for (let i = 0; i < 3; i++) this.tone(120, 0.12, 'sawtooth', 0.12, 0, i * 0.16);
   }

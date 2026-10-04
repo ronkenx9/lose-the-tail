@@ -291,6 +291,7 @@ export class Story {
     player.frozen = true;
     player.stop();
     phone.lower();
+    hud.hush();
     hud.flashRed();
     this.c.sfx.caught();
     this.c.glitch(2.5);
@@ -313,6 +314,11 @@ export class Story {
         await sleep(28);
       }
       this.c.glitch(2.5);
+      // they don't want you. they want the keys. the balance drains on your phone as the lights go
+      const took = this.s.wallet.transparent;
+      this.s.wallet.transparent = 0;
+      addTx(this.s, { kind: 'send', amount: took, pocket: 'transparent', who: 't1Ta1lor…', publicView: 'visible' });
+      phone.notify('Sent', `−${fmtZec(took)} ZEC → t1Ta1lorCo…`);
       await this.c.blackout(true);
       this.c.drones.patrol();
       this.catching = false;
@@ -382,7 +388,14 @@ export class Story {
     await this.c.blackout(false);
     hud.objective('Where are you?', 'Walk toward the figure.');
     this.markerTarget = { x: v.zeroAt.x, z: v.zeroAt.z, label: '?' };
-    while (Math.hypot(player.x - v.zeroAt.x, player.z - v.zeroAt.z) > 3.4) await sleep(150);
+    // Zero drifts out to meet you as you come closer
+    for (;;) {
+      const d = Math.hypot(player.x - v.zeroAt.x, player.z - v.zeroAt.z);
+      if (d < 3.4 || Math.hypot(player.x - this.c.zero.zero.group.position.x, player.z - this.c.zero.zero.group.position.z) < 2.6) break;
+      const k = Math.min(0.5, Math.max(0, (9 - d) / 12));
+      this.c.zero.stay({ x: v.zeroAt.x + (player.x - v.zeroAt.x) * k, z: v.zeroAt.z + (player.z - v.zeroAt.z) * k });
+      await sleep(120);
+    }
     this.markerTarget = null;
     hud.objective(null);
     await hud.say([
