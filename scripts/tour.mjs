@@ -109,5 +109,20 @@ if (steps.includes('errands')) {
     await shot(`${n}-${id}`);
   }
 }
+if (steps.includes('ending')) {
+  await page.goto(URL + '?debug=dawn');
+  await page.waitForFunction(() => window.__game);
+  await sleep(2500);
+  for (let i = 0; i < 10; i++) { await adv(); await sleep(300); }
+  await ev(() => { const g = window.__game; const h = g.city.stations.home; g.player.x = h.x; g.player.z = h.z + 6; g.player.goTo(h.x, h.z); });
+  await sleep(5000);
+  await shot('40-dawn-home');
+  for (let i = 0; i < 40 && !(await page.$('.card .cta')); i++) { await adv(); await sleep(400); }
+  await sleep(600);
+  await shot('41-case-file');
+  await ev(() => document.querySelector('.card .cta')?.click());
+  await sleep(1500);
+  await shot('42-zero-farewell');
+}
 await browser.close();
 if (errors.length) console.log('ERRORS', errors.join(' | '));

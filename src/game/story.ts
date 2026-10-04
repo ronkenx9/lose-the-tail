@@ -456,7 +456,7 @@ export class Story {
 
   private zeroSpot() {
     const h = this.c.city.stations.home;
-    return { x: h.x + 1, z: h.z + 0.8 };
+    return { x: h.x - 0.5, z: h.z + 1.8 };
   }
 
   private async walletCreated() {
@@ -813,9 +813,13 @@ export class Story {
     this.markerTarget = null;
     hud.objective(null);
     this.c.zero.stay(this.zeroSpot());
-    for (let k = 0; k <= 30; k++) {
-      this.c.setDawn(k / 30);
-      await sleep(60);
+    // look out of the window as the sun comes up over the street
+    const h = this.c.city.stations.home;
+    player.stop();
+    this.turnTo(h.x, h.z + 8, 1400);
+    for (let k = 0; k <= 50; k++) {
+      this.c.setDawn(k / 50);
+      await sleep(70);
     }
     await hud.say([
       T('The Tailor', 'tailor', "Sun's up. Tell me something about our five-ZEC ghost.", R, this.A.tailor),

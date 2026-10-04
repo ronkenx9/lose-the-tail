@@ -82,7 +82,10 @@ async function boot() {
   stage.scene.add(ring);
 
   const fogBase = (stage.scene.fog as THREE.FogExp2).color.clone();
-  const dawnCol = new THREE.Color(0x6a4a6e);
+  const dawnCol = new THREE.Color(0xb8786a);
+  const dawnEl = document.createElement('div');
+  dawnEl.className = 'dawn-tint';
+  document.body.appendChild(dawnEl);
   let glitchK = 0;
   let cut: { t: number } | null = null;
   let inVoid = false;
@@ -158,6 +161,7 @@ async function boot() {
       (stage.scene.background as THREE.Color).copy(f.color);
       f.density = 0.028 - k * 0.012;
       (stage.rain.material as THREE.LineBasicMaterial).opacity = 0.35 * (1 - k);
+      dawnEl.style.opacity = String(k * 0.6);
     },
     glitch: (k) => (glitchK = Math.max(glitchK, k)),
     shieldCut: async () => {
