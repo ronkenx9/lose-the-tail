@@ -160,12 +160,16 @@ export class Hud {
         }, 900);
       };
     }
+    const me = this.cur;
+    const voiced = !!(vo && vo.who === l.who);
     this.typing = window.setInterval(() => {
       i += step;
       p.innerHTML = fmt(this.full.slice(0, i));
       if (i >= this.full.length) {
         clearInterval(this.typing);
         this.typed = true;
+        // no voice (muted or missing): give reading time, then move on by itself
+        if (!voiced || !this.audio) this.autoT = window.setTimeout(() => this.cur === me && this.curLine === l && this.next(), 1300 + this.full.length * 38);
       }
     }, 16);
   }
