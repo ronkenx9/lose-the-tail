@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-/** Tailor surveillance drones: voxel body, red eye, searchlight cone. */
+/** The Thread's surveillance drones: voxel body, red eye, searchlight cone. */
 export class Drone {
   group = new THREE.Group();
   cone: THREE.Mesh;

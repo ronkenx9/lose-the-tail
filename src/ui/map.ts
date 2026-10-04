@@ -27,8 +27,10 @@ export function makeMap(city: City, get: () => { x: number; z: number; yaw: numb
     ['arcade', 'Arcade', '#ff4fd8'],
     ['exchange', 'Cobalt', '#3fe6ff'],
     ['kiosk', 'Kiosk', '#ffb547'],
-    ['alley', 'Alley', '#6f8f7c'],
-    ['tailor', 'Tailor & Co.', '#ff2b3b'],
+    ['tailor', 'Tailor', '#ffcf7a'],
+    ['spindle', 'The Thread', '#ff2b3b'],
+    ['mart', 'Mart', '#7dd3ff'],
+    ['laundry', 'Laundry', '#c6a2ff'],
   ];
   return {
     draw(c: HTMLCanvasElement) {
@@ -49,7 +51,7 @@ export function makeMap(city: City, get: () => { x: number; z: number; yaw: numb
         ctx.arc(x, y, 3.2, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#e8f3ec';
-        ctx.fillText(label, x, id === 'tailor' ? y + 12 : y - 6);
+        ctx.fillText(label, x, id === 'tailor' || id === 'spindle' ? y + 12 : y - 6);
       }
       const p = get();
       if (p.goal) {

@@ -56,7 +56,7 @@ export class Hud {
       `<div class="hud-top">
          <div class="obj hidden"><span class="obj-k">objective</span><b></b><em></em></div>
          <div class="mid"><div class="clockrow"><div class="clock">18:00</div><button class="mute" aria-label="toggle sound">♪</button></div><div class="trace hidden"><span>TRACE</span><b>00</b><i></i></div></div>
-         <div class="file hidden"><span class="file-k">TAILOR & CO. · file on you <b class="file-n"></b></span><div class="slots"></div></div>
+         <div class="file hidden"><span class="file-k">THE THREAD · file on you <b class="file-n"></b></span><div class="slots"></div></div>
        </div>
        <div class="marker hidden"><i></i><span></span></div>
        <div class="bub hidden"><b></b><p></p><i class="bub-arrow"></i></div>

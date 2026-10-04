@@ -428,6 +428,7 @@ export class Character {
     this.headM = new THREE.Mesh(p.head, this.mat);
     this.headM.position.y = legY + 12 * VOX;
     this.group.add(this.headM);
+    if (head.role === 'spindle') this.dressBoss();
     if (head.role === 'tailor') this.dressTailor();
   }
 
@@ -451,8 +452,32 @@ export class Character {
   }
   umbrella = false;
 
-  /** the boss gets his coat: long charcoal trench, red armband, glowing ledger tablet */
+  /** the shopkeeper: plum waistcoat over a white shirt, a yellow tape measure round the neck */
   private dressTailor() {
+    const W: RGB = [226, 222, 214],
+      V: RGB = [92, 40, 70],
+      V2: RGB = [70, 30, 54],
+      Y: RGB = [240, 200, 60];
+    this.torso.geometry = part({
+      w: 10,
+      h: 12,
+      d: 6,
+      pivot: [5, 0, 3],
+      color: (x, y, z) => {
+        if (z >= 5 && (x === 4 || x === 5) && y >= 4) return W; // shirt showing at the front
+        if (z >= 5 && (x === 2 || x === 7) && y >= 3) return Y; // tape measure hanging down
+        if (y >= 10 && (x <= 2 || x >= 7)) return Y; // tape round the neck
+        if (z >= 5 && x === 6 && (y === 4 || y === 7)) return [210, 190, 120]; // buttons
+        return (x + y) % 9 === 0 ? V2 : V;
+      },
+    });
+    const sleeve = part({ w: 5, h: 12, d: 5, pivot: [2.5, 11, 2.5], color: (x, y) => (y <= 1 ? [200, 170, 140] : y === 4 ? [200, 40, 60] : W) });
+    this.arms[0].geometry = sleeve;
+    this.arms[1].geometry = sleeve;
+  }
+
+  /** Spindle gets the coat: long charcoal trench, red armband, glowing ledger tablet */
+  private dressBoss() {
     const C: RGB = [34, 34, 38],
       C2: RGB = [24, 24, 28],
       R: RGB = [214, 30, 40];

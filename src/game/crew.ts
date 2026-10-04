@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import type { Npcs, Npc } from '../engine/npcs';
 import type { Player } from '../engine/player';
 import type { HeadMeta } from '../engine/characters';
+import { makeBeacon, type Beacon } from '../engine/beacon';
 
 type Mode = 'idle' | 'hunt' | 'search' | 'leave';
 
 /**
- * The Tailor's crew. While `tracking` is on (your public address is pinging) they know
+ * The Thread: Spindle's crew. While `tracking` is on (your public address is pinging) they know
  * where you are and run you down. When it goes off they search your last known spot,
  * then give up and walk home. Reaching you = caught.
  */
@@ -24,6 +25,14 @@ export class Crew {
   /** chase speed multiplier (1 = faster than walking, slower than sprinting) */
   pace = 1;
 
+  private tags = new Map<Npc, Beacon>();
+  private t = 0;
+  /** mark one of The Thread with a red beacon you can see through walls */
+  tag(n: Npc) {
+    const b = makeBeacon(new THREE.Color(3, 0.12, 0.18), { radius: 0.07, height: 40, base: 2.05, seeThrough: true, marker: true });
+    n.ch.group.add(b.group);
+    this.tags.set(n, b);
+  }
   constructor(
     private npcs: Npcs,
     private player: Player,
@@ -34,7 +43,8 @@ export class Crew {
     this.clear();
     this.members = heads.map((h, k) => {
       const p = at[k % at.length];
-      const n = this.npcs.spawn(h, p.x, p.z, { speedMul: 0.6, name: k === 0 ? 'Needle' : k === 1 ? 'Hem' : 'Tailor crew' });
+      const n = this.npcs.spawn(h, p.x, p.z, { speedMul: 0.6, name: k === 0 ? 'Needle' : k === 1 ? 'Hem' : 'Thread crew' });
+      this.tag(n);
       return n;
     });
     this.caught = false;
@@ -94,6 +104,11 @@ export class Crew {
   }
 
   update(dt: number) {
+    this.t += dt;
+    for (const [n, b] of this.tags) {
+      if (!this.npcs.list.includes(n)) this.tags.delete(n);
+      else b.update(this.t + n.x);
+    }
     if (!this.members.length) return;
     const p = this.player;
     this.repath -= dt;

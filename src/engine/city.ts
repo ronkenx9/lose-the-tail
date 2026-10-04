@@ -190,7 +190,7 @@ export function buildCity(): City {
     '54,0': { h: 22, style: 'brick', dark: true },
     '76,0': { h: 18, style: 'brick', dark: true },
     // SW
-    '0,54': { h: 26, style: 'black', wall: B.GLASS_DARK }, // TAILOR & CO
+    '0,54': { h: 16, style: 'brick', wall: B.BRICK }, // THE TAILOR (shop)
     '22,76': { h: 12, style: 'brick', wall: B.DARKBRICK }, // ARCADE
     // SE
     '76,54': { h: 11, style: 'brick', wall: B.BRICK }, // CAFE
@@ -343,17 +343,21 @@ export function buildCity(): City {
   signs.push({ text: 'HOME', sub: 'apt 4B', color: '#ffb547', x: 10, y: 5.6, z: 42.02, facing: 'S', w: 3, h: 1.1 });
   stations.home = { id: 'home', x: 7.5, z: 38, label: 'Home' };
 
-  // TAILOR & CO — monitor room (SW lot), facade z=54, door x 9..10
-  room(3, 55, 16, 64, B.CARPET, B.CEIL_COOL, 5, B.DARKBRICK);
-  front('z', 54, 3, 16, 9, -1, B.NEON_RED, 1);
-  for (let x = 4; x <= 15; x++) w.set(x, 1, 63, B.COUNTER);
-  for (const x of [5, 8, 11, 14]) P('monitor', x, 63, 2, { y: 2, block: [], opts: { c: x % 2 ? [255, 70, 50] : [255, 120, 60] } });
-  P('chair', 9, 61, 2);
+  // THE TAILOR — a real tailor's shop (SW lot), facade z=54, door x 9..10. He sells hoods; he is not the problem.
+  room(3, 55, 16, 64, B.FLOOR_WOOD, B.CEIL_WARM, 4, B.PLASTER);
+  front('z', 54, 3, 16, 9, -1, B.NEON_AMBER, 1);
+  for (let x = 6; x <= 13; x++) w.set(x, 1, 62, B.COUNTER);
+  P('sewing', 7, 62, 2, { y: 2, block: [] });
+  P('register', 12, 62, 2, { y: 2, block: [] });
+  for (const [mx, mz, c] of [[4, 57, [60, 60, 70]], [4, 60, [120, 40, 60]], [15, 57, [40, 70, 110]], [15, 60, [30, 30, 34]]] as [number, number, [number, number, number]][])
+    P('mannequin', mx, mz, mx < 9 ? 3 : 1, { opts: { c } });
+  for (let x = 4; x <= 15; x++) if (x < 6 || x > 13) P('fabric', x, 64, 0, { opts: { k: x } });
+  P('rug', 8, 57, 0, { block: [], opts: {} });
   P('plant', 3, 55);
-  P('camera', 16, 55, 1, { y: 3, block: [] });
-  for (let x = 2; x <= 17; x++) w.set(x, 6, 54, B.NEON_RED);
-  signs.push({ text: 'TAILOR & CO.', sub: 'we follow up', color: '#ff2b3b', x: 10, y: 8, z: 53.98, facing: 'N', w: 9, h: 2.2, flicker: true });
-  stations.tailor = { id: 'tailor', x: 9.5, z: 52, npc: { x: 9.5, z: 61.6, yaw: -Math.PI / 2 }, label: 'Tailor & Co.' };
+  P('lamp', 16, 55, 0, { opts: { c: [255, 210, 150] } });
+  for (let x = 2; x <= 17; x++) w.set(x, 6, 54, B.NEON_AMBER);
+  signs.push({ text: 'THE TAILOR', sub: 'fittings · hems · hoods', color: '#ffcf7a', x: 10, y: 8, z: 53.98, facing: 'N', w: 9, h: 2.2 });
+  stations.tailor = { id: 'tailor', x: 9.5, z: 59.6, npc: { x: 9.5, z: 63.4, yaw: -Math.PI / 2 }, label: 'The Tailor' };
 
   // NULLSTATE CAFÉ (SE lot), facade z=54, door x 84..85
   room(77, 55, 94, 66, B.FLOOR_WOOD, B.CEIL_WARM, 4);
@@ -444,6 +448,13 @@ export function buildCity(): City {
   for (let z = 6; z <= 40; z += 7) w.set(73, 7 + (z % 3), z, B.METAL); // fire-escape bits
   signs.push({ text: 'NO CAMERAS', sub: 'beyond this point', color: '#6b7a73', x: 74.98, y: 3, z: 40, facing: 'W', w: 2.6, h: 0.9 });
   stations.alley = { id: 'alley', x: 74.9, z: 9, label: 'The Alley' };
+  // THE THREAD — the gang works out of the alley: a crate, a stolen monitor, a red lamp
+  for (let x = 74; x <= 75; x++) w.set(x, 1, 32, B.METAL);
+  P('monitor', 74, 32, 0, { y: 2, block: [], opts: { c: [255, 60, 50] } });
+  P('camera', 74, 39, 3, { y: 3, block: [] });
+  for (let z = 30; z <= 31; z++) for (let x = 74; x <= 75; x++) w.set(x, 4, z, B.NEON_RED);
+  signs.push({ text: 'THE THREAD', sub: 'we follow it', color: '#ff2b3b', x: 73.98, y: 5.2, z: 37, facing: 'W', w: 4, h: 1.2, flicker: true });
+  stations.spindle = { id: 'spindle', x: 74.9, z: 42.2, npc: { x: 75, z: 38.4, yaw: Math.PI / 2 }, label: 'The Thread' };
 
   // NOODLE KIOSK — open stall in the plaza
   for (let x = 39; x <= 42; x++) w.set(x, 1, 41, B.COUNTER);

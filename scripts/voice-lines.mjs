@@ -20,7 +20,8 @@ export function lines() {
 }
 export const cast={
  Zero:{id:'nPczCjzI2devNBz1zQrb',tag:'[confidently]'},
- 'The Tailor':{id:'ev2kMR9ZJZZsemuogS5u',tag:'[serious]'},
+ Spindle:{id:'ev2kMR9ZJZZsemuogS5u',tag:'[serious]'},
+ 'The Tailor':{id:'JBFqnCBsd6RMkjVDRZzb',tag:'[warmly]'},
  Needle:{id:'IRHApOXLvnW57QJPQH2P',tag:'[sarcastically] [smirking]'},
  Rook:{id:'kIdaq3mPZbYm2kpFTtYI',tag:'[warmly]'},
  Niko:{id:'LEvd0YiWkwZ6hTZOmdVE',tag:'[relieved]'},

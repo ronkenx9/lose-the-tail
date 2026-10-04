@@ -215,7 +215,7 @@
   {
    "i": 16,
    "id": 5715,
-   "role": "lookout",
+   "role": "spindle",
    "traits": {
     "Background": "Black",
     "Lineage": "Dune",

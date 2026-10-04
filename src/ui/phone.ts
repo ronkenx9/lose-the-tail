@@ -254,7 +254,7 @@ export class Phone {
   private s_map() {
     return `<div class="top"><button data-go="${this.getState().wallet.created ? 'home' : 'lock'}" class="back">‹</button><h3>Ledger City</h3></div>
       <canvas class="mapc" width="288" height="288"></canvas>
-      <div class="legend"><span><i class="lg you"></i>you</span><span><i class="lg goal"></i>next stop</span><span><i class="lg place"></i>places</span><span><i class="lg danger"></i>Tailor & Co.</span></div>`;
+      <div class="legend"><span><i class="lg you"></i>you</span><span><i class="lg goal"></i>next stop</span><span><i class="lg place"></i>places</span><span><i class="lg danger"></i>The Thread</span></div>`;
   }
 
   private s_threads() {

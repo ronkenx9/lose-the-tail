@@ -6,6 +6,7 @@ import { Player } from './engine/player';
 import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { buildVoid } from './engine/voidworld';
 import { Doors } from './engine/doors';
+import { makeBeacon } from './engine/beacon';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
 import { Drones } from './engine/drones';
@@ -77,7 +78,7 @@ async function boot() {
   // ping ring around an exposed player
   const ring = new THREE.Mesh(
     new THREE.RingGeometry(0.9, 1.0, 48),
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 0.2, 0.25), transparent: true, depthWrite: false, side: THREE.DoubleSide }),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.1, 0.4), transparent: true, depthWrite: false, side: THREE.DoubleSide }),
   );
   ring.rotation.x = -Math.PI / 2;
   stage.scene.add(ring);
@@ -102,16 +103,22 @@ async function boot() {
       setTimeout(res, 950);
     });
   const doors = new Doors(stage.scene, city.doors);
-  // the Tailor's monitors mirror the live ledger screens: they really are watching the chain
-  [5, 8, 11, 14].forEach((x, k) => {
-    const scr = k % 2 ? stage.screens.mainnet : stage.screens.ledger;
-    const mat = new THREE.MeshBasicMaterial({ map: scr.tex, toneMapped: false });
+  // unshielded money = a giant gold column of light rising out of you, visible across the city
+  const gold = makeBeacon(new THREE.Color(4.6, 3.0, 0.5), { radius: 0.7, height: 90, base: 2.4 });
+  stage.scene.add(gold.group);
+  let goldK = 0;
+  let goldHold = false;
+  const goldEl = document.createElement('div');
+  goldEl.className = 'gold-edge';
+  document.body.appendChild(goldEl);
+  // the gang's stolen monitor in the alley mirrors the live ledger: they really are watching the chain
+  {
+    const mat = new THREE.MeshBasicMaterial({ map: stage.screens.ledger.tex, toneMapped: false });
     mat.color.setScalar(1.15);
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1.86, 1.24), mat);
-    m.position.set(x, 2.69, 63.33);
-    m.rotation.y = Math.PI;
+    m.position.set(75, 2.69, 32.68);
     stage.scene.add(m);
-  });
+  }
   // people in the world
   const intro = new Intro(stage.scene, stage.camera, player, city.bed, { x: 5, z: 33 });
   intro.onPulse = () => sfx.buzz();
@@ -123,8 +130,8 @@ async function boot() {
     }
     return inVoid;
   };
-  const tailorDoor = city.stations.tailor.npc!;
-  const crew = new Crew(npcs, player, { x: tailorDoor.x, z: tailorDoor.z - 2 });
+  const den = city.stations.spindle.npc!;
+  const crew = new Crew(npcs, player, { x: den.x, z: den.z - 2 });
   const companion = new Companion(stage.scene, player);
   // positional voices: the speaker's mouth is where the sound comes from
   const voice = new Voice(() => sfx.ctx, () => sfx.voiceBus);
@@ -177,13 +184,15 @@ async function boot() {
     },
     glitch: (k) => (glitchK = Math.max(glitchK, k)),
     shieldCut: async () => {
+      goldHold = true; // keep the beam on until the hood goes up, so you see it die
+      goldK = 1;
       // third-person cutaway: see yourself pull the hood up
       const fwd = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
       let camPos = new THREE.Vector3(player.x, 0, player.z).addScaledVector(fwd, 3.4);
       // keep the camera out of walls
       for (let k = 3.4; k > 1.4 && !player.walkable(Math.floor(camPos.x), Math.floor(camPos.z)); k -= 0.2)
         camPos = new THREE.Vector3(player.x, 0, player.z).addScaledVector(fwd, k);
-      camPos.y = 2.75;
+      camPos.y = 2.25;
       const me = new Character(headByRole('you_bare'));
       me.group.position.set(player.x, 1, player.z);
       me.faceDir(fwd.x, fwd.z);
@@ -194,7 +203,7 @@ async function boot() {
       player.stop();
       phone.el.style.opacity = '0';
       const from = stage.camera.position.clone();
-      const look = new THREE.Vector3(player.x, 2.55, player.z);
+      const look = new THREE.Vector3(player.x, 3.1, player.z);
       cut = { t: 0 };
       const tween = (a: THREE.Vector3, b: THREE.Vector3, ms: number) =>
         new Promise<void>((res) => {
@@ -212,7 +221,8 @@ async function boot() {
       await tween(from, camPos, 700);
       me.trailBoost = 0.15;
       await new Promise((r) => setTimeout(r, 450));
-      // the moment: hood up, visor on, the tail dissolves
+      // the moment: hood up, visor on, the tail dissolves, the gold beam snaps off
+      goldHold = false;
       stage.scene.remove(me.group);
       npcs.extra = npcs.extra.filter((c) => c !== me);
       const hooded = new Character(headByRole('you_hood'));
@@ -294,7 +304,7 @@ async function boot() {
   });
 
   // ---------- title ----------
-  const cast = ['narrator', 'you_zk', 'tailor', 'friend', 'courier', 'cafe', 'landlord', 'you_hood'];
+  const cast = ['narrator', 'you_zk', 'spindle', 'friend', 'courier', 'cafe', 'tailor', 'you_hood'];
   hud.show(
     `<div class="title">
        <div class="title-cast">${cast.map((r) => portrait(r, 54)).join('')}</div>
@@ -453,15 +463,22 @@ async function boot() {
     }
     // adaptive score
     sfx.setMood(inVoid ? 'void' : story.s.trace ? 'tension' : story.s.beat === 'dawn' || ended() ? 'dawn' : 'calm');
-    // exposure ring + ping
-    ring.visible = exposed;
-    if (exposed) {
+    // the gold beacon: on while you hold unshielded money; collapses fast when you shield
+    const goldOn = started && !inVoid && (story.lit || goldHold);
+    goldK += ((goldOn ? 1 : 0) - goldK) * Math.min(1, dt * (goldOn ? 2.5 : 7));
+    gold.set(goldK < 0.01 ? 0 : goldK);
+    gold.group.position.set(player.x, 1, player.z);
+    gold.update(now / 1000);
+    goldEl.style.opacity = String(goldK * (0.55 + 0.25 * Math.sin(now / 260)));
+    // gold ring pulsing out of your feet while lit, pinging when they're actively tracking you
+    ring.visible = goldK > 0.05;
+    if (ring.visible) {
       pingT += dt;
       const k = (pingT % 1.6) / 1.6;
       ring.position.set(player.x, 1.02, player.z);
       ring.scale.setScalar(0.5 + k * 6);
-      (ring.material as THREE.MeshBasicMaterial).opacity = 1 - k;
-      if (pingT % 1.6 < dt) sfx.ping();
+      (ring.material as THREE.MeshBasicMaterial).opacity = (1 - k) * goldK;
+      if (exposed && pingT % 1.6 < dt) sfx.ping();
     }
     // marker
     const m = story.marker;

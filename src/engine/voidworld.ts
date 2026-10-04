@@ -94,7 +94,7 @@ export function buildVoid() {
     g.strokeRect(4, 4, 504, 152);
     g.fillStyle = '#ff4757';
     g.font = '600 26px ui-monospace, Menlo, monospace';
-    g.fillText('TAILOR & CO. · ' + key.toUpperCase(), 24, 48);
+    g.fillText('THE THREAD · ' + key.toUpperCase(), 24, 48);
     g.fillStyle = '#f4f0e8';
     g.font = '500 30px ui-monospace, Menlo, monospace';
     const words = text.split(' ');

@@ -1,4 +1,4 @@
-/** Simulated practice wallet + the Tailors' view of the public ledger. Pure logic, no DOM. */
+/** Simulated practice wallet + the gang's view of the public ledger. Pure logic, no DOM. */
 
 export type Pocket = 'shielded' | 'transparent';
 
@@ -32,7 +32,7 @@ export interface GameState {
   errands: { cafe: boolean; friend: boolean; exchange: boolean; swap: boolean };
   tags: string[];
   caughtCount: number;
-  /** the shield event the Tailor will try to match an exit against */
+  /** the shield event The Thread will try to match an exit against */
   lastShield: { at: number; amount: number } | null;
   /** loop 1: the naive night, plain public wallet */
   naive: boolean;
@@ -87,7 +87,7 @@ export function addClue(s: GameState, c: Clue) {
 }
 
 /**
- * The Tailors' matcher: they saw `shield.amount` enter the shielded pool at `shield.at`.
+ * The Thread's matcher: they saw `shield.amount` enter the shielded pool at `shield.at`.
  * An exit of a similar amount soon after is a probable match. Mirrors how amount/timing
  * correlation de-anonymizes real users (the pool's in/out values are public).
  */

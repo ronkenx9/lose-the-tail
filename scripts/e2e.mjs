@@ -73,7 +73,7 @@ try {
   await until((s) => s.up && s.screen === 'send2', 'pay screen');
   await hold('[data-hold=send]');
   await until((s) => s.beat === 'chase1', 'chase starts after paying', 8000);
-  log('PASS loop1: paid noodles, Tailor gave the order');
+  log('PASS loop1: paid noodles, Spindle gave the order');
   await until((s) => s.crew === 'hunt', 'crew hunting', 8000);
   const d0 = (await state()).near;
   const d1 = (await until((s) => s.near < d0 - 3 || s.beat === 'void', 'crew closing in', 30000)).near;

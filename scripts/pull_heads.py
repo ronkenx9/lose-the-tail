@@ -35,7 +35,7 @@ crowd = [t for t in pick(lambda tr: tr["Head"] != "Recon", 200) if t["id"] not i
 entries = []
 for role, ts in roles.items():
     for t in ts: entries.append((role, t))
-for t in lookouts: entries.append(("lookout", t))
+for t in lookouts: entries.append(("spindle" if t["id"] == 5715 else "lookout", t))  # Spindle #5715 runs The Thread
 for t in crowd: entries.append(("crowd", t))
 
 COLS = 8

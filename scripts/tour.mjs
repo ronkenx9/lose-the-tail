@@ -92,6 +92,17 @@ if (steps.includes('payday')) {
   await sleep(2500);
   await shot('13-after-shield');
 }
+if (steps.includes('shield')) {
+  await page.goto(URL + '?start=payday');
+  await page.waitForFunction(() => window.__game);
+  await page.waitForFunction(() => window.__game.crew.mode === 'hunt', null, { timeout: 30000 });
+  await ev(() => { const g = window.__game; g.player.x = 9.5; g.player.z = 44; g.player.yaw = 0; });
+  await ev(() => { window.__game.phone.raise(); window.__game.phone.show('shield'); });
+  await sleep(300);
+  await ev(() => document.querySelector('[data-hold=shield]').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
+  await page.waitForFunction(() => window.__game.story.s.beat === 'shielded', null, { timeout: 15000 });
+  for (const [ms, n] of [[1250, 'a'], [600, 'b'], [700, 'c']]) { await sleep(ms); await shot('14-shield-' + n); }
+}
 if (steps.includes('void')) {
   await page.goto(URL + '?debug=void');
   await page.waitForFunction(() => window.__game);
@@ -126,9 +137,15 @@ if (steps.includes('hq')) {
   await page.goto(URL + '?debug=errands');
   await page.waitForFunction(() => window.__game);
   await sleep(800);
-  await ev(() => { const g = window.__game; g.player.x = 9.5; g.player.z = 58.5; g.player.yaw = Math.PI; g.player.pitch = -0.05; });
+  await ev(() => { const g = window.__game; g.player.x = 9.5; g.player.z = 57.5; g.player.yaw = Math.PI; g.player.pitch = -0.05; });
   await sleep(1500);
-  await shot('60-tailor-hq');
+  await shot('60-tailor-shop');
+  await ev(() => { const g = window.__game; g.player.x = 9.5; g.player.z = 59.6; });
+  await sleep(2500);
+  await shot('61-tailor-talks');
+  await ev(() => { const g = window.__game; g.player.x = 70; g.player.z = 44; g.player.yaw = Math.atan2(-(75 - 70), -(38 - 44)); g.player.pitch = 0.15; });
+  await sleep(1500);
+  await shot('62-alley-spindle');
 }
 if (steps.includes('ending')) {
   await page.goto(URL + '?debug=dawn');

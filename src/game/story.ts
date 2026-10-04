@@ -81,6 +81,7 @@ export class Story {
     };
     this.A = {
       tailor: head('tailor'),
+      spindle: head('spindle'),
       courier: head('courier'),
       cafe: head('cafe'),
       friend: head('friend'),
@@ -100,6 +101,10 @@ export class Story {
   get marker() {
     return this.markerTarget;
   }
+  /** unshielded money (or a matched exit): the gold beacon is on you */
+  get lit() {
+    return this.s.wallet.transparent > 0.0001 || this.s.beat === 'trap';
+  }
   /** your public pocket is pinging: drones can see you */
   get exposed() {
     return this.s.wallet.transparent > 0.0001 && this.c.crew.tracking;
@@ -115,6 +120,7 @@ export class Story {
       return n;
     };
     at('tailor', st.tailor, 'The Tailor');
+    this.c.crew.tag(at('spindle', st.spindle, 'Spindle'));
     at('cafe', st.cafe, 'Auntie Node');
     at('friend', st.arcade, 'Mika');
     at('courier', st.kiosk, 'Courier');
@@ -138,10 +144,10 @@ export class Story {
     }
   }
 
-  /** the Tailor back at his monitors, his crew back inside HQ */
-  private resetTailor() {
-    const t = this.named.tailor;
-    const st = this.c.city.stations.tailor.npc!;
+  /** Spindle back in his alley, his crew back in the dark behind him */
+  private resetGang() {
+    const t = this.named.spindle;
+    const st = this.c.city.stations.spindle.npc!;
     if (t) {
       t.path = [];
       t.x = st.x;
@@ -156,10 +162,10 @@ export class Story {
   private crewOut(around?: { x: number; z: number }) {
     const heads = headsByRole('lookout').slice(0, 4);
     let spots = [
-      { x: 8.5, z: 57.5 },
-      { x: 10.5, z: 57.5 },
-      { x: 7.5, z: 59.5 },
-      { x: 11.5, z: 59.5 },
+      { x: 74.5, z: 35.5 },
+      { x: 75.5, z: 35.5 },
+      { x: 74.5, z: 37 },
+      { x: 75.5, z: 37 },
     ];
     if (around) {
       spots = [];
@@ -174,13 +180,13 @@ export class Story {
     }
     this.c.crew.spawn(heads, spots);
   }
-  /** the Tailor walks out onto the pavement to give the order himself */
-  private tailorOut() {
-    const t = this.named.tailor;
+  /** Spindle steps out of the alley onto the street to give the order himself */
+  private spindleOut() {
+    const t = this.named.spindle;
     if (!t) return;
-    const st = this.c.city.stations.tailor;
-    t.idleYaw = Math.PI;
-    this.c.npcs.send(t, st.x, st.z - 0.5);
+    const st = this.c.city.stations.spindle;
+    t.idleYaw = Math.PI / 2;
+    this.c.npcs.send(t, st.x, st.z);
     t.ch.lookAt = new THREE.Vector3(this.c.player.x, 2, this.c.player.z);
   }
 
@@ -207,7 +213,7 @@ export class Story {
     this.loop1Done = false;
     this.ended = false;
     this.c.crew.pace = 1;
-    this.resetTailor();
+    this.resetGang();
     this.crewOut();
     this.c.zero.hide();
     player.x = city.spawn.x;
@@ -266,14 +272,14 @@ export class Story {
     addClue(this.s, { key: 'link', text: why === 'paid' ? 'same address paid the noodle stand' : 'still sitting on Ave & 4th' });
     hud.setFile(this.s.clues, true);
     this.c.sfx.alarm();
-    this.tailorOut();
+    this.spindleOut();
     this.c.drones.hunt();
     // the order goes out over the radio, from the man himself on the pavement
     hud.say([
       why === 'paid'
-        ? T('The Tailor', 'tailor', 'Our five-ZEC friend just bought noodles. Plaza kiosk. People are so generous with their secrets.', R, this.A.tailor)
-        : T('The Tailor', 'tailor', 'Five ZEC, sitting on a public address near Ave & 4th, waiting like an open door. Go collect.', R, this.A.tailor),
-      T('The Tailor', 'tailor', 'Quietly, please. Take them.', R, this.A.tailor),
+        ? T('Spindle', 'spindle', 'Our five-ZEC friend just bought noodles. Plaza kiosk. People are so generous with their secrets.', R, this.A.spindle)
+        : T('Spindle', 'spindle', 'Five ZEC, sitting on a public address near Ave & 4th, waiting like an open door. Go collect.', R, this.A.spindle),
+      T('Spindle', 'spindle', 'Quietly, please. Take them.', R, this.A.spindle),
     ]);
     await sleep(1500);
     crew.hunt();
@@ -347,11 +353,11 @@ export class Story {
         : '<p>Money sitting in your <b>transparent</b> pocket is public: address, amount, time. That was all they needed.</p><p class="zero-says">Zero: <i>“Glass pockets, again. Shield it the moment it lands. Wallet, Shield, hold.”</i></p>';
     this.s.caughtCount++;
     await hud.card({
-      kicker: 'TAILOR & CO.',
+      kicker: 'THE THREAD',
       title: 'Found you.',
       body: `<p>File: ${this.s.clues.map((c) => `<b>${c.key}</b>`).join(' · ')}</p>${lesson}`,
       button: '⏪ Rewind',
-      role: 'tailor',
+      role: 'spindle',
       cls: 'red',
     });
     this.c.glitch(1);
@@ -373,9 +379,9 @@ export class Story {
       this.c.boards.face = { role: 'you_bare', mode: 'static' };
       this.updateObjective();
     } else {
-      this.resetTailor();
+      this.resetGang();
       this.crewOut();
-      this.tailorOut();
+      this.spindleOut();
       this.c.drones.hunt();
       hud.objective('Shield it. Now.', 'Phone → Shield → hold. You can still move while it proves.');
       this.c.phone.el.classList.add('nudge');
@@ -437,8 +443,8 @@ export class Story {
     phone.lower();
     this.setContacts([]);
     this.c.setHood(false);
-    this.c.crew.pace = 0.85;
-    this.resetTailor();
+    this.c.crew.pace = 1;
+    this.resetGang();
     this.crewOut();
     hud.setFile([], false);
     phone.allow = { shield: false, send: false, swap: false, receive: false };
@@ -500,14 +506,14 @@ export class Story {
     hud.setFile(this.s.clues, true);
     this.saveCp('payday');
     this.c.sfx.alarm();
-    this.tailorOut();
+    this.spindleOut();
     hud.lesson('Transparent = public', 'Money sent to a transparent (t1…) address shows its amount, time and address to anyone watching the blockchain.');
     phone.el.classList.add('nudge');
     hud.objective('Shield your 5 ZEC', 'Phone → Shield → hold. They are coming for your door.');
     // the order goes out across the street while Zero talks you through it
     hud.say([
-      T('The Tailor', 'tailor', 'Strange. I have the oddest feeling we have done this before.', R, this.A.tailor),
-      T('The Tailor', 'tailor', 'Fresh money on the public ledger. *Five ZEC*, Ave & 4th. Someone just lit a candle in a dark room.', R, this.A.tailor),
+      T('Spindle', 'spindle', 'Strange. I have the oddest feeling we have done this before.', R, this.A.spindle),
+      T('Spindle', 'spindle', 'Fresh money on the public ledger. *Five ZEC*, Ave & 4th. Someone just lit a candle in a dark room.', R, this.A.spindle),
       T('Zero', 'narrator', "And there it is. Five ZEC on a transparent address, glowing like a lighthouse. That's how they found you last time. Open the wallet and hold SHIELD. Let's turn the lights off.", N, this.A.zero),
     ]);
     this.c.drones.hunt();
@@ -538,8 +544,8 @@ export class Story {
     hud.toast('<b>You disappeared.</b> Hood up. They lost your signal.');
     hud.lesson('Shielded = private', 'Shielding moves ZEC into the shielded pool. The chain shows money went in, and nothing about where it goes next.');
     await hud.say([
-      T('The Tailor', 'tailor', "...Gone. Five ZEC slipped into the shielded pool, and the pool doesn't gossip. Pity.", R, this.A.tailor),
-      T('The Tailor', 'tailor', 'Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.', R, this.A.tailor),
+      T('Spindle', 'spindle', "...Gone. Five ZEC slipped into the shielded pool, and the pool doesn't gossip. Pity.", R, this.A.spindle),
+      T('Spindle', 'spindle', 'Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.', R, this.A.spindle),
     ]);
     this.errands();
   }
@@ -581,6 +587,11 @@ export class Story {
     const { phone, hud } = this.c;
     const e = this.s.errands;
     // the locals: not part of any errand, but they notice you
+    if (id === 'tailor' && (this.s.beat === 'loop1' || this.s.beat === 'payday')) {
+      this.face('tailor');
+      hud.say([T('The Tailor', 'tailor', "Evening. You're lit up like a shop window. A hood won't hide a glowing wallet, friend. Shield it first.", N, this.A.tailor)]);
+      return;
+    }
     if (id === 'mart' || id === 'laundry') {
       if (!['loop1', 'payday', 'errands', 'dawn'].includes(this.s.beat)) return;
       const lit = this.s.wallet.transparent > 0.0001;
@@ -677,7 +688,14 @@ export class Story {
         await this.ending();
       } else if (id === 'tailor') {
         this.face('tailor');
-        await hud.say([T('The Tailor', 'tailor', this.s.hooded ? "Nice hood. Seen a fella with five ZEC? No? Didn't think so." : 'Evening. Nice night to be... visible.', N, this.A.tailor)]);
+        await hud.say([
+          this.s.wallet.transparent > 0.0001
+            ? T('The Tailor', 'tailor', "Evening. You're lit up like a shop window. A hood won't hide a glowing wallet, friend. Shield it first.", N, this.A.tailor)
+            : T('The Tailor', 'tailor', 'Good hood, quiet pockets. You have been fitted properly tonight. Come back when you need a hem.', N, this.A.tailor),
+        ]);
+      } else if (id === 'spindle') {
+        this.face('spindle');
+        await hud.say([T('Spindle', 'spindle', this.s.hooded ? "Nice hood. Seen a fella with five ZEC? No? Didn't think so." : 'Evening. Nice night to be... visible.', N, this.A.spindle)]);
       }
     } finally {
       this.busy = false;
@@ -764,8 +782,8 @@ export class Story {
       this.s.beat = 'trap';
       hud.objective('They matched it', 'Five in, five out. Get out of Cobalt and lose them.');
       hud.say([
-        T('The Tailor', 'tailor', 'Pool exit. Almost exactly what went in, and barely any time later. Hardly anyone else left the pool in that window.', R, this.A.tailor),
-        T('The Tailor', 'tailor', 'Same money, barely rinsed. Our ghost is standing at Cobalt, admiring the view. Go.', R, this.A.tailor),
+        T('Spindle', 'spindle', 'Pool exit. Almost exactly what went in, and barely any time later. Hardly anyone else left the pool in that window.', R, this.A.spindle),
+        T('Spindle', 'spindle', 'Same money, barely rinsed. Our ghost is standing at Cobalt, admiring the view. Go.', R, this.A.spindle),
       ]);
     } else {
       this.s.errands.exchange = true;
@@ -773,7 +791,7 @@ export class Story {
       hud.lesson('Unshield carefully', 'Leaving the pool is public. Take out only what you need, not right after shielding, and not the same amount.');
       await hud.say([
         T('Cobalt clerk', 'landlord', 'Rent received. Have a good night.', N, this.A.clerk),
-        T('The Tailor', 'tailor', 'Another pool exit to Cobalt. Plenty of exits tonight, and none of them look like our five. Could be anyone. I hate anyone.', R, this.A.tailor),
+        T('Spindle', 'spindle', 'Another pool exit to Cobalt. Plenty of exits tonight, and none of them look like our five. Could be anyone. I hate anyone.', R, this.A.spindle),
         T('Zero', 'narrator', 'Small. Late. Different. Three words that keep people whole in this city. Well done.', N, this.A.zero),
       ]);
       this.updateObjective();
@@ -791,7 +809,7 @@ export class Story {
     phone.lower();
     if (pocket === 'transparent') {
       await hud.say([
-        T('Mika', 'friend', "Hm, that's your *transparent* address. If I pay that, the whole city sees it on the ledger, and the Tailors get your address again.", N, this.A.friend),
+        T('Mika', 'friend', "Hm, that's your *transparent* address. If I pay that, the whole city sees it on the ledger, and Spindle's crew gets your address again.", N, this.A.friend),
         T('Mika', 'friend', 'Got a shielded one? Starts with *u1*.', N, this.A.friend),
       ]);
       phone.raise();
@@ -852,13 +870,13 @@ export class Story {
       await sleep(70);
     }
     await hud.say([
-      T('The Tailor', 'tailor', "Sun's up. Tell me something about our five-ZEC ghost.", R, this.A.tailor),
-      T('The Tailor', 'tailor', "An address that went quiet at 18:14. That's all? ...Close the file. I despise a blank page.", R, this.A.tailor),
+      T('Spindle', 'spindle', "Sun's up. Tell me something about our five-ZEC ghost.", R, this.A.spindle),
+      T('Spindle', 'spindle', "An address that went quiet at 18:14. That's all? ...Close the file. I despise a blank page.", R, this.A.spindle),
     ]);
     player.frozen = true;
     const priv = this.s.txs.filter((t) => t.pocket === 'shielded').length;
     await hud.card({
-      kicker: 'TAILOR & CO. · CASE FILE',
+      kicker: 'THE THREAD · CASE FILE',
       title: 'SUBJECT: UNKNOWN',
       body: `<img class="card-art" src="/art/case_file.jpg" alt=""><p>You made <b>${this.s.txs.length}</b> transactions tonight. <b>${priv}</b> of them showed nothing on the public chain.</p>
              <p>${this.s.caughtCount ? `You got caught <b>${this.s.caughtCount}</b> time${this.s.caughtCount === 1 ? '' : 's'}. Every catch was a mistake real people make.` : 'You never got caught. Clean night.'}</p>
@@ -913,13 +931,13 @@ export class Story {
       }
     if (s.beat === 'errands' && s.errands.cafe && s.errands.friend && s.errands.exchange) {
       s.beat = 'dawn';
-      hud.say([T('Zero', 'narrator', "Dawn's coming. Go home. The Tailors are holding an empty file, and it's driving them mad.", N, this.A.zero)]);
+      hud.say([T('Zero', 'narrator', "Dawn's coming. Go home. Spindle is holding an empty file, and it's driving him mad.", N, this.A.zero)]);
       this.updateObjective();
     }
     if (s.beat === 'errands' && Math.random() < dt * 0.5) this.updateObjective();
     // Zero notices what you do
     if ((s.beat === 'errands' || s.beat === 'dawn') && this.c.zero.visible && !hud.talking && !this.busy) {
-      const tl = this.c.city.stations.tailor;
+      const tl = this.c.city.stations.spindle;
       this.sprintT = player.sprinting ? this.sprintT + dt : 0;
       const fx = -Math.sin(player.yaw),
         fz = -Math.cos(player.yaw);
@@ -985,7 +1003,7 @@ export class Story {
     this.s = fresh();
     this.s.loop = 2;
     this.s.wallet.created = true;
-    this.resetTailor();
+    this.resetGang();
     this.crewOut();
     this.c.zero.show();
     this.c.zero.follow();
@@ -1015,8 +1033,8 @@ export class Story {
     this.s.loop = 2;
     this.s.beat = 'setup';
     this.s.wallet.created = true;
-    this.c.crew.pace = 0.85;
-    this.resetTailor();
+    this.c.crew.pace = 1;
+    this.resetGang();
     this.crewOut();
     this.c.zero.show(this.zeroSpot());
     this.c.phone.show('home');
