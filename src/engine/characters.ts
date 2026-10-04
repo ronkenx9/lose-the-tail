@@ -683,29 +683,43 @@ export class Zero {
   speed = 0;
   trailBoost = 0.2;
   yaw = 0;
+  /** 0..1: head back, shoulders shaking, eyes squeezed shut, mouth open */
+  laugh = 0;
+  private headNormal: THREE.BufferGeometry;
+  private headLaugh: THREE.BufferGeometry;
   constructor() {
     const mat = new THREE.MeshBasicMaterial({ vertexColors: true });
     const W: RGB = [244, 245, 247],
       G: RGB = [214, 217, 221],
       K: RGB = [6, 6, 8];
-    const head = part({
-      w: 12,
-      h: 12,
-      d: 11,
-      pivot: [6, 0, 5.5],
-      color: (x, y, z) => {
-        // rounded hood: shave corners and the top edges
-        const ex = x === 0 || x === 11,
-          ez = z === 0 || z === 10,
-          top = y === 11,
-          bot = y === 0;
-        if ((ex && ez) || (top && (ex || ez)) || (bot && ex && z < 3)) return null;
-        if (top && (x === 1 || x === 10)) return null;
-        if (z === 10 && y >= 4 && y <= 6 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
-        if (z === 10 && y === 7 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
-        return y >= 9 || z <= 2 ? G : W;
-      },
-    });
+    const makeHead = (laughing: boolean) =>
+      part({
+        w: 12,
+        h: 12,
+        d: 11,
+        pivot: [6, 0, 5.5],
+        color: (x, y, z) => {
+          // rounded hood: shave corners and the top edges
+          const ex = x === 0 || x === 11,
+            ez = z === 0 || z === 10,
+            top = y === 11,
+            bot = y === 0;
+          if ((ex && ez) || (top && (ex || ez)) || (bot && ex && z < 3)) return null;
+          if (top && (x === 1 || x === 10)) return null;
+          if (z === 10 && laughing) {
+            // ^ ^ eyes squeezed shut, wide open mouth
+            if ((y === 6 && (x === 3 || x === 8)) || (y === 5 && (x === 2 || x === 4 || x === 7 || x === 9))) return K;
+            if (y >= 1 && y <= 3 && x >= 4 && x <= 7 && !(y === 1 && (x === 4 || x === 7))) return y === 1 ? [200, 60, 80] : K;
+            return y >= 9 ? G : W;
+          }
+          if (z === 10 && y >= 4 && y <= 6 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
+          if (z === 10 && y === 7 && ((x >= 3 && x <= 4) || (x >= 7 && x <= 8))) return K;
+          return y >= 9 || z <= 2 ? G : W;
+        },
+      });
+    const head = makeHead(false);
+    this.headNormal = head;
+    this.headLaugh = makeHead(true);
     const body = part({
       w: 8,
       h: 10,
@@ -754,6 +768,27 @@ export class Zero {
     this.arms[1].rotation.z = 0.35 + Math.sin(this.t * 1.6 + 0.6) * 0.08;
     this.arms.forEach((a) => (a.position.y = 0.42 + bob * 0.9));
     this.head.rotation.z = Math.sin(this.t * 0.7) * 0.05;
+    const L = this.laugh;
+    this.head.geometry = L > 0.35 ? this.headLaugh : this.headNormal;
+    if (L > 0) {
+      // big belly laugh: rapid bounce, head thrown back, arms clutching the middle
+      const shake = Math.abs(Math.sin(this.t * 19)) * 0.05 * L;
+      this.head.position.y += shake * 1.4;
+      this.body.position.y += shake;
+      this.head.rotation.x = -0.42 * L + Math.sin(this.t * 19) * 0.05 * L;
+      this.head.rotation.z += Math.sin(this.t * 3.1) * 0.12 * L;
+      this.body.rotation.x = -0.12 * L;
+      this.arms[0].rotation.z = -0.35 + 0.75 * L;
+      this.arms[1].rotation.z = 0.35 - 0.75 * L;
+      this.arms.forEach((a) => {
+        a.rotation.x = -0.5 * L;
+        a.position.y += shake;
+      });
+    } else {
+      this.head.rotation.x = 0;
+      this.body.rotation.x = 0;
+      this.arms.forEach((a) => (a.rotation.x = 0));
+    }
     this.bits.forEach((b, i) => {
       const a = this.t * (0.6 + i * 0.07) + i;
       b.position.set(Math.cos(a) * (0.12 + i * 0.02), 0.02 + ((this.t * 0.25 + i * 0.13) % 0.55), Math.sin(a) * (0.1 + i * 0.015));

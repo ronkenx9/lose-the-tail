@@ -78,6 +78,9 @@ try {
   const d0 = (await state()).near;
   const d1 = (await until((s) => s.near < d0 - 3 || s.beat === 'void', 'crew closing in', 30000)).near;
   log(`PASS crew running you down (${d0.toFixed(1)}m -> ${d1.toFixed(1)}m)`);
+  await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 60000 });
+  log('PASS game over: Zero laughing');
+  await click('.go.in .go-btn');
   await until((s) => s.beat === 'void', 'caught -> void', 40000, true);
   const inVoid = await page.evaluate(() => document.getElementById('ui').classList.contains('void'));
   if (!inVoid) throw new Error('void not shown');
@@ -119,13 +122,13 @@ try {
   await until((s) => s.crew === 'hunt', 'crew dispatched', 30000, true);
   log('PASS payday: crew heading for your door');
   if (process.argv.includes('--catch')) {
-    for (let i = 0; i < 160 && !(await page.$('.card.red .cta')); i++) {
+    for (let i = 0; i < 160 && !(await page.$('.go.in .go-btn:not([disabled])')); i++) {
       await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
       await sleep(250);
     }
-    await page.waitForSelector('.card.red .cta', { timeout: 5000 });
+    await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 5000 });
     log('PASS standing still on a public balance got you caught');
-    await click('.card.red .cta');
+    await click('.go.in .go-btn');
     await until((s) => s.beat === 'payday' && s.w.transparent === 5, 'rewound to payday', 8000);
     log('PASS rewind to payday');
   }
@@ -185,13 +188,13 @@ try {
   if (process.argv.includes('--trap')) {
     // the mistake: cash out (almost) everything straight after shielding
     await hold('[data-hold=send]');
-    for (let i = 0; i < 80 && !(await page.$('.card.red .cta')); i++) {
+    for (let i = 0; i < 80 && !(await page.$('.go.in .go-btn:not([disabled])')); i++) {
       await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
       await sleep(250);
     }
-    await page.waitForSelector('.card.red .cta', { timeout: 5000 });
+    await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 5000 });
     log('PASS trap: unshielding everything got matched and caught');
-    await click('.card.red .cta');
+    await click('.go.in .go-btn');
     await until((s) => s.talking || s.screen === 'send2', 'clerk again after rewind', 15000);
     const w = await state();
     if (Math.abs(w.w.shielded - 5.4799) > 0.01) throw new Error('rewind did not restore wallet: ' + w.w.shielded);

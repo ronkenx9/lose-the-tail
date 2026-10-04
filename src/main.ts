@@ -6,6 +6,7 @@ import { Player } from './engine/player';
 import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
 import { buildVoid } from './engine/voidworld';
 import { Doors } from './engine/doors';
+import { GameOver } from './ui/gameover';
 import { makeBeacon } from './engine/beacon';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
@@ -159,6 +160,9 @@ async function boot() {
   runBtn.addEventListener('pointerup', runOff);
   runBtn.addEventListener('pointercancel', runOff);
   runBtn.addEventListener('pointerleave', runOff);
+  const gameOver = new GameOver();
+  gameOver.voiceOn = () => hud.voiceOn;
+  gameOver.duck = (on) => sfx.duck(on);
   story = new Story({
     city,
     phone,
@@ -173,6 +177,7 @@ async function boot() {
     crew,
     zero: companion,
     blackout,
+    gameOver: (o) => gameOver.show(o),
     setHood: (on) => hand.setHood(on),
     setDawn: (k) => {
       const f = stage.scene.fog as THREE.FogExp2;

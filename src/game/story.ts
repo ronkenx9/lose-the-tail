@@ -12,6 +12,7 @@ import type { Sfx } from './sfx';
 import type { Intro } from './intro';
 import type { Crew } from './crew';
 import type { Companion } from './companion';
+import type { GameOverOpts } from '../ui/gameover';
 
 const CLIENT = { id: 'client', name: 'Rook (client)', role: 'miner' };
 const MIKA = { id: 'mika', name: 'Mika', role: 'friend' };
@@ -34,6 +35,8 @@ export interface Ctx {
   glitch(k: number): void;
   burst(): void;
   shieldCut(): Promise<void>;
+  /** the game-over screen: Zero laughing at you */
+  gameOver(o: GameOverOpts): Promise<void>;
   /** fade to / from black */
   blackout(on: boolean, white?: boolean): Promise<void>;
   /** swap into the 3D void island (player + Zero move there) */
@@ -330,11 +333,21 @@ export class Story {
         await sleep(28);
       }
       this.c.glitch(2.5);
-      // they don't want you. they want the keys. the balance drains on your phone as the lights go
+      // they don't want you. they want the keys. the balance drains on your phone
       const took = this.s.wallet.transparent;
       this.s.wallet.transparent = 0;
-      addTx(this.s, { kind: 'send', amount: took, pocket: 'transparent', who: 't1Ta1lor…', publicView: 'visible' });
-      phone.notify('Sent', `−${fmtZec(took)} ZEC → t1Ta1lorCo…`);
+      addTx(this.s, { kind: 'send', amount: took, pocket: 'transparent', who: 't1Thread…', publicView: 'visible' });
+      phone.notify('Sent', `−${fmtZec(took)} ZEC → t1Thr3adCrew…`);
+      await sleep(900);
+      // ...and somewhere, someone finds this hilarious
+      await this.c.gameOver({
+        kicker: 'Night one · The Thread got you',
+        sub: `They took all <b>${fmtZec(took)} ZEC</b>. Everything they needed was sitting on the public ledger.`,
+        clues: this.fileChips(),
+        quote: 'You paid for noodles... with a spotlight on your head.',
+        laugh: 'laugh_night1',
+        button: 'Who is laughing?',
+      });
       await this.c.blackout(true);
       this.c.drones.patrol();
       this.catching = false;
@@ -347,18 +360,20 @@ export class Story {
       this.catching = false;
       return;
     }
-    const lesson =
-      cp.beat === 'exchange'
-        ? '<p>You shielded 5 ZEC, then took almost all of it straight back out. What goes <b>in</b> and what comes <b>out</b> of the pool are public. Matching them is child\'s play.</p><p class="zero-says">Zero: <i>“Five in, five out. You might as well have signed it. Take only what you need, and take it later.”</i></p>'
-        : '<p>Money sitting in your <b>transparent</b> pocket is public: address, amount, time. That was all they needed.</p><p class="zero-says">Zero: <i>“Glass pockets, again. Shield it the moment it lands. Wallet, Shield, hold.”</i></p>';
+    const trap = cp.beat === 'exchange';
     this.s.caughtCount++;
-    await hud.card({
-      kicker: 'THE THREAD',
-      title: 'Found you.',
-      body: `<p>File: ${this.s.clues.map((c) => `<b>${c.key}</b>`).join(' · ')}</p>${lesson}`,
+    await this.c.gameOver({
+      kicker: 'The Thread found you',
+      sub: trap
+        ? 'You shielded <b>5 ZEC</b>, then cashed almost all of it straight back out. They matched the exit to the entry.'
+        : 'Your <b>5 ZEC</b> sat in a public pocket long enough to follow it to your door.',
+      clues: this.fileChips(),
+      lesson: trap
+        ? '<p>What goes <b>in</b> to the shielded pool and what comes <b>out</b> are both public. Same amount, minutes apart: easy match.</p><p>Take out only what you need, later, in a different amount.</p>'
+        : '<p>Money in your <b>transparent</b> pocket is public: address, amount, time. That was all they needed.</p><p>Shield it the moment it lands: Wallet, Shield, hold.</p>',
+      quote: trap ? 'Five in, five out! You might as well have signed it.' : 'Glass pockets, again? I am sorry. I am not sorry. Shield it.',
+      laugh: trap ? 'laugh_trap' : 'laugh_payday',
       button: '⏪ Rewind',
-      role: 'spindle',
-      cls: 'red',
     });
     this.c.glitch(1);
     this.c.sfx.rewind();
@@ -389,6 +404,12 @@ export class Story {
       if (this.s.wallet.transparent > 0) crew.hunt();
     }
     this.catching = false;
+  }
+
+  /** what The Thread had on you, as file chips */
+  private fileChips() {
+    const name: Record<string, string> = { address: 'address', amount: 'amount', face: 'face', link: 'trail', place: 'place' };
+    return this.s.clues.map((c) => ({ key: name[c.key] ?? c.key, text: c.text }));
   }
 
   // ============================================================== VOID — a place, not a backdrop

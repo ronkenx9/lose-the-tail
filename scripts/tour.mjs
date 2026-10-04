@@ -61,6 +61,15 @@ if (steps.includes('chase')) {
   await shot('08-crew-close');
   await sleep(1300);
   await shot('09-robbed');
+  await page.waitForSelector('.go:not(.hidden)', { timeout: 20000 });
+  await sleep(1100);
+  await shot('15-gameover-slam');
+  await sleep(2400);
+  await shot('16-gameover-laugh');
+  await sleep(3000);
+  await shot('17-gameover-full');
+  await page.waitForSelector('.go-btn:not([disabled])');
+  await ev(() => document.querySelector('.go-btn').click());
   await page.waitForFunction(() => window.__game.story.s.beat === 'void', null, { timeout: 20000 });
   await sleep(2500);
   await shot('20-void-pages');

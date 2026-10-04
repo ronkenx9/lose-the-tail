@@ -229,8 +229,12 @@ try {
   log('running');
   await page.keyboard.down('Shift');
   await G(() => window.__game.player.goTo(24, 47));
-  await until((s) => s.beat === 'void', 'caught -> void', 60000);
+  await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 60000 });
   await page.keyboard.up('Shift');
+  log('game over');
+  await sleep(7500); // Zero laughing
+  await tap('.go.in .go-btn', 200);
+  await until((s) => s.beat === 'void', 'void', 30000);
   log('caught. the void');
 
   // ================= THE VOID =================
@@ -336,10 +340,10 @@ try {
   await sleep(2500);
   await page.keyboard.down('Shift');
   await G(() => window.__game.player.goTo(70, 46));
-  await page.waitForSelector('.card.red .cta', { timeout: 60000 });
+  await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 60000 });
   await page.keyboard.up('Shift');
-  await sleep(6000); // read the lesson
-  await tap('.card.red .cta', 200);
+  await sleep(8000); // Zero laughs; read the lesson
+  await tap('.go.in .go-btn', 200);
   log('rewound');
   await until((s) => s.screen === 'send2' && s.up, 'exchange pay again', 30000);
   await sleep(1200);
