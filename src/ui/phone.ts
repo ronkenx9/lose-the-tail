@@ -104,11 +104,15 @@ export class Phone {
       if ((e.target as HTMLElement)?.closest?.('input,textarea')) return;
       if (e.key === 'e' || e.key === 'E' || e.key === ' ' || e.key === 'Tab') {
         e.preventDefault();
+        if (this.keyGate?.()) return;
         this.up ? this.lower() : this.raise();
       }
       if (e.key === 'Escape' && this.up) this.lower();
     });
   }
+
+  /** return true to swallow the phone key (intro, void) */
+  keyGate?: () => boolean;
 
   // ---------- public api ----------
   raise() {

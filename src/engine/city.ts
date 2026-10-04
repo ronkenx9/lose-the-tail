@@ -1,4 +1,5 @@
 import { B, VoxelWorld } from './voxels';
+import { propCells, type PropSpec } from './props';
 
 export const SX = 96;
 export const SY = 40;
@@ -102,6 +103,8 @@ export interface City {
   tags: Tag[];
   decals: Decal[];
   steam: { x: number; z: number }[];
+  props: PropSpec[];
+  bed: { x: number; z: number };
 }
 
 const AVE = { a: 42, b: 53 }; // z range of the avenue (incl. sidewalks)
@@ -114,6 +117,7 @@ export function buildCity(): City {
   const r = rng(1337);
   const signs: SignSpec[] = [];
   const decals: Decal[] = [];
+  const props: PropSpec[] = [];
   const screens: ScreenSpec[] = [];
   const lamps: City['lamps'] = [];
 
@@ -279,59 +283,115 @@ export function buildCity(): City {
     for (let k = -1; k < 3; k++) w.set(x + along[0] * k + out[0], 4, z + along[1] * k + out[1], k === 0 || k === 1 ? awn : B.TRIM);
   };
 
-  // HOME (NW lot 0..19 x, 22..41 z), door on south face z=41
-  door(9, 41, 'S', B.WOOD, B.NEON_AMBER);
-  signs.push({ text: 'HOME', sub: 'apt 4B', color: '#ffb547', x: 10, y: 5.6, z: 42.02, facing: 'S', w: 3, h: 1.1 });
-  stations.home = { id: 'home', x: 10, z: 44.5, label: 'Home' };
+  // ---------- enterable interiors ----------
+  // carve a hollow ground-floor room: floor at y0, air y1..3, ceiling y4 with light blocks
+  const room = (x0: number, z0: number, x1: number, z1: number, floor: number, light: number, every = 4, lining?: number) => {
+    if (lining !== undefined)
+      for (let x = x0 - 1; x <= x1 + 1; x++)
+        for (let z = z0 - 1; z <= z1 + 1; z++)
+          if (x < x0 || x > x1 || z < z0 || z > z1) for (let y = 1; y <= 3; y++) w.set(x, y, z, lining);
+    for (let x = x0; x <= x1; x++)
+      for (let z = z0; z <= z1; z++) {
+        w.set(x, 0, z, floor);
+        for (let y = 1; y <= 3; y++) w.set(x, y, z, B.AIR);
+        const lit = (x - x0) % every === Math.floor(every / 2) && (z - z0) % every === Math.floor(every / 2);
+        w.set(x, 4, z, lit ? light : B.CEILING);
+      }
+  };
+  // storefront: glass along a facade line with a 2-wide doorway and an awning light outside
+  const front = (line: 'x' | 'z', at: number, from: number, to: number, door0: number, outDir: 1 | -1, awn: number, sill = 0) => {
+    for (let t = from; t <= to; t++) {
+      const isDoor = t === door0 || t === door0 + 1;
+      for (let y = 1; y <= 3; y++) {
+        const [x, z] = line === 'z' ? [t, at] : [at, t];
+        w.set(x, y, z, isDoor ? B.AIR : y <= sill ? B.TRIM : B.GLASS);
+      }
+      const [ax, az] = line === 'z' ? [t, at + outDir] : [at + outDir, t];
+      if (t >= door0 - 1 && t <= door0 + 2) w.set(ax, 4, az, isDoor ? awn : B.TRIM);
+    }
+  };
+  const P = (kind: string, x: number, z: number, rot = 0, extra: Partial<PropSpec> = {}) => props.push({ kind, x, z, rot, ...extra });
 
-  // TAILOR & CO (SW lot 0..19, 54..73), door on north face z=54
-  door(9, 54, 'N', B.METAL, B.NEON_RED);
+  // HOME — apartment 4B (NW lot), facade z=41, door x 9..10
+  room(3, 33, 11, 40, B.FLOOR_WOOD, B.CEIL_WARM, 4, B.PLASTER);
+  front('z', 41, 3, 11, 9, 1, B.NEON_AMBER, 1);
+  P('bed', 4, 33, 0, { block: [[0, 0], [0, 1]] });
+  P('nightstand', 5, 33);
+  P('desk', 9, 33, 0, { block: [[0, 0], [1, 0]] });
+  P('chair', 9, 34);
+  P('shelf', 11, 36, 3);
+  P('shelf', 11, 37, 3);
+  P('shelf', 3, 37, 1);
+  P('plant', 3, 40);
+  P('lamp', 11, 40, 0, { opts: { c: [255, 200, 140] } });
+  P('rug', 6, 36, 0, { block: [] });
+  signs.push({ text: 'HOME', sub: 'apt 4B', color: '#ffb547', x: 10, y: 5.6, z: 42.02, facing: 'S', w: 3, h: 1.1 });
+  stations.home = { id: 'home', x: 7.5, z: 38, label: 'Home' };
+
+  // TAILOR & CO — monitor room (SW lot), facade z=54, door x 9..10
+  room(3, 55, 16, 64, B.CARPET, B.CEIL_COOL, 5, B.DARKBRICK);
+  front('z', 54, 3, 16, 9, -1, B.NEON_RED, 1);
+  for (let x = 4; x <= 15; x++) w.set(x, 1, 63, B.COUNTER);
+  for (const x of [5, 8, 11, 14]) P('monitor', x, 63, 2, { y: 2, block: [], opts: { c: x % 2 ? [255, 70, 50] : [255, 120, 60] } });
+  P('chair', 9, 61, 2);
+  P('plant', 3, 55);
+  P('camera', 16, 55, 1, { y: 3, block: [] });
   for (let x = 2; x <= 17; x++) w.set(x, 6, 54, B.NEON_RED);
   signs.push({ text: 'TAILOR & CO.', sub: 'we follow up', color: '#ff2b3b', x: 10, y: 8, z: 53.98, facing: 'N', w: 9, h: 2.2, flicker: true });
-  stations.tailor = { id: 'tailor', x: 10, z: 50.4, npc: { x: 10, z: 52.5, yaw: Math.PI / 2 }, label: 'Tailor & Co.' };
+  stations.tailor = { id: 'tailor', x: 9.5, z: 52, npc: { x: 9.5, z: 61.6, yaw: -Math.PI / 2 }, label: 'Tailor & Co.' };
 
-  // NULLSTATE CAFE (SE lot 76..95, 54..73), north face z=54
-  door(84, 54, 'N', B.GLASS_DARK, B.NEON_MINT);
-  for (let x = 77; x <= 94; x++) {
-    if (x >= 84 && x <= 85) continue;
-    for (let y = 1; y <= 3; y++) {
-      w.set(x, y, 54, B.AIR);
-      w.set(x, y, 55, B.WIN_WARM); // hidden light source behind the interior picture
-    }
-    w.set(x, 4, 54, B.TRIM);
+  // NULLSTATE CAFÉ (SE lot), facade z=54, door x 84..85
+  room(77, 55, 94, 66, B.FLOOR_WOOD, B.CEIL_WARM, 4);
+  front('z', 54, 77, 94, 84, -1, B.NEON_MINT);
+  for (let x = 80; x <= 91; x++) w.set(x, 1, 63, B.COUNTER);
+  P('coffee_machine', 82, 63, 2, { y: 2, block: [] });
+  P('cups', 88, 63, 0, { y: 2, block: [] });
+  P('cups', 90, 63, 0, { y: 2, block: [] });
+  for (const x of [80, 81, 89, 90]) P('shelf', x, 66, 0);
+  for (const [tx, tz] of [[79, 57], [82, 59], [90, 57], [92, 59]]) {
+    P('table', tx, tz);
+    P('chair', tx, tz + 1, 0);
+    P('chair', tx, tz - 1, 2);
   }
-  decals.push({ img: 'int_cafe', x: 86, y: 2.5, z: 54.97, facing: 'N', w: 18, h: 3, glow: 1.15, band: [0.56, 0.12] });
+  for (const [px, pz] of [[80, 58], [86, 58], [91, 58], [85, 61]]) P('pendant', px, pz, 0, { y: 3, block: [] });
+  P('plant', 77, 55);
+  P('plant', 94, 55);
+  P('plant', 94, 66);
   signs.push({ text: 'NULLSTATE', sub: 'café · shielded only', color: '#9dffc4', x: 85, y: 6.2, z: 53.98, facing: 'N', w: 7, h: 1.8 });
-  stations.cafe = { id: 'cafe', x: 85, z: 50.4, npc: { x: 85, z: 52.6, yaw: Math.PI / 2 }, label: 'Nullstate Café' };
+  stations.cafe = { id: 'cafe', x: 85.5, z: 61.4, npc: { x: 85.5, z: 64.6, yaw: Math.PI / 2 }, label: 'Nullstate Café' };
 
-  // 0dB ARCADE (SW lot 22..41, 76..95), east face x=41
-  door(41, 84, 'E', B.GLASS_DARK, B.NEON_VIOLET);
-  for (let z = 77; z <= 94; z++) {
-    if (z >= 84 && z <= 85) continue;
-    for (let y = 1; y <= 3; y++) {
-      w.set(41, y, z, B.AIR);
-      w.set(40, y, z, z % 2 ? B.NEON_PINK : B.NEON_VIOLET);
-    }
-    w.set(41, 4, z, B.TRIM);
-  }
-  decals.push({ img: 'int_arcade', x: 41.03, y: 2.5, z: 86, facing: 'E', w: 18, h: 3, glow: 1.2, band: [0.56, 0.18] });
+  // 0dB ARCADE (SW lot), facade x=41, door z 84..85
+  room(27, 77, 40, 94, B.ARCADE_FLOOR, B.NEON_VIOLET, 3);
+  for (let x = 27; x <= 40; x += 3) for (let z = 77; z <= 94; z += 3) w.set(x, 4, z, (x + z) % 2 ? B.NEON_PINK : B.NEON_VIOLET);
+  front('x', 41, 77, 94, 84, 1, B.NEON_VIOLET);
+  const cab = [[255, 60, 200], [60, 210, 255], [255, 210, 60], [120, 255, 120], [255, 90, 60], [170, 100, 255]];
+  [78, 80, 82, 87, 89, 91, 93].forEach((z, k) => {
+    P('arcade', 27, z, 3, { opts: { c: cab[k % 6] } });
+    P('stool', 28, z, 0, { block: [], opts: { c: cab[(k + 2) % 6] } });
+  });
+  [30, 32, 34, 36, 38].forEach((x, k) => {
+    P('arcade', x, 77, 0, { opts: { c: cab[(k + 3) % 6] } });
+    P('arcade', x, 94, 2, { opts: { c: cab[(k + 1) % 6] } });
+  });
   signs.push({ text: '0dB ARCADE', sub: 'insert coin', color: '#ff4fd8', x: 42.02, y: 6.4, z: 85, facing: 'E', w: 8, h: 2 });
-  stations.arcade = { id: 'arcade', x: 44.5, z: 85, npc: { x: 43.4, z: 86.2, yaw: 0 }, label: '0dB Arcade' };
+  stations.arcade = { id: 'arcade', x: 37.6, z: 85, npc: { x: 34.8, z: 85, yaw: 0 }, label: '0dB Arcade' };
 
-  // COBALT EXCHANGE (NE lot 76..95, 22..41), south face z=41
-  door(87, 41, 'S', B.GLASS_DARK, B.NEON_CYAN);
-  for (let x = 77; x <= 94; x++) w.set(x, 6, 41, B.NEON_CYAN);
-  for (let x = 77; x <= 94; x++) {
-    if (x >= 87 && x <= 88) continue;
-    for (let y = 1; y <= 3; y++) {
-      w.set(x, y, 41, B.AIR);
-      w.set(x, y, 40, B.WIN_COOL);
-    }
-    w.set(x, 4, 41, B.TRIM);
+  // COBALT EXCHANGE (NE lot), facade z=41, door x 87..88
+  room(77, 31, 94, 40, B.TILE_DARK, B.CEIL_COOL, 3, B.PLASTER);
+  front('z', 41, 77, 94, 87, 1, B.NEON_CYAN);
+  for (let x = 78; x <= 93; x++) {
+    w.set(x, 1, 35, B.COUNTER);
+    const window = x === 82 || x === 88 || x === 89;
+    w.set(x, 2, 35, window ? B.AIR : B.GLASS);
+    w.set(x, 3, 35, B.GLASS);
   }
-  decals.push({ img: 'int_exchange', x: 86, y: 2.5, z: 41.03, facing: 'S', w: 18, h: 3, glow: 1.1, band: [0.56, 0.16] });
+  P('vault', 86, 31, 2, { block: [[0, 0], [1, 0]] });
+  P('camera', 93, 40, 2, { y: 3, block: [] });
+  for (const x of [85, 86, 91, 92]) P('post', x, 37);
+  P('plant', 77, 40);
+  for (let x = 77; x <= 94; x++) w.set(x, 6, 41, B.NEON_CYAN);
   signs.push({ text: 'COBALT EXCHANGE', sub: 'cash out · public ledger', color: '#3fe6ff', x: 88, y: 8, z: 42.02, facing: 'S', w: 10, h: 2 });
-  stations.exchange = { id: 'exchange', x: 88, z: 44.5, npc: { x: 89.6, z: 43.3, yaw: -Math.PI / 2 }, label: 'Cobalt Exchange' };
+  stations.exchange = { id: 'exchange', x: 88.5, z: 37.4, npc: { x: 88.5, z: 33.6, yaw: -Math.PI / 2 }, label: 'Cobalt Exchange' };
 
   // DARK ALLEY (NE, x 74..75), dead end with dumpsters
   w.fill(74, 1, 2, 75, 6, 2, B.DARKBRICK);
@@ -341,11 +401,18 @@ export function buildCity(): City {
   signs.push({ text: 'NO CAMERAS', sub: 'beyond this point', color: '#6b7a73', x: 74.98, y: 3, z: 40, facing: 'W', w: 2.6, h: 0.9 });
   stations.alley = { id: 'alley', x: 74.9, z: 9, label: 'The Alley' };
 
-  // COURIER SWAP KIOSK (plaza NW corner)
-  w.fill(40, 1, 40, 41, 2, 41, B.METAL);
-  w.fill(40, 3, 40, 41, 3, 41, B.NEON_AMBER);
-  signs.push({ text: 'KIOSK', sub: 'noodles · coin swaps', color: '#ffb547', x: 41, y: 4.4, z: 42.02, facing: 'S', w: 2.6, h: 1 });
-  stations.kiosk = { id: 'kiosk', x: 41, z: 43.6, npc: { x: 42.6, z: 42.6, yaw: -Math.PI * 0.75 }, label: 'Courier Kiosk' };
+  // NOODLE KIOSK — open stall in the plaza
+  for (let x = 39; x <= 42; x++) w.set(x, 1, 41, B.COUNTER);
+  w.fill(38, 4, 39, 43, 4, 42, B.METAL);
+  for (let x = 38; x <= 43; x++) w.set(x, 4, 42, B.NEON_AMBER);
+  for (const [px, pz] of [[38, 39], [43, 39]]) for (let y = 1; y <= 3; y++) w.set(px, y, pz, B.METAL);
+  for (let x = 38; x <= 43; x++) for (let y = 1; y <= 3; y++) w.set(x, y, 38, B.DARKBRICK);
+  P('bowl', 39, 41, 0, { y: 2, block: [] });
+  P('bowl', 42, 41, 0, { y: 2, block: [] });
+  P('pot', 41, 40);
+  P('sign_board', 43, 43, 0);
+  signs.push({ text: 'KIOSK', sub: 'noodles · coin swaps', color: '#ffb547', x: 40.5, y: 5.0, z: 42.6, facing: 'S', w: 3.2, h: 1 });
+  stations.kiosk = { id: 'kiosk', x: 40.5, z: 43.0, npc: { x: 40.5, z: 40.2, yaw: -Math.PI / 2 }, label: 'Noodle Kiosk' };
 
   // ZEC monument (plaza center): voxel Ƶ, 5 wide x 7 high, double-sided
   const Z = ['11111', '00001', '00010', '11111', '01000', '10000', '11111'];
@@ -414,6 +481,7 @@ export function buildCity(): City {
   // café chalkboard sign
   signs.push({ text: 'COFFEE', sub: 'shielded only · memos welcome', color: '#e9e3d0', x: 81, y: 1.45, z: 52.4, facing: 'N', w: 1.4, h: 0.9 });
   const steam = [
+    { x: 41.5, z: 40.5 },
     { x: 74.9, z: 14 },
     { x: 74.9, z: 30 },
     { x: 47.5, z: 60 },
@@ -456,6 +524,7 @@ export function buildCity(): City {
   const walk = new Uint8Array(SX * SZ);
   for (let x = 0; x < SX; x++)
     for (let z = 0; z < SZ; z++) walk[x + z * SX] = w.solid(x, 0, z) && !w.solid(x, 1, z) && !w.solid(x, 2, z) ? 1 : 0;
+  for (const pr of props) for (const [cx, cz] of propCells(pr)) if (cx >= 0 && cz >= 0 && cx < SX && cz < SZ) walk[cx + cz * SX] = 0;
 
-  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 10.5, z: 44.5, yaw: Math.PI }, tags, decals, steam };
+  return { world: w, signs, screens, stations, walk, lamps, spawn: { x: 5.5, z: 35.5, yaw: Math.PI * 0.85 }, tags, decals, steam, props, bed: { x: 4.5, z: 33.6 } };
 }

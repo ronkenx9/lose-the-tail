@@ -78,6 +78,8 @@ export class Npcs {
     if (!cells) return false;
     n.path = cells.map(([x, z]) => ({ x: x + 0.5 + (this.r() - 0.5) * 0.3, z: z + 0.5 + (this.r() - 0.5) * 0.3 }));
     n.path[n.path.length - 1] = { x: tx, z: tz };
+    // don't walk back to the centre of the cell we're already standing in
+    if (n.path.length > 1) n.path.shift();
     n.onArrive = onArrive;
     return true;
   }
@@ -115,8 +117,33 @@ export class Npcs {
           }
         } else {
           const step = Math.min(d, sp * dt);
-          n.x += (dx / d) * step;
-          n.z += (dz / d) * step;
+          let mx = dx / d,
+            mz = dz / d;
+          // personal space: passers-by sidestep you instead of walking through your face
+          if (n.wander) {
+            const ox = camPos.x - n.x,
+              oz = camPos.z - n.z;
+            const od = Math.hypot(ox, oz);
+            if (od < 1.6 && (ox * mx + oz * mz) / od > 0.2) {
+              const side = ox * mz - oz * mx > 0 ? -1 : 1;
+              const px = -mz * side,
+                pz = mx * side;
+              mx = mx * 0.4 + px * 0.9;
+              mz = mz * 0.4 + pz * 0.9;
+              const l = Math.hypot(mx, mz) || 1;
+              mx /= l;
+              mz /= l;
+            }
+          }
+          const nx = n.x + mx * step,
+            nz = n.z + mz * step;
+          if (this.city.walk[Math.floor(nx) + Math.floor(nz) * SX]) {
+            n.x = nx;
+            n.z = nz;
+          } else {
+            n.x += (dx / d) * step;
+            n.z += (dz / d) * step;
+          }
           const want = Math.atan2(-dz, dx);
           let dy = want - n.ch.yaw;
           dy = Math.atan2(Math.sin(dy), Math.cos(dy));

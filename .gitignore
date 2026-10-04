@@ -9,3 +9,9 @@ GATES.md
 .claude/
 e2e-fail.png
 .env.local
+
+# other workspaces / heavy media
+trailer-workshop/
+trailer/assets/footage.mp4
+trailer/snapshots/
+trailer/node_modules/

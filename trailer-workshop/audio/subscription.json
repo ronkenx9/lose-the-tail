@@ -1,8 +1,0 @@
-{
-  "tier": "starter",
-  "character_count": 10345,
-  "character_limit": 32727,
-  "can_extend_character_limit": false,
-  "status": "active",
-  "next_character_count_reset_unix": 1793180135
-}

@@ -28,7 +28,7 @@ roles = {
     "miner":      pick(T("Head", "Miner")),
     "narrator":   [t for t in tokens if t["id"] == 5838],  # the white ghost: game master / narrator
 }
-lookouts = pick(T("Head", "Recon"), 6)
+lookouts = [t for i in (320, 1200) for t in tokens if t["id"] == i] + [t for t in pick(T("Head", "Recon"), 8) if t["id"] not in (320, 1200)][:4]  # Needle #320, Hem #1200 (CAST.md)
 used = {t["id"] for v in roles.values() for t in v} | {t["id"] for t in lookouts}
 crowd = [t for t in pick(lambda tr: tr["Head"] != "Recon", 200) if t["id"] not in used][:42]
 

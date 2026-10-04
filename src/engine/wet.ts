@@ -15,7 +15,7 @@ export function createWetStreet(world: VoxelWorld, scale: number) {
   for (let z = 0; z < D; z++)
     for (let x = 0; x < W; x++) {
       const b = world.get(x, 0, z);
-      const covered = world.get(x, 1, z) !== 0;
+      const covered = world.get(x, 1, z) !== 0 || !world.sky[world.idx(x, 1, z)];
       let w = 0;
       if (!covered)
         w =

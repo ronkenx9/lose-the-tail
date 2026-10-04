@@ -15,8 +15,18 @@ export class Player {
   speed = 0;
   bobT = 0;
   frozen = false;
+  /** phone raised: you can still shuffle along, slowly */
+  slow = false;
+  /** sprint held (Shift or the on-screen RUN button) */
+  sprintHeld = false;
+  stamina = 1;
+  sprinting = false;
   private keys = new Set<string>();
   private walk: Uint8Array;
+  setWalk(w: Uint8Array) {
+    this.walk = w;
+    this.stop();
+  }
   private onArrive?: () => void;
 
   constructor(walk: Uint8Array, x: number, z: number, yaw: number) {
@@ -141,13 +151,16 @@ export class Player {
         }
       }
     }
-    const target = mx || mz ? WALK : 0;
+    const wantSprint = (this.sprintHeld || this.keys.has('shift')) && !this.slow;
+    this.sprinting = wantSprint && this.stamina > 0.02 && !!(mx || mz);
+    this.stamina = Math.max(0, Math.min(1, this.stamina + (this.sprinting ? -dt / 4.5 : dt / 7)));
+    const target = mx || mz ? WALK * (this.sprinting ? 1.7 : 1) * (this.slow ? 0.45 : 1) : 0;
     this.speed += (target - this.speed) * Math.min(1, dt * 10);
     if (mx || mz) {
       this.move(mx * this.speed * dt, 0);
       this.move(0, mz * this.speed * dt);
     }
-    this.bobT += dt * this.speed * 2.1;
+    this.bobT += dt * this.speed * (this.sprinting ? 1.7 : 2.1);
   }
 
   private move(dx: number, dz: number) {
@@ -165,7 +178,7 @@ export class Player {
   }
 
   applyCamera(cam: THREE.PerspectiveCamera) {
-    const bob = Math.sin(this.bobT) * 0.045 * Math.min(1, this.speed / WALK);
+    const bob = Math.sin(this.bobT) * (this.sprinting ? 0.07 : 0.045) * Math.min(1, this.speed / WALK);
     cam.position.set(this.x, 1 + EYE + bob, this.z);
     cam.rotation.order = 'YXZ';
     cam.rotation.y = this.yaw;

@@ -42,7 +42,24 @@ export const B = {
   TILE: 27,
   NEON_ZEC: 28,
   LEAF: 29,
+  GLASS: 30,
+  FLOOR_WOOD: 31,
+  CARPET: 32,
+  PLASTER: 33,
+  SHEET: 34,
+  COUNTER: 35,
+  TILE_DARK: 36,
+  ARCADE_FLOOR: 37,
+  CEILING: 38,
+  PANEL_LIGHT: 39,
+  RUG_RED: 40,
+  CEIL_WARM: 41,
+  CEIL_COOL: 42,
 } as const;
+
+/** blocks you can see (and light can pass) through */
+export const TRANSPARENT = new Set<number>([0, 30]);
+export const isOpaque = (b: number) => !TRANSPARENT.has(b);
 
 export const PALETTE: BlockDef[] = [];
 const def = (id: number, d: BlockDef) => (PALETTE[id] = d);
@@ -75,6 +92,19 @@ def(B.SCREEN_OFF, { color: [0.03, 0.03, 0.04] });
 def(B.PUDDLE, { color: [0.14, 0.16, 0.22], jitter: 0.05 });
 def(B.TILE, { color: [0.22, 0.2, 0.24], jitter: 0.1 });
 def(B.LEAF, { color: [0.16, 0.36, 0.2], jitter: 0.3 });
+def(B.GLASS, { color: [0.55, 0.7, 0.8] });
+def(B.FLOOR_WOOD, { color: [0.42, 0.28, 0.17], jitter: 0.16 });
+def(B.CARPET, { color: [0.2, 0.22, 0.3], jitter: 0.06 });
+def(B.PLASTER, { color: [0.62, 0.6, 0.56], jitter: 0.05 });
+def(B.SHEET, { color: [0.86, 0.86, 0.9], jitter: 0.04 });
+def(B.COUNTER, { color: [0.3, 0.2, 0.14], jitter: 0.1 });
+def(B.TILE_DARK, { color: [0.17, 0.17, 0.2], jitter: 0.12 });
+def(B.ARCADE_FLOOR, { color: [0.16, 0.08, 0.24], jitter: 0.25 });
+def(B.CEILING, { color: [0.24, 0.24, 0.26], jitter: 0.04 });
+def(B.PANEL_LIGHT, { glow: 1.4, color: [0.95, 0.97, 1], emit: [0.75, 0.78, 0.85] });
+def(B.RUG_RED, { color: [0.5, 0.12, 0.12], jitter: 0.1 });
+def(B.CEIL_WARM, { glow: 1.25, color: [1, 0.86, 0.66], emit: [1, 0.8, 0.56] });
+def(B.CEIL_COOL, { glow: 1.25, color: [0.86, 0.94, 1], emit: [0.82, 0.92, 1] });
 def(B.NEON_ZEC, { glow: 1.7, color: [0.96, 0.72, 0.16], emit: [1, 0.7, 0.12] });
 
 const LIGHT_MAX = 15;
@@ -135,6 +165,9 @@ export class VoxelWorld {
   solid(x: number, y: number, z: number) {
     return this.get(x, y, z) !== 0;
   }
+  opaque(x: number, y: number, z: number) {
+    return isOpaque(this.get(x, y, z));
+  }
 
   /** Minecraft-style flood fill: sky light straight down + colored block light BFS. */
   computeLight() {
@@ -144,7 +177,7 @@ export class VoxelWorld {
       for (let x = 0; x < sx; x++) {
         for (let y = sy - 1; y >= 0; y--) {
           const i = this.idx(x, y, z);
-          if (this.data[i] !== 0) break;
+          if (isOpaque(this.data[i])) break;
           this.sky[i] = 1;
         }
       }
@@ -181,7 +214,7 @@ export class VoxelWorld {
                 nz = z + dz;
               if (!this.inside(nx, ny, nz)) continue;
               const ni = this.idx(nx, ny, nz);
-              if (this.data[ni] !== 0) continue;
+              if (isOpaque(this.data[ni])) continue;
               if (arr[ni] < lvl - 1) {
                 arr[ni] = lvl - 1;
                 qx[tail++] = ni;
@@ -197,7 +230,7 @@ export class VoxelWorld {
         const z = Math.floor(i / sx) % sz;
         const y = Math.floor(i / sxz);
         const tryN = (ni: number) => {
-          if (this.data[ni] !== 0) return;
+          if (isOpaque(this.data[ni])) return;
           if (arr[ni] < l - 1) {
             arr[ni] = l - 1;
             qx[tail++] = ni;
@@ -254,6 +287,7 @@ const FACES = [
  * Build chunk meshes with baked colored light + per-vertex ambient occlusion.
  * Emissive blocks get their own unlit bright colors so bloom picks them up.
  */
+const glassMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.35, 0.5, 0.62), transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide });
 export function buildMeshes(w: VoxelWorld, chunk = 32): THREE.Group {
   linearize();
   const group = new THREE.Group();
@@ -265,11 +299,24 @@ export function buildMeshes(w: VoxelWorld, chunk = 32): THREE.Group {
       const colr: number[] = [];
       const idxs: number[] = [];
       let v = 0;
+      const gpos: number[] = [];
+      const gidx: number[] = [];
+      let gv = 0;
       for (let y = 0; y < w.sy; y++)
         for (let z = cz; z < Math.min(w.sz, cz + chunk); z++)
           for (let x = cx; x < Math.min(w.sx, cx + chunk); x++) {
             const b = w.data[w.idx(x, y, z)];
             if (b === 0) continue;
+            if (b === B.GLASS) {
+              for (const f of FACES) {
+                const nb = w.get(x + f.n[0], y + f.n[1], z + f.n[2]);
+                if (nb === B.GLASS || isOpaque(nb)) continue;
+                for (const c of f.c) gpos.push(x + c[0], y + c[1], z + c[2]);
+                gidx.push(gv, gv + 1, gv + 2, gv, gv + 2, gv + 3);
+                gv += 4;
+              }
+              continue;
+            }
             const d = PALETTE[b];
             const lc = LINEAR[b];
             const j = d.jitter ? 1 + (hash3(x, y, z) - 0.5) * 2 * d.jitter : 1;
@@ -277,7 +324,7 @@ export function buildMeshes(w: VoxelWorld, chunk = 32): THREE.Group {
               const nx = x + f.n[0],
                 ny = y + f.n[1],
                 nz = z + f.n[2];
-              if (w.inside(nx, ny, nz) && w.data[w.idx(nx, ny, nz)] !== 0) continue;
+              if (w.inside(nx, ny, nz) && isOpaque(w.data[w.idx(nx, ny, nz)])) continue;
               if (!w.inside(nx, ny, nz) && ny < 0) continue;
               // light from the air cell in front of the face
               if (d.emit || d.glow) {
@@ -303,6 +350,15 @@ export function buildMeshes(w: VoxelWorld, chunk = 32): THREE.Group {
               v += 4;
             }
           }
+      if (gv) {
+        const gg = new THREE.BufferGeometry();
+        gg.setAttribute('position', new THREE.Float32BufferAttribute(gpos, 3));
+        gg.setIndex(gidx);
+        gg.computeBoundingSphere();
+        const gm = new THREE.Mesh(gg, glassMat);
+        gm.renderOrder = 2;
+        group.add(gm);
+      }
       if (!v) continue;
       const g = new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
@@ -326,9 +382,9 @@ function vertexAO(w: VoxelWorld, x: number, y: number, z: number, n: number[], c
   const p3 = [...base];
   p3[axes[0]] += s[0];
   p3[axes[1]] += s[1];
-  const s1 = w.solid(p1[0], p1[1], p1[2]) ? 1 : 0;
-  const s2 = w.solid(p2[0], p2[1], p2[2]) ? 1 : 0;
-  const s3 = w.solid(p3[0], p3[1], p3[2]) ? 1 : 0;
+  const s1 = w.opaque(p1[0], p1[1], p1[2]) ? 1 : 0;
+  const s2 = w.opaque(p2[0], p2[1], p2[2]) ? 1 : 0;
+  const s3 = w.opaque(p3[0], p3[1], p3[2]) ? 1 : 0;
   const occ = s1 && s2 ? 3 : s1 + s2 + s3;
   return [1, 0.78, 0.6, 0.45][occ];
 }

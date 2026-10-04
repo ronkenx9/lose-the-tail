@@ -1,10 +1,10 @@
-// Full playthrough in headless Chrome: loop 1 -> ambush -> void -> loop 2 -> every errand -> ending.
-// usage: node scripts/e2e.mjs [url]   (default http://localhost:5191/)
+// Full playthrough in headless Chrome: wake -> loop 1 -> chase -> caught -> 3D void -> loop 2 -> every errand -> ending.
+// usage: node scripts/e2e.mjs [url] [--trap] [--catch]   (default http://localhost:5191/)
 import { chromium } from 'playwright-core';
 
 const URL = process.argv[2] ?? 'http://localhost:5191/';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: process.env.SWIFTSHADER ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1100, height: 760 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
@@ -16,14 +16,14 @@ const sleep = (ms) => page.waitForTimeout(ms);
 const state = () => page.evaluate(() => {
   const g = window.__game;
   const s = g.story.s;
-  return { beat: s.beat, loop: s.loop, w: s.wallet, e: s.errands, talking: g.hud.talking, up: g.phone.up, screen: g.phone.current, trace: s.trace };
+  return { beat: s.beat, loop: s.loop, w: s.wallet, e: s.errands, talking: g.hud.talking, up: g.phone.up, screen: g.phone.current, trace: s.trace, buzzing: g.intro.buzzing, intro: g.intro.active, crew: g.crew.mode, near: g.crew.nearest() };
 });
 async function until(pred, what, ms = 30000, advance = false) {
   const end = Date.now() + ms;
   while (Date.now() < end) {
     const s = await state();
     if (pred(s)) return s;
-    if (advance && s.talking) await page.evaluate(() => document.querySelector('.dlg')?.click());
+    if (advance && s.talking) await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
     await sleep(advance ? 240 : 150);
   }
   throw new Error(`timeout waiting for: ${what} :: ${JSON.stringify(await state())}`);
@@ -35,7 +35,7 @@ async function talk(max = 30) {
       await sleep(400);
       if (!(await state()).talking) return;
     }
-    await page.evaluate(() => document.querySelector('.dlg')?.click());
+    await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
     await sleep(230);
   }
 }
@@ -60,24 +60,45 @@ try {
   await click('#start');
   await sleep(500);
   await click('.card .cta');
-  await until((s) => s.beat === 'loop1' && s.w.transparent === 5, 'loop1 payday');
-  log('PASS loop1: paid 5 ZEC publicly');
+  await until((s) => s.buzzing, 'phone buzzing on the nightstand', 15000);
+  log('PASS woke up in bed, phone buzzing');
+  await page.keyboard.press('e');
+  await until((s) => s.beat === 'loop1' && s.w.transparent === 5 && !s.intro, 'loop1 payday');
+  log('PASS loop1: picked up phone, paid 5 ZEC publicly');
+  await talk();
 
   await teleport('kiosk');
   await until((s) => s.talking, 'courier dialogue');
   await talk();
   await until((s) => s.up && s.screen === 'send2', 'pay screen');
   await hold('[data-hold=send]');
-  await until((s) => s.talking, 'tailor radio after paying', 8000);
-  log('PASS loop1: paid noodles, Tailor noticed');
-  await talk();
-  await until((s) => s.talking, 'Zero in the void', 15000);
+  await until((s) => s.beat === 'chase1', 'chase starts after paying', 8000);
+  log('PASS loop1: paid noodles, Tailor gave the order');
+  await until((s) => s.crew === 'hunt', 'crew hunting', 8000);
+  const d0 = (await state()).near;
+  const d1 = (await until((s) => s.near < d0 - 3 || s.beat === 'void', 'crew closing in', 30000)).near;
+  log(`PASS crew running you down (${d0.toFixed(1)}m -> ${d1.toFixed(1)}m)`);
+  await until((s) => s.beat === 'void', 'caught -> void', 40000, true);
   const inVoid = await page.evaluate(() => document.getElementById('ui').classList.contains('void'));
   if (!inVoid) throw new Error('void not shown');
-  log('PASS ambush -> void with Zero');
+  log('PASS caught -> 3D void');
+  await sleep(1500);
+  if ((await state()).talking) throw new Error('Zero spoke before you walked up');
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.player.goTo(g.vw.zeroAt.x, g.vw.zeroAt.z + 2);
+  });
+  await until((s) => s.talking, 'Zero speaks once you walk up', 15000);
+  log('PASS walked up to Zero in the void');
   await talk(40);
+  await until((s) => s.beat === 'wake2', 'loop 2 wake', 15000);
+  await until((s) => s.buzzing, 'buzzing again', 15000);
+  await page.keyboard.press('e');
   await until((s) => s.beat === 'setup' && s.loop === 2, 'loop 2 setup');
-  log('PASS rewind into loop 2');
+  const zv = await page.evaluate(() => window.__game.companion.visible);
+  if (!zv) throw new Error('Zero not in the room');
+  log('PASS rewind into loop 2, Zero in the room');
+  await talk();
 
   // wallet setup
   await sleep(1600);
@@ -95,16 +116,27 @@ try {
   log('PASS wallet created with 24-word quiz');
 
   await until((s) => s.beat === 'payday' && s.w.transparent === 5, 'loop2 payday', 15000);
-  await until((s) => !!s.trace, 'trace started', 30000, true);
-  log('PASS payday: trace running');
+  await until((s) => s.crew === 'hunt', 'crew dispatched', 30000, true);
+  log('PASS payday: crew heading for your door');
+  if (process.argv.includes('--catch')) {
+    for (let i = 0; i < 160 && !(await page.$('.card.red .cta')); i++) {
+      await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
+      await sleep(250);
+    }
+    await page.waitForSelector('.card.red .cta', { timeout: 5000 });
+    log('PASS standing still on a public balance got you caught');
+    await click('.card.red .cta');
+    await until((s) => s.beat === 'payday' && s.w.transparent === 5, 'rewound to payday', 8000);
+    log('PASS rewind to payday');
+  }
   await page.evaluate(() => {
     window.__game.phone.raise();
     window.__game.phone.show('shield');
   });
   await sleep(300);
   await hold('[data-hold=shield]');
-  await until((s) => s.w.shielded === 5 && !s.trace, 'shielded', 10000);
-  log('PASS shielded 5 ZEC, trace cleared');
+  await until((s) => s.w.shielded === 5 && s.crew !== 'hunt', 'shielded', 10000);
+  log('PASS shielded 5 ZEC, crew lost you');
   await until((s) => s.beat === 'errands', 'errands', 30000, true);
   log('PASS errands unlocked');
 
@@ -154,7 +186,7 @@ try {
     // the mistake: cash out (almost) everything straight after shielding
     await hold('[data-hold=send]');
     for (let i = 0; i < 80 && !(await page.$('.card.red .cta')); i++) {
-      await page.evaluate(() => document.querySelector('.dlg')?.click());
+      await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
       await sleep(250);
     }
     await page.waitForSelector('.card.red .cta', { timeout: 5000 });
@@ -187,7 +219,7 @@ try {
   await teleport('home');
   await until((s) => s.talking, 'ending dialogue', 15000);
   for (let i = 0; i < 60 && !(await page.$('.card .cta')); i++) {
-    await page.evaluate(() => document.querySelector('.dlg')?.click());
+    await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
     await sleep(250);
   }
   await page.waitForSelector('.card .cta', { timeout: 5000 });
@@ -195,7 +227,7 @@ try {
   if (caseFile !== 'SUBJECT: UNKNOWN') throw new Error('ending card missing: ' + caseFile);
   await click('.card .cta');
   for (let i = 0; i < 60 && !(await page.$('#again')); i++) {
-    await page.evaluate(() => document.querySelector('.dlg')?.click());
+    await page.evaluate(() => (document.querySelector('.bub:not(.hidden)') || document.querySelector('.dlg'))?.click());
     await sleep(250);
   }
   await page.waitForSelector('#again', { timeout: 5000 });

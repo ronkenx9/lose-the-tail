@@ -203,13 +203,6 @@ export function lookOf(h: HeadMeta): Look {
     pants: shade(body, 0.55),
     boots: shade(body, 0.3),
   };
-  if (h.role === 'tailor') {
-    // art bible: face lost in shadow, two small yellow eyes
-    look.face = [20, 20, 24];
-    look.hood = [30, 30, 34];
-    look.eye = [255, 196, 60];
-    look.visor = false;
-  }
   lookCache.set(i, look);
   return look;
 }
@@ -585,8 +578,11 @@ export class Trails {
   update(dt: number, chars: Character[], cam: THREE.Vector3) {
     for (const ch of chars) {
       if (!ch.group.visible) continue;
-      if (Math.hypot(ch.group.position.x - cam.x, ch.group.position.z - cam.z) > 28) continue;
-      const rate = 9 + ch.speed * 26 + ch.trailBoost * 80;
+      const dc = Math.hypot(ch.group.position.x - cam.x, ch.group.position.z - cam.z);
+      if (dc > 28) continue;
+      // thin the trail right in front of the lens so close conversations stay readable
+      const near = ch.trailBoost > 0 ? 1 : Math.min(1, Math.max(0.12, (dc - 1.2) / 3));
+      const rate = (9 + ch.speed * 26 + ch.trailBoost * 80) * near;
       const a = (this.acc.get(ch) ?? 0) + rate * dt;
       let n = Math.floor(a);
       this.acc.set(ch, a - n);
@@ -618,7 +614,8 @@ export class Trails {
       if (b.life > b.max) return false;
       b.pos.addScaledVector(b.vel, dt);
       const t = b.life / b.max;
-      s3.setScalar(b.size * (1 - t * t));
+      const dcam = b.pos.distanceTo(cam);
+      s3.setScalar(b.size * (1 - t * t) * Math.min(1, Math.max(0, (dcam - 0.6) / 1.4)));
       this.m4.compose(b.pos, this.q, s3);
       this.mesh.setMatrixAt(k, this.m4);
       this.mesh.setColorAt(k, b.color);

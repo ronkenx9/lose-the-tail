@@ -30,9 +30,9 @@ export function bindInput(canvas: HTMLCanvasElement, camera: THREE.Camera, playe
   });
   const up = (e: PointerEvent) => {
     if (!down || e.pointerId !== down.id) return;
-    const wasTap = down.moved <= 6 && performance.now() - down.t < 500;
+    const wasTap = down.moved <= 6 && performance.now() - down.t < 900;
     down = null;
-    if (!wasTap || player.frozen) return;
+    if (!wasTap) return;
     const ndc = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
     const rc = new THREE.Raycaster();
     rc.setFromCamera(ndc, camera);

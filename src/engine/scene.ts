@@ -13,6 +13,7 @@ import {
 import type { City, Facing, ScreenSpec, SignSpec } from './city';
 import { buildMeshes } from './voxels';
 import { createWetStreet } from './wet';
+import { placeProps } from './props';
 
 export const FACING_ROT: Record<Facing, number> = { S: 0, N: Math.PI, E: Math.PI / 2, W: -Math.PI / 2 };
 
@@ -49,6 +50,25 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
   const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
   const wet = createWetStreet(city.world, mobile ? 0.3 : 0.5);
   scene.add(wet.mesh);
+  placeProps(scene, city.world, city.props);
+  // roof height per column so rain stops on roofs instead of falling through interiors
+  const roof = new Float32Array(city.world.sx * city.world.sz);
+  for (let x = 0; x < city.world.sx; x++)
+    for (let z = 0; z < city.world.sz; z++) {
+      let top = 1;
+      for (let y = city.world.sy - 1; y >= 1; y--)
+        if (city.world.opaque(x, y, z)) {
+          top = y + 1;
+          break;
+        }
+      roof[x + z * city.world.sx] = top;
+    }
+  const roofAt = (x: number, z: number) => {
+    const xi = Math.floor(x),
+      zi = Math.floor(z);
+    if (xi < 0 || zi < 0 || xi >= city.world.sx || zi >= city.world.sz) return 0;
+    return roof[xi + zi * city.world.sx];
+  };
   scene.add(skyline());
   scene.add(moon());
 
@@ -156,7 +176,7 @@ export function createStage(canvas: HTMLCanvasElement, city: City): Stage {
       const on = Math.sin(t * 13 + f.seed) > -0.92 && Math.sin(t * 2.3 + f.seed) > -0.97;
       f.mat.opacity = on ? 1 : 0.25;
     }
-    updateRain(rain, camera, dt);
+    updateRain(rain, camera, dt, roofAt);
     for (const p of steamPuffs) {
       p.t += dt;
       if (p.t > p.life) p.t = 0;
@@ -302,7 +322,7 @@ function makeRain() {
   l.frustumCulled = false;
   return l;
 }
-function updateRain(rain: THREE.LineSegments, cam: THREE.Camera, dt: number) {
+function updateRain(rain: THREE.LineSegments, cam: THREE.Camera, dt: number, roofAt: (x: number, z: number) => number) {
   const a = rain.geometry.getAttribute('position') as THREE.BufferAttribute;
   const p = a.array as Float32Array;
   const fall = dt * 22;
@@ -310,10 +330,10 @@ function updateRain(rain: THREE.LineSegments, cam: THREE.Camera, dt: number) {
     const o = i * 6;
     p[o + 1] -= fall;
     p[o + 4] -= fall;
-    if (p[o + 1] < 0) {
+    if (p[o + 1] < roofAt(p[o], p[o + 2])) {
       const x = cam.position.x + (Math.random() - 0.5) * RAIN_BOX * 2;
       const z = cam.position.z + (Math.random() - 0.5) * RAIN_BOX * 2;
-      const y = 22 + Math.random() * 8;
+      const y = Math.max(roofAt(x, z) + 2, cam.position.y + 6) + Math.random() * 14;
       p[o] = x;
       p[o + 1] = y;
       p[o + 2] = z;

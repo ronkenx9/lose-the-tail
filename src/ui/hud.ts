@@ -1,4 +1,6 @@
 import './hud.css';
+import * as THREE from 'three';
+import type { Voice } from '../game/voice';
 import { voiceKey, type VoiceEntry } from './voice';
 import { portrait, portraitById } from './portrait';
 import { esc } from './phone';
@@ -10,6 +12,8 @@ export interface Line {
   text: string;
   /** radio / intercepted transmission styling */
   radio?: boolean;
+  /** world position of the speaker's head: renders an in-world bubble + positional voice */
+  at?: () => THREE.Vector3;
 }
 
 export class Hud {
@@ -34,6 +38,14 @@ export class Hud {
   private toastEl: HTMLElement;
   private overlay: HTMLElement;
   private queue: { lines: Line[]; done: () => void }[] = [];
+  /** set by main: positional voice + screen projection + player position */
+  voice?: Voice;
+  project?: (v: THREE.Vector3) => { x: number; y: number; on: boolean };
+  playerPos?: () => THREE.Vector3;
+  private bub!: HTMLElement;
+  private curLine: Line | null = null;
+  private pv: { stop(): void; setPaused(p: boolean): void } | null = null;
+  private paused = false;
   private typing = 0;
   talking = false;
 
@@ -47,6 +59,7 @@ export class Hud {
          <div class="file hidden"><span class="file-k">TAILOR & CO. · file on you <b class="file-n"></b></span><div class="slots"></div></div>
        </div>
        <div class="marker hidden"><i></i><span></span></div>
+       <div class="bub hidden"><b></b><p></p><i class="bub-arrow"></i></div>
        <div class="dlg hidden"><div class="dlg-pt"></div><div class="dlg-tx"><b></b><p></p><span class="dlg-next">tap ▸</span></div></div>
        <div class="toast"></div>
        <div class="lesson hidden"><i>✓</i><div><b></b><span></span></div></div>
@@ -62,6 +75,8 @@ export class Hud {
     this.toastEl = root.querySelector('.toast')!;
     this.overlay = root.querySelector('.overlay')!;
     this.dlg.addEventListener('click', () => this.advance());
+    this.bub = root.querySelector('.bub')!;
+    this.bub.addEventListener('click', () => this.advance());
     this.file.addEventListener('click', () => this.file.classList.toggle('open'));
     window.addEventListener('keydown', (e) => {
       if (this.talking && (e.key === 'Enter' || e.key === 'f' || e.key === 'F')) this.advance();
@@ -85,11 +100,17 @@ export class Hud {
         this.talking = false;
         this.stopVoice();
         this.dlg.classList.add('hidden');
+        this.bub.classList.add('hidden');
+        this.curLine = null;
         return;
       }
     }
     const l = this.cur.lines.shift()!;
     this.talking = true;
+    this.curLine = l;
+    this.paused = false;
+    if (l.at) return this.anchored(l);
+    this.bub.classList.add('hidden');
     this.dlg.classList.remove('hidden');
     this.dlg.classList.toggle('radio', !!l.radio);
     (this.dlg.querySelector('.dlg-pt') as HTMLElement).innerHTML = l.role ? portrait(l.role, 64) : '';
@@ -134,9 +155,94 @@ export class Hud {
       }
     }, 16);
   }
+  /** a line spoken by someone standing in the world */
+  private async anchored(l: Line) {
+    this.dlg.classList.add('hidden');
+    this.bub.classList.remove('hidden');
+    this.bub.classList.toggle('radio', !!l.radio);
+    this.bub.querySelector('b')!.textContent = l.who;
+    const p = this.bub.querySelector('p') as HTMLElement;
+    this.full = l.text;
+    clearInterval(this.typing);
+    clearTimeout(this.autoT);
+    this.stopVoice();
+    p.innerHTML = '';
+    this.typed = false;
+    this.lineAt = performance.now();
+    const me = this.cur;
+    const id = voiceKey(l.who, l.text);
+    const vo = this.voiceOn ? this.vo[id] : undefined;
+    let dur = Math.max(2.2, l.text.length * 0.058);
+    if (vo && vo.who === l.who && this.voice) {
+      const h = await this.voice.play(`/vo/${id}.mp3`, l.at!, { radio: l.radio });
+      if (this.cur !== me || this.curLine !== l) return h?.stop();
+      if (h) {
+        this.pv = h;
+        dur = h.duration;
+        this.onVoice?.(true);
+        h.ended.then(() => {
+          this.onVoice?.(false);
+          if (this.curLine === l && !this.paused) this.autoT = window.setTimeout(() => this.curLine === l && this.next(), 650);
+        });
+      }
+    }
+    let i = 0;
+    const step = Math.max(1, Math.ceil(this.full.length / ((dur * 0.85 * 1000) / 16)));
+    this.typing = window.setInterval(() => {
+      if (this.paused) return;
+      i += step;
+      p.innerHTML = fmt(this.full.slice(0, i));
+      if (i >= this.full.length) {
+        clearInterval(this.typing);
+        this.typed = true;
+        if (!this.pv) this.autoT = window.setTimeout(() => this.curLine === l && this.next(), 900 + this.full.length * 12);
+      }
+    }, 16);
+  }
+
+  /** per frame: keep the speech bubble over the speaker; pause if the player walks away */
+  frame() {
+    const l = this.curLine;
+    if (!l || !l.at || !this.project) return;
+    const head = l.at();
+    const pp = this.playerPos?.();
+    if (pp && !l.radio) {
+      const d = Math.hypot(head.x - pp.x, head.z - pp.z);
+      if (!this.paused && d > 14) {
+        this.paused = true;
+        this.pv?.setPaused(true);
+        this.bub.classList.add('far');
+      } else if (this.paused && d < 9) {
+        this.paused = false;
+        this.pv?.setPaused(false);
+        this.bub.classList.remove('far');
+      }
+    }
+    const s = this.project(head.clone().add(new THREE.Vector3(0, 0.55, 0)));
+    const W = innerWidth,
+      H = innerHeight,
+      pad = 24;
+    let x = s.x,
+      y = s.y;
+    const off = !s.on || x < pad || x > W - pad || y < 70 || y > H - 120;
+    const half = this.bub.offsetWidth / 2 + 16;
+    if (off) {
+      x = Math.max(half, Math.min(W - half, x));
+      y = Math.max(110, Math.min(H - 170, y));
+    }
+    if (!off) x = Math.max(half, Math.min(W - half, x));
+    this.bub.classList.toggle('edge', off);
+    this.bub.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
   private typed = true;
   private lineAt = 0;
   private stopVoice() {
+    if (this.pv) {
+      this.pv.stop();
+      this.pv = null;
+      this.onVoice?.(false);
+    }
     if (this.audio) {
       this.audio.onended = null;
       this.audio.onerror = null;
@@ -147,7 +253,7 @@ export class Hud {
   }
   private advance() {
     if (performance.now() - this.lineAt < 180) return; // ignore double taps
-    const p = this.dlg.querySelector('p') as HTMLElement;
+    const p = (this.curLine?.at ? this.bub : this.dlg).querySelector('p') as HTMLElement;
     if (!this.typed) {
       clearInterval(this.typing);
       p.innerHTML = fmt(this.full);
@@ -183,7 +289,9 @@ export class Hud {
     this.clock.textContent = fmtClock(s.clock);
     if (s.trace) {
       this.trace.classList.remove('hidden');
-      this.trace.querySelector('b')!.textContent = String(Math.max(0, Math.ceil(s.trace.left))).padStart(2, '0');
+      const crew = s.trace.reason === 'crew';
+      this.trace.querySelector('span')!.textContent = crew ? 'CREW' : 'TRACE';
+      this.trace.querySelector('b')!.textContent = crew ? `${Math.max(0, Math.round(s.trace.left))}m` : String(Math.max(0, Math.ceil(s.trace.left))).padStart(2, '0');
       (this.trace.querySelector('i') as HTMLElement).style.transform = `scaleX(${Math.max(0, s.trace.left / s.trace.total)})`;
       this.root.classList.toggle('danger', s.trace.left < 10);
     } else {

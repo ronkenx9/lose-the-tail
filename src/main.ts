@@ -3,7 +3,8 @@ import * as THREE from 'three';
 import { buildCity } from './engine/city';
 import { createStage } from './engine/scene';
 import { Player } from './engine/player';
-import { Character, HEADS, Trails, Zero, headByRole, loadAtlas, lookOf } from './engine/characters';
+import { Character, headByRole, loadAtlas, lookOf } from './engine/characters';
+import { buildVoid } from './engine/voidworld';
 import { Npcs } from './engine/npcs';
 import { bindInput, groundHit } from './engine/input';
 import { Drones } from './engine/drones';
@@ -13,6 +14,10 @@ import { Phone } from './ui/phone';
 import { Hud } from './ui/hud';
 import { Story } from './game/story';
 import { Sfx } from './game/sfx';
+import { Voice } from './game/voice';
+import { Intro } from './game/intro';
+import { Crew } from './game/crew';
+import { Companion } from './game/companion';
 import { fmtClock } from './game/state';
 import { portrait } from './ui/portrait';
 import { makeMap } from './ui/map';
@@ -53,14 +58,15 @@ async function boot() {
   ui.classList.add('pre');
   let story!: Story;
   const phone = new Phone(ui, () => story.s, (a) => {
+    // phone up: you can still shuffle along, slowly. the world keeps moving.
     if (a.type === 'raised') {
       hand.setRaised(true);
-      player.frozen = true;
+      player.slow = true;
       player.stop();
     }
     if (a.type === 'lowered') {
       hand.setRaised(false);
-      player.frozen = false;
+      player.slow = false;
     }
     story.onPhone(a);
   });
@@ -79,29 +85,57 @@ async function boot() {
   const dawnCol = new THREE.Color(0x6a4a6e);
   let glitchK = 0;
   let cut: { t: number } | null = null;
-  let thugs: ReturnType<typeof npcs.spawn>[] = [];
   let inVoid = false;
-  // the void between loops: Zero, alone in the dark
-  const voidScene = new THREE.Scene();
-  voidScene.background = new THREE.Color(0x000000);
-  const voidCam = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.05, 100);
-  voidCam.position.set(0, 1.05, 3.1);
-  voidCam.lookAt(0, 0.95, 0);
-  addEventListener('resize', () => {
-    voidCam.aspect = innerWidth / innerHeight;
-    voidCam.updateProjectionMatrix();
-  });
-  const zero = new Zero();
-  zero.group.position.set(0, 0.25, 0);
-  voidScene.add(zero.group);
-  const voidTrails = new Trails(voidScene, 400);
-  const vbg = new THREE.TextureLoader().load('/art/void_bg.jpg');
-  vbg.colorSpace = THREE.SRGBColorSpace;
-  voidScene.background = vbg;
+  // the void between loops: a real place you walk through, built from voxels
+  const vw = buildVoid();
   const blackEl = document.createElement('div');
   blackEl.className = 'blackout';
   document.body.appendChild(blackEl);
-  const blackout = (on: boolean) => blackEl.classList.toggle('on', on);
+  const blackout = (on: boolean) =>
+    new Promise<void>((res) => {
+      blackEl.classList.toggle('on', on);
+      setTimeout(res, 950);
+    });
+  // people in the world
+  const intro = new Intro(stage.scene, stage.camera, player, city.bed, { x: 5, z: 33 });
+  intro.onPulse = () => sfx.buzz();
+  phone.keyGate = () => {
+    if (intro.active) {
+      sfx.start();
+      intro.pickKey();
+      return true;
+    }
+    return inVoid;
+  };
+  const tailorDoor = city.stations.tailor.npc!;
+  const crew = new Crew(npcs, player, { x: tailorDoor.x, z: tailorDoor.z - 2 });
+  const companion = new Companion(stage.scene, player);
+  // positional voices: the speaker's mouth is where the sound comes from
+  const voice = new Voice(() => sfx.ctx, () => sfx.voiceBus);
+  hud.voice = voice;
+  const pv = new THREE.Vector3();
+  hud.project = (v) => {
+    pv.copy(v).project(stage.camera);
+    return { x: ((pv.x + 1) / 2) * innerWidth, y: ((1 - pv.y) / 2) * innerHeight, on: pv.z < 1 };
+  };
+  hud.playerPos = () => new THREE.Vector3(player.x, 2, player.z);
+  // sprint: Shift on desktop, a held RUN button on touch
+  const runUi = document.createElement('div');
+  runUi.className = 'run-ui';
+  runUi.innerHTML = `<div class="stam"><i></i></div><button class="run-btn" aria-label="sprint">RUN</button>`;
+  ui.appendChild(runUi);
+  const runBtn = runUi.querySelector('.run-btn') as HTMLButtonElement;
+  const stamBar = runUi.querySelector('.stam i') as HTMLElement;
+  const runOn = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    player.sprintHeld = true;
+  };
+  const runOff = () => (player.sprintHeld = false);
+  runBtn.addEventListener('pointerdown', runOn);
+  runBtn.addEventListener('pointerup', runOff);
+  runBtn.addEventListener('pointercancel', runOff);
+  runBtn.addEventListener('pointerleave', runOff);
   story = new Story({
     city,
     phone,
@@ -112,6 +146,10 @@ async function boot() {
     boards,
     camera: stage.camera,
     sfx,
+    intro,
+    crew,
+    zero: companion,
+    blackout,
     setHood: (on) => hand.setHood(on),
     setDawn: (k) => {
       const f = stage.scene.fog as THREE.FogExp2;
@@ -180,67 +218,40 @@ async function boot() {
       player.frozen = false;
       phone.el.style.opacity = '';
     },
-    ambush: async () => {
-      player.frozen = true;
-      player.stop();
+    enterVoid: () => {
+      inVoid = true;
+      stage.renderPass.mainScene = vw.scene;
+      player.setWalk(vw.walk);
+      player.x = vw.spawn.x;
+      player.z = vw.spawn.z;
+      player.yaw = vw.spawn.yaw;
+      player.pitch = -0.04;
+      player.slow = false;
+      vw.scene.add(companion.zero.group);
+      vw.scene.add(stage.camera); // the camera (and your hands) come with you
+      companion.show(vw.zeroAt);
       phone.lower();
-      const looks = HEADS.filter((h) => h.role === 'lookout');
-      const spots: [number, number][] = [];
-      for (let k = 0; k < 40 && spots.length < 3; k++) {
-        const a = (k / 40) * Math.PI * 2 + Math.random() * 0.3;
-        const x = player.x + Math.cos(a) * 9,
-          z = player.z + Math.sin(a) * 9;
-        if (player.walkable(Math.floor(x), Math.floor(z)) && !spots.some(([sx, sz]) => Math.hypot(sx - x, sz - z) < 5)) spots.push([x, z]);
-      }
-      thugs = spots.map(([x, z], k) => {
-        const n = npcs.spawn(looks[k % looks.length], x, z, { speedMul: 2.4, name: 'Tailor crew' });
-        const a = (k / spots.length) * Math.PI * 2;
-        npcs.send(n, player.x + Math.cos(a) * 1.1, player.z + Math.sin(a) * 1.1);
-        n.ch.lookAt = new THREE.Vector3(player.x, 2, player.z);
-        return n;
-      });
-      sfx.alarm();
-      // look at the first one coming
-      if (thugs[0]) {
-        const t = thugs[0];
-        const want = Math.atan2(-(t.x - player.x), -(t.z - player.z));
-        const from = player.yaw;
-        let d = Math.atan2(Math.sin(want - from), Math.cos(want - from));
-        for (let i = 1; i <= 20; i++) {
-          player.yaw = from + d * (i / 20);
-          await new Promise((r) => setTimeout(r, 25));
-        }
-      }
-      const t0 = performance.now();
-      while (performance.now() - t0 < 4500 && thugs.some((n) => Math.hypot(n.x - player.x, n.z - player.z) > 1.8))
-        await new Promise((r) => setTimeout(r, 100));
-      // the hit
-      hud.flashRed();
-      sfx.caught();
-      glitchK = 2.5;
-      for (let i = 0; i < 14; i++) {
-        player.pitch = -0.04 - i * 0.05;
-        player.yaw += (Math.random() - 0.5) * 0.12;
-        await new Promise((r) => setTimeout(r, 30));
-      }
-      blackout(true);
-      await new Promise((r) => setTimeout(r, 1300));
+      phone.el.style.display = 'none';
+      ui.classList.add('void');
+      return { zeroAt: vw.zeroAt };
     },
-    setVoid: (on) => {
-      inVoid = on;
-      stage.renderPass.mainScene = on ? voidScene : stage.scene;
-      stage.renderPass.mainCamera = on ? voidCam : stage.camera;
-      blackout(false);
-      hand.group.visible = !on;
-      phone.el.style.display = on ? 'none' : '';
-      ui.classList.toggle('void', on);
+    exitVoid: () => {
+      inVoid = false;
+      stage.renderPass.mainScene = stage.scene;
+      player.setWalk(city.walk);
+      stage.scene.add(companion.zero.group);
+      stage.scene.add(stage.camera);
+      companion.hide();
+      phone.el.style.display = '';
+      ui.classList.remove('void');
     },
     resetWorld: () => {
-      for (const n of thugs) npcs.remove(n);
-      thugs = [];
+      crew.clear();
       drones.patrol();
       boards.face = null;
       hud.setMarker(null);
+      intro.resetPhone();
+      player.pitch = -0.04;
     },
     burst: () => {
       const L = lookOf(headByRole('you_bare'));
@@ -254,6 +265,8 @@ async function boot() {
   bindInput(canvas, stage.camera, player, {
     onTap(ray) {
       sfx.start();
+      if (intro.tryTap(ray)) return;
+      if (intro.active || player.frozen) return;
       if (phone.up) return phone.lower();
       const n = npcs.pick(ray);
       if (n) return story.talkTo(n);
@@ -287,8 +300,8 @@ async function boot() {
       await hud.card({
         kicker: 'LEDGER CITY · 18:00',
         title: 'Payday.',
-        body: `<img class="card-art" src="/art/intro_phone.jpg" alt=""><p>You finished a freelance job today. Your client is paying you tonight.</p>`,
-        button: 'Go outside',
+        body: `<img class="card-art" src="/art/intro_phone.jpg" alt=""><p>You finished a freelance job today. Your client said they'd pay tonight. You fell asleep waiting.</p>`,
+        button: 'Wake up',
       });
     phone.el.style.display = '';
     skip ? story.skipToPayday() : story.beginLoop1();
@@ -333,7 +346,7 @@ async function boot() {
   };
 
   // ---------- loop ----------
-  (window as any).__game = { stage, player, npcs, city, story, phone, hud, drones, boards };
+  (window as any).__game = { stage, player, npcs, city, story, phone, hud, drones, boards, crew, intro, companion, vw };
   const tmp = new THREE.Color();
   const v3 = new THREE.Vector3();
   let last = performance.now();
@@ -349,13 +362,13 @@ async function boot() {
       player.yaw = city.spawn.yaw + Math.sin(titleT * 0.15) * 0.6 - 0.4;
       player.pitch = 0.08;
     }
-    if (inVoid) {
-      zero.update(dt);
-      zero.group.rotation.y = Math.sin(performance.now() / 2600) * 0.3;
-      voidTrails.update(dt, [zero.asCharacter], voidCam.position);
-    }
+    if (inVoid) vw.update(dt);
     player.update(dt);
-    if (!cut) player.applyCamera(stage.camera);
+    intro.update(dt);
+    if (!cut && !intro.applyCamera()) player.applyCamera(stage.camera);
+    crew.update(dt);
+    companion.update(dt, stage.camera);
+    voice.updateListener(stage.camera);
     for (const c of npcs.extra) {
       city.world.lightAt(c.group.position.x, 1.5, c.group.position.z, tmp);
       c.setLight(tmp);
@@ -367,12 +380,19 @@ async function boot() {
     const exposed = story.exposed;
     drones.update(dt, v3.set(player.x, 1, player.z), exposed);
     boards.update(dt, fmtClock(story.s.clock));
-    city.world.lightAt(player.x, 2, player.z, tmp);
+    if (inVoid) tmp.setRGB(0.55, 0.7, 0.62);
+    else city.world.lightAt(player.x, 2, player.z, tmp);
     hand.setLight(tmp);
     hand.update(dt, Math.min(1, player.speed / 4), player.bobT);
-    hand.group.visible = started && !cut;
+    hand.group.visible = started && !cut && !intro.active;
+    phone.el.style.visibility = intro.active ? 'hidden' : '';
+    hud.frame();
+    // stamina + run button show up when someone is chasing you (always on touch screens)
+    runUi.classList.toggle('on', started && !inVoid && (crew.mode === 'hunt' || matchMedia('(pointer: coarse)').matches));
+    runUi.classList.toggle('low', player.stamina < 0.25);
+    stamBar.style.transform = `scaleX(${player.stamina})`;
     // adaptive score
-    sfx.setMood(inVoid ? 'void' : thugs.length || story.s.trace ? 'tension' : story.s.beat === 'dawn' || ended() ? 'dawn' : 'calm');
+    sfx.setMood(inVoid ? 'void' : story.s.trace ? 'tension' : story.s.beat === 'dawn' || ended() ? 'dawn' : 'calm');
     // exposure ring + ping
     ring.visible = exposed;
     if (exposed) {
@@ -407,7 +427,7 @@ async function boot() {
     } else hud.setMarker(null);
     // glitch / chroma
     glitchK = Math.max(0, glitchK - dt * 1.4);
-    const danger = story.s.trace ? 1 - story.s.trace.left / story.s.trace.total : 0;
+    const danger = story.s.trace ? Math.max(0, 1 - story.s.trace.left / 14) : 0;
     const ca = 0.0006 + glitchK * 0.012 + danger * 0.004 * (0.5 + Math.random() * 0.5);
     stage.chroma.offset.set(ca, ca * 0.6);
     stage.render(dt);

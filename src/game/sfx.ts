@@ -4,6 +4,8 @@ export class Sfx {
   private master!: GainNode;
   private rain?: AudioBufferSourceNode;
   muted = false;
+  /** bus for positional voices (bypasses music ducking) */
+  voiceBus: GainNode | null = null;
 
   start() {
     if (this.ctx) return;
@@ -13,11 +15,15 @@ export class Sfx {
     this.master = this.ctx.createGain();
     this.master.gain.value = 0.7;
     this.master.connect(this.ctx.destination);
+    this.voiceBus = this.ctx.createGain();
+    this.voiceBus.gain.value = 1;
+    this.voiceBus.connect(this.ctx.destination);
     this.ambience();
   }
   toggle() {
     this.muted = !this.muted;
     if (this.master) this.master.gain.value = this.muted ? 0 : 0.7;
+    if (this.voiceBus) this.voiceBus.gain.value = this.muted ? 0 : 1;
     return this.muted;
   }
 

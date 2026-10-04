@@ -90,6 +90,27 @@
     "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
+  "1veho5g": {
+    "who": "Zero",
+    "text": "Same night. Same rain. Same people watching. The only thing that changed is you.",
+    "dur": 6.08,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "18nwdr4": {
+    "who": "Zero",
+    "text": "Before that money lands, you need a real wallet. Open it. I'll be right here.",
+    "dur": 4.96,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "ypl4zq": {
+    "who": "Zero",
+    "text": "Twenty-four words. Your whole fortune, in a language thieves would kill to read. Never let anyone read it. Not me. Especially not people who ask nicely.",
+    "dur": 11.04,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
   "ygbplv": {
     "who": "The Tailor",
     "text": "Strange. I have the oddest feeling we have done this before.",
@@ -104,11 +125,11 @@
     "voice_id": "ev2kMR9ZJZZsemuogS5u",
     "model_id": "eleven_v4"
   },
-  "7xlzi6": {
-    "who": "The Tailor",
-    "text": "Public address. Public amount. Public time. They might as well have mailed us an invitation. Wake the drones.",
-    "dur": 7.2,
-    "voice_id": "ev2kMR9ZJZZsemuogS5u",
+  "1rtr501": {
+    "who": "Zero",
+    "text": "And there it is. Five ZEC on a transparent address, glowing like a lighthouse. That's how they found you last time. Open the wallet and hold SHIELD. Let's turn the lights off.",
+    "dur": 10.56,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
   "am30nb": {
@@ -123,6 +144,20 @@
     "text": "Watch the exits. Everything that goes in comes out eventually, and people are such creatures of habit.",
     "dur": 6.72,
     "voice_id": "ev2kMR9ZJZZsemuogS5u",
+    "model_id": "eleven_v4"
+  },
+  "1hc17rh": {
+    "who": "Zero",
+    "text": "Feel that? Every eye in this city just lost focus at the same time. Delicious.",
+    "dur": 5.76,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1cxt8gs": {
+    "who": "Zero",
+    "text": "Better. Now live. Coffee at Nullstate. Mika owes you at the arcade. Rent at Cobalt, and Cobalt only takes public money, so tread lightly there. This city adores a pattern.",
+    "dur": 12.56,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
   "ns7q0y": {
@@ -230,6 +265,13 @@
     "voice_id": "D9xwB6HNBJ9h4YvQFWuE",
     "model_id": "eleven_v4"
   },
+  "1qvrzjw": {
+    "who": "Zero",
+    "text": "A note only one person alive can read. Romantic, really. The ledger saw a payment happen and learned nothing else.",
+    "dur": 7.68,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
   "1kkotgi": {
     "who": "The Tailor",
     "text": "Pool exit. Almost exactly what went in, and barely any time later. Hardly anyone else left the pool in that window.",
@@ -244,6 +286,13 @@
     "voice_id": "ev2kMR9ZJZZsemuogS5u",
     "model_id": "eleven_v4"
   },
+  "1tse6xv": {
+    "who": "Cobalt clerk",
+    "text": "Rent received. Have a good night.",
+    "dur": 2.4,
+    "voice_id": "onwK4e9ZLuTAKqWW03F9",
+    "model_id": "eleven_v4"
+  },
   "dbi44a": {
     "who": "The Tailor",
     "text": "Another pool exit to Cobalt. Plenty of exits tonight, and none of them look like our five. Could be anyone. I hate anyone.",
@@ -251,11 +300,11 @@
     "voice_id": "ev2kMR9ZJZZsemuogS5u",
     "model_id": "eleven_v4"
   },
-  "1tse6xv": {
-    "who": "Cobalt clerk",
-    "text": "Rent received. Have a good night.",
-    "dur": 2.4,
-    "voice_id": "onwK4e9ZLuTAKqWW03F9",
+  "xr8abk": {
+    "who": "Zero",
+    "text": "Small. Late. Different. Three words that keep people whole in this city. Well done.",
+    "dur": 6.96,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
   "15054pp": {
@@ -284,6 +333,13 @@
     "text": "Only you can read the note. To everyone else it's just... nothing happened. Love that.",
     "dur": 6.08,
     "voice_id": "2vbhUP8zyKg4dEZaTWGn",
+    "model_id": "eleven_v4"
+  },
+  "11tpc1d": {
+    "who": "Zero",
+    "text": "Money arrived and nobody noticed. That's the trick. Not invisibility. Indifference.",
+    "dur": 6.4,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   },
   "jfbz7g": {
@@ -325,6 +381,20 @@
     "who": "Zero",
     "text": "Everything you did tonight works the same in a real wallet. Same buttons. Same silence. Go on, the real city is waiting.",
     "dur": 7.92,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "qalq": {
+    "who": "Zero",
+    "text": "Five went in, five came out. You might as well have signed it. Again. Only the rent this time.",
+    "dur": 6.4,
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "model_id": "eleven_v4"
+  },
+  "1cpsxve": {
+    "who": "Zero",
+    "text": "Dawn's coming. Go home. The Tailors are holding an empty file, and it's driving them mad.",
+    "dur": 6.08,
     "voice_id": "nPczCjzI2devNBz1zQrb",
     "model_id": "eleven_v4"
   }
