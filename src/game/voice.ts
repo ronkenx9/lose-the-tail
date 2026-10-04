@@ -43,7 +43,8 @@ export class Voice {
       node = bp;
     }
     let panner: PannerNode | null = null;
-    if (at) {
+    // radio chatter is in your ear, not out in the street: no distance falloff
+    if (at && !opts.radio) {
       panner = ctx.createPanner();
       panner.panningModel = 'HRTF';
       panner.distanceModel = 'inverse';

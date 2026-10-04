@@ -562,7 +562,7 @@ export function buildCity(): City {
   });
 
   const tags: Tag[] = [
-    { x: 75.98, y: 2.2, z: 8, facing: 'W', px: 75, pz: 8, fact: 'Shielded (private) addresses usually start with *u1*. Transparent (public) ones start with *t1* or *t3*.' },
+    { x: 75.98, y: 2.2, z: 35, facing: 'W', px: 75, pz: 35, fact: 'Shielded (private) addresses usually start with *u1*. Transparent (public) ones start with *t1* or *t3*.' },
     { x: 39.98, y: 2.0, z: 40.5, facing: 'W', px: 39, pz: 40.5, fact: 'A memo is a private note of up to 512 bytes. It travels encrypted with the payment, so only the receiver can read it.' },
     { x: 20.02, y: 2.2, z: 60, facing: 'E', px: 21, pz: 60, fact: 'Chain-analysis firms really do watch public ledgers and link addresses to people. That is why money sitting in a transparent address is risky.' },
     { x: 30, y: 2.2, z: 75.98, facing: 'N', px: 30, pz: 75, fact: 'Zero-knowledge proofs let the network check that a payment is valid without learning who sent it, who got it, or how much.' },
