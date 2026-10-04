@@ -9,8 +9,8 @@ import fs from 'node:fs';
 const OUT = process.argv[2] ?? 'playthrough';
 const URL = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : 'http://localhost:5191/';
 const UNTIL = (process.argv.find((a) => a.startsWith('--until=')) ?? '').slice(8);
-const W = 1920,
-  H = 1080,
+const W = 1600,
+  H = 900,
   FPS = 30;
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -129,9 +129,17 @@ async function idle(quiet = 1800, ms = 120000) {
   }
 }
 async function walk(x, z, run = false) {
+  if ((await st()).up) {
+    await page.keyboard.press('Escape');
+    await sleep(500);
+  }
   if (run) await page.keyboard.down('Shift');
-  await G(([x, z]) => window.__game.player.goTo(x, z), [x, z]);
-  await until((s) => s.path === 0, `walk to ${x},${z}`, 60000);
+  for (let k = 0; k < 5; k++) {
+    await G(([x, z]) => window.__game.player.goTo(x, z), [x, z]);
+    await until((s) => s.path === 0, `walk to ${x},${z}`, 60000);
+    const s = await st();
+    if (Math.hypot(s.x - x, s.z - z) < 2.6 || s.talking || s.up) break;
+  }
   if (run) await page.keyboard.up('Shift');
 }
 /** smooth look: yaw toward a point (or absolute), optional pitch */
@@ -284,28 +292,49 @@ try {
   if (UNTIL === 'payday') throw new Error('STOP');
 
   // ================= THE REST OF THE NIGHT =================
-  await arrive(9.5, 59.6); // the Tailor's shop
-  await idle();
-  await arrive(26.5, 57.4); // Spin Cycle
-  await idle();
-  await walk(21.4, 60); // tag
-  await sleep(1800);
-  await walk(30.5, 74.4); // tag
-  await sleep(1800);
-
-  await arrive(37.6, 85); // Mika
-  await until((s) => s.screen === 'receive' && s.up, 'receive screen');
+  // the classic mistake first: straight to the exchange to cash out right after shielding
+  await walk(9.5, 42.5);
+  await walk(30, 49, true);
+  await walk(80, 47, true);
+  await arrive(88.5, 37.4); // Cobalt: the mistake first
+  await until((s) => s.screen === 'send2' && s.up, 'exchange pay');
+  await sleep(2500);
+  await hold('[data-hold=send]');
+  log('cashed out everything at once...');
+  await until((s) => s.beat === 'trap', 'matched', 20000);
+  await sleep(2500);
+  await page.keyboard.down('Shift');
+  await G(() => window.__game.player.goTo(70, 46));
+  await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 60000 });
+  await page.keyboard.up('Shift');
+  await sleep(8000); // Zero laughs; read the lesson
+  await tap('.go.in .go-btn', 200);
+  log('rewound: back in bed, Zero calling');
+  await page.waitForSelector('.call.live', { timeout: 30000 });
+  await sleep(2500);
+  await walk(9.5, 42.5); // out the door while he talks
+  await walk(30, 49, true);
+  await walk(70, 49, true);
+  await arrive(88.5, 37.4); // back to Cobalt
+  await until((s) => s.screen === 'send2' && s.up, 'exchange pay again', 60000);
+  await sleep(1200);
+  await G(() => {
+    const sl = document.querySelector('#slider');
+    sl.value = '1.2';
+    sl.dispatchEvent(new Event('input'));
+  });
   await sleep(1500);
-  await tap('[data-act="show-addr"]');
-  await until((s) => s.talking, 'Mika objects');
-  await idle(600);
-  await until((s) => s.screen === 'receive' && s.up, 'receive shielded');
-  await sleep(1500);
-  await tap('[data-act="show-addr"]');
-  await until((s) => s.e.friend, 'Mika paid', 30000);
+  await hold('[data-hold=send]');
+  await until((s) => s.e.exchange, 'rent paid', 30000);
   await idle();
-  log('arcade done');
+  log('rent paid safely');
 
+  await arrive(75.4, 35.6); // the alley: Spindle, tag
+  await idle();
+  await look([75, 38.4], 800, 0.05);
+  await sleep(1500);
+  await walk(53.5, 13); // last tag
+  await sleep(2000);
   await walk(40.5, 47.6, true);
   await arrive(40.5, 43.4); // kiosk: swap
   await until((s) => s.screen === 'swap' && s.up, 'swap screen', 30000);
@@ -331,44 +360,28 @@ try {
   await idle();
   log('café done');
 
-  await arrive(88.5, 37.4); // Cobalt: the mistake first
-  await until((s) => s.screen === 'send2' && s.up, 'exchange pay');
-  await sleep(2500);
-  await hold('[data-hold=send]');
-  log('cashed out everything at once...');
-  await until((s) => s.beat === 'trap', 'matched', 20000);
-  await sleep(2500);
-  await page.keyboard.down('Shift');
-  await G(() => window.__game.player.goTo(70, 46));
-  await page.waitForSelector('.go.in .go-btn:not([disabled])', { timeout: 60000 });
-  await page.keyboard.up('Shift');
-  await sleep(8000); // Zero laughs; read the lesson
-  await tap('.go.in .go-btn', 200);
-  log('rewound: back in bed, Zero calling');
-  await page.waitForSelector('.call.live', { timeout: 30000 });
-  await sleep(2500);
-  await walk(9.5, 42.5); // out the door while he talks
-  await walk(70, 46, true);
-  await arrive(88.5, 37.4); // back to Cobalt
-  await until((s) => s.screen === 'send2' && s.up, 'exchange pay again', 60000);
-  await sleep(1200);
-  await G(() => {
-    const sl = document.querySelector('#slider');
-    sl.value = '1.2';
-    sl.dispatchEvent(new Event('input'));
-  });
+  await arrive(37.6, 85); // Mika
+  await until((s) => s.screen === 'receive' && s.up, 'receive screen');
   await sleep(1500);
-  await hold('[data-hold=send]');
-  await until((s) => s.e.exchange, 'rent paid', 30000);
+  await tap('[data-act="show-addr"]');
+  await until((s) => s.talking, 'Mika objects');
+  await idle(600);
+  await until((s) => s.screen === 'receive' && s.up, 'receive shielded');
+  await sleep(1500);
+  await tap('[data-act="show-addr"]');
+  await until((s) => s.e.friend, 'Mika paid', 30000);
   await idle();
-  log('rent paid safely');
+  log('arcade done');
 
-  await arrive(75.4, 35.6); // the alley: Spindle, tag
+  await arrive(9.5, 59.6); // the Tailor's shop
   await idle();
-  await look([75, 38.4], 800, 0.05);
-  await sleep(1500);
-  await walk(53.5, 13); // last tag
-  await sleep(2000);
+  await arrive(26.5, 57.4); // Spin Cycle
+  await idle();
+  await walk(21.4, 60); // tag
+  await sleep(1800);
+  await walk(30.5, 74.4); // tag
+  await sleep(1800);
+
   await until((s) => s.beat === 'dawn', 'dawn', 30000);
   await idle();
   log('heading home');
